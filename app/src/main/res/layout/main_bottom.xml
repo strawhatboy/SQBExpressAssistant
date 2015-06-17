@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ly_main_buttom"
+    android:layout_width="fill_parent"
+    android:layout_height="55dp">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:background="@color/bg_gray"
+        >
+
+        <LinearLayout
+            android:id="@+id/id_tab_btn_rob_order"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:descendantFocusability="beforeDescendants"
+            android:gravity="center"
+            android:background="@color/bg_blue"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_white"
+                android:text="@string/tab_btn_rob_order"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_tab_btn_history_order"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:descendantFocusability="beforeDescendants"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_balck"
+                android:text="@string/tab_btn_history_order"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_tab_btn_my_wallet"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:descendantFocusability="beforeDescendants"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_balck"
+                android:text="@string/tab_btn_my_wallet"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
