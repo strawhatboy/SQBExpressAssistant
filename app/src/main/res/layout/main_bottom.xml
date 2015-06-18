@@ -35,14 +35,24 @@
             android:layout_weight="1"
             android:descendantFocusability="beforeDescendants"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
                 android:textColor="@color/font_balck"
-                android:text="@string/tab_btn_history_order"/>
+                android:text="@string/tab_btn_history_order"
+                android:gravity="center" />
 
+            <LinearLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="#ffd0d2d3"></View>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

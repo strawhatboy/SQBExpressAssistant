@@ -5,5 +5,7 @@
     <color name="font_balck">#323A45</color>
     <color name="bg_blue">#1AB2E8</color>
     <color name="font_white">#FFF</color>
+    <color name="bg_white">#FFF</color>
+    <color name="font_green">#1FBBA6</color>
 
 </resources>
