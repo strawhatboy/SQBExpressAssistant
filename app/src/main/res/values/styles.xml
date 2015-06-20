@@ -24,4 +24,25 @@
     <!-- Backward-compatible version of ?android:attr/buttonBarButtonStyle -->
     <style name="ButtonBarButton" />
 
+    <style name="edittext_usr_style">
+        <item name="android:background">@drawable/edittext_selector</item>
+        <item name="android:drawableLeft">@drawable/edittext_usr_selector</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textColorHint">@color/font_grey</item>
+        <item name="android:textColor">@color/font_dark</item>
+    </style>
+    <style name="edittext_pwd_style">
+        <item name="android:background">@drawable/edittext_selector</item>
+        <item name="android:drawableLeft">@drawable/edittext_pwd_selector</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textColorHint">@color/font_grey</item>
+        <item name="android:textColor">@color/font_dark</item>
+    </style>
+
+    <style name="checkbox_white_style">
+        <item name="android:button">@drawable/checkbox_white_selector</item>
+        <item name="android:padding">8dp</item>
+    </style>
 </resources>

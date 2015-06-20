@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context="com.sqbnet.expressassistant.loginActivity"
+    android:paddingTop="10dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+
+    <TextView android:text="@string/login_title" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewTitle"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/font_blue"
+        android:layout_marginTop="30dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/editTextUsr"
+        android:layout_marginTop="40dp"
+        android:hint="@string/login_user"
+        android:layout_gravity="center"
+        style="@style/edittext_usr_style"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editTextPwd"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:hint="@string/login_pwd"
+        android:layout_gravity="center"
+        style="@style/edittext_pwd_style"/>
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_login"
+        android:textSize="22sp"
+        android:padding="12dp"
+        android:text="@string/login_btn_login"
+        android:textColor="@color/font_white"
+        android:id="@+id/btn_login"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/font_balck"
+            android:textSize="18dp"
+            android:text="@string/login_remember"
+            style="@style/checkbox_white_style"/>
+        <TextView android:text="@string/login_tv_register"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:textSize="18dp"
+            android:textColor="@color/font_balck"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_register" />
+    </LinearLayout>
+</LinearLayout>

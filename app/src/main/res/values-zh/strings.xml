@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">商圈宝配送</string>
+    <string name="login_btn_login">登 录</string>
+    <string name="login_pwd">密码</string>
+    <string name="login_user">账号</string>
+    <string name="tab_btn_history_order">历史接单</string>
+    <string name="tab_btn_my_wallet">我的钱包</string>
+    <string name="tab_btn_rob_order">在线接单</string>
+    <string name="login_tv_register"><u>前往注册&gt;&gt;</u></string>
+    <string name="login_title">商圈宝配送客户端</string>
+    <string name="login_remember">记住用户？</string>
+</resources>
