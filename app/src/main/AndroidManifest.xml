@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_" />
 
     <application
         android:allowBackup="true"
@@ -15,8 +16,7 @@
         <activity android:name=".mainActivity" >
         </activity>
         <activity
-            android:name=".loginActivity"
-            android:label="@string/title_activity_login" >
+            android:name=".loginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".registrationActivity"
-            android:label="@string/title_activity_registration" >
+            android:name=".registrationActivity" >
         </activity>
     </application>
 

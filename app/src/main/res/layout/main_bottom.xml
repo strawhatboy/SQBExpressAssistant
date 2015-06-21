@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:textColor="@color/font_balck"
+                android:textColor="@color/font_black"
                 android:text="@string/tab_btn_history_order"
                 android:gravity="center" />
 
@@ -67,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/font_balck"
+                android:textColor="@color/font_black"
                 android:text="@string/tab_btn_my_wallet"/>
 
         </LinearLayout>

@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/textViewTitle"
         android:layout_gravity="center"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:textColor="@color/font_blue"
         android:layout_marginTop="30dp"
         />
@@ -47,7 +47,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_login"
+        android:background="@drawable/button_orange_selector"
         android:textSize="22sp"
         android:padding="12dp"
         android:text="@string/login_btn_login"
@@ -61,7 +61,7 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/font_balck"
+            android:textColor="@color/font_black"
             android:textSize="18dp"
             android:text="@string/login_remember"
             style="@style/checkbox_white_style"/>
@@ -69,8 +69,9 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="18dp"
             android:textSize="18dp"
-            android:textColor="@color/font_balck"
+            android:textColor="@color/font_black"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_register" />
+            android:id="@+id/tv_register"
+            android:background="@drawable/tv_as_button_selector"/>
     </LinearLayout>
 </LinearLayout>

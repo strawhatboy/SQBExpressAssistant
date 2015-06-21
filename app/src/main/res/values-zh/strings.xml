@@ -10,4 +10,21 @@
     <string name="login_tv_register"><u>前往注册&gt;&gt;</u></string>
     <string name="login_title">商圈宝配送客户端</string>
     <string name="login_remember">记住用户？</string>
+    <string name="title_activity_registration"></string>
+    <string name="registration_title">申请注册</string>
+    <string name="title_activity_login">商圈宝配送</string>
+    <string name="btn_ok">确定</string>
+    <string name="btn_cancel">取消</string>
+    <string name="registration_usr">账户：</string>
+    <string name="registration_pwd">密码：</string>
+    <string name="registration_id">身份证号：</string>
+    <string name="registration_name">真实姓名：</string>
+    <string name="registration_mobile">手机号码：</string>
+    <string name="registration_passcode">验证号码：</string>
+    <string name="registration_addr">详细地址：</string>
+    <string name="registration_photo_placeholder">手持身份证正面照片</string>
+    <string name="registration_pick_photo">选择照片</string>
+    <string name="registration_get_passcode">获取验证码</string>
+    <string name="registration_accept_license">我已经阅读并同意</string>
+    <string name="registration_license"><u>[商圈宝配送注册协议]</u></string>
 </resources>
