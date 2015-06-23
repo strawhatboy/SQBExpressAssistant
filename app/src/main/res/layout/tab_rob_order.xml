@@ -1,11 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ly_tab_rob_order"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="抢单"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2">
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="6">
+        <!-- the circle here -->
+        <com.sqbnet.expressassistant.controls.CircleImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:layout_centerInParent="true"
+
+            android:src="@drawable/status_selection_bg"/>
+        <com.sqbnet.expressassistant.controls.CircleImageView
+            android:visibility="invisible"
+            android:id="@+id/civ_searching_avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/index_avatar"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical">
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/tv_searching_waiting"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/font_black"
+            android:text="@string/searching_waiting_for_order"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/tv_searching_hint"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/font_white"
+            android:text="@string/searching_hint"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/tv_searching_hint_content"
+            android:layout_below="@id/tv_searching_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/font_white"
+            android:text="@string/searching_hint_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            />
+    </RelativeLayout>
 </LinearLayout>

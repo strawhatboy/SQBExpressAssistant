@@ -27,4 +27,8 @@
     <string name="registration_get_passcode">获取验证码</string>
     <string name="registration_accept_license">我已经阅读并同意</string>
     <string name="registration_license"><u>[商圈宝配送注册协议]</u></string>
+    <string name="tab_btn_rest">离线休息</string>
+    <string name="searching_waiting_for_order">正在等待平台派单！</string>
+    <string name="searching_hint">提示：</string>
+    <string name="searching_hint_content">如果您没有点击“在线接单”将不会接受派单信息！</string>
 </resources>

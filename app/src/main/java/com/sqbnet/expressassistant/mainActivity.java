@@ -3,6 +3,11 @@ package com.sqbnet.expressassistant;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +18,7 @@ import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +39,17 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     private LinearLayout mTabBtnRobOrder;
     private LinearLayout mTabBtnHistoryOrder;
     private LinearLayout mTabBtnMyWallet;
+    private LinearLayout mainLayout;
+
+    private TextView tv_rob_order;
+
+    private boolean isWaiting = false;
+
+    private Resources resources;
+
+    TabRobOrder tabRobOrder;
+    TabHistoryOrder tabHistoryOrder;
+    TabMyWallet tabMyWallet;
 
 
     @Override
@@ -80,10 +97,13 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         mTabBtnRobOrder = (LinearLayout)findViewById(R.id.id_tab_btn_rob_order);
         mTabBtnHistoryOrder = (LinearLayout)findViewById(R.id.id_tab_btn_history_order);
         mTabBtnMyWallet = (LinearLayout)findViewById(R.id.id_tab_btn_my_wallet);
+        mainLayout = (LinearLayout)findViewById(R.id.ly_main);
 
-        TabRobOrder tabRobOrder = new TabRobOrder();
-        TabHistoryOrder tabHistoryOrder = new TabHistoryOrder();
-        TabMyWallet tabMyWallet = new TabMyWallet();
+        tv_rob_order = (TextView) findViewById(R.id.tv_rob_order);
+
+        tabRobOrder = new TabRobOrder();
+        tabHistoryOrder = new TabHistoryOrder();
+        tabMyWallet = new TabMyWallet();
 
         mFragments.add(tabRobOrder);
         mFragments.add(tabHistoryOrder);
@@ -92,13 +112,18 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         mTabBtnRobOrder.setOnClickListener(this);
         mTabBtnHistoryOrder.setOnClickListener(this);
         mTabBtnMyWallet.setOnClickListener(this);
+
+        resources = getResources();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.id_tab_btn_rob_order:
-                mViewPager.setCurrentItem(0);
+                if (mViewPager.getCurrentItem() != 0)
+                    mViewPager.setCurrentItem(0);
+                else
+                    switchStatus();
                 break;
             case R.id.id_tab_btn_history_order:
                 mViewPager.setCurrentItem(1);
@@ -107,5 +132,25 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
                 mViewPager.setCurrentItem(2);
                 break;
         }
+    }
+
+    /**
+     * switch the status between waiting & rest
+     */
+    private void switchStatus() {
+        isWaiting = !isWaiting;
+        if (isWaiting) {
+            mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_green));
+            tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
+            Drawable bg = resources.getDrawable(R.drawable.bg);
+            mainLayout.setBackground(bg);
+
+        } else {
+            mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_blue));
+            tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
+            Drawable bg = resources.getDrawable(R.drawable.bg2);
+            mainLayout.setBackground(bg);
+        }
+        tabRobOrder.setIsWaiting(isWaiting);
     }
 }

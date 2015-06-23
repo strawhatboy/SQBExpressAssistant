@@ -38,4 +38,8 @@
     <string name="registration_get_passcode">Get Passcode</string>
     <string name="registration_accept_license">I have read and agree to the</string>
     <string name="registration_license"><u> [Protocol]</u></string>
+    <string name="tab_btn_rest">Get Rest</string>
+    <string name="searching_waiting_for_order">Waiting for the order !</string>
+    <string name="searching_hint">Hint:</string>
+    <string name="searching_hint_content">Click "Get Order" to get the order nearby.</string>
 </resources>

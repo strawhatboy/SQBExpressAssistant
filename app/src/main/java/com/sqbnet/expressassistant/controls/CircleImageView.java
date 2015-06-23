@@ -71,13 +71,15 @@ public class CircleImageView extends ImageView {
 
         a.recycle();
 
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
+        if (mExampleString != null) {
+            // Set up a default TextPaint object
+            mTextPaint = new TextPaint();
+            mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+            mTextPaint.setTextAlign(Paint.Align.LEFT);
 
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
+            // Update TextPaint and text measurements from attributes
+            invalidateTextPaintAndMeasurements();
+        }
     }
 
     private void invalidateTextPaintAndMeasurements() {
@@ -91,7 +93,7 @@ public class CircleImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        //super.onDraw(canvas);
 
         // TODO: consider storing these as member variables to reduce
         // allocations per draw cycle.
@@ -103,12 +105,6 @@ public class CircleImageView extends ImageView {
         int contentWidth = getWidth() - paddingLeft - paddingRight;
         int contentHeight = getHeight() - paddingTop - paddingBottom;
 
-        // Draw the text.
-        canvas.drawText(mExampleString,
-                paddingLeft + (contentWidth - mTextWidth) / 2,
-                paddingTop + (contentHeight + mTextHeight) / 2,
-                mTextPaint);
-
         // Draw the example drawable on top of the text.
         if (mExampleDrawable != null) {
             mExampleDrawable.setBounds(paddingLeft, paddingTop,
@@ -116,14 +112,38 @@ public class CircleImageView extends ImageView {
             mExampleDrawable.draw(canvas);
         }
 
-        Drawable drawable = getDrawable(); if (null != drawable) {
+        Drawable drawable = getDrawable();
+        if (null != drawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            Bitmap b = getCircleBitmap(bitmap, 14); final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight()); final Rect rectDest = new Rect(0,0,getWidth(),getHeight());
+            Bitmap b = getCircleBitmap(bitmap, 14);
+            final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight());
+
+            double ratio = (double)b.getWidth() / (double)b.getHeight();
+            double ratioDest = (double)getWidth() / (double)getHeight();
+            final Rect rectDest;
+            if (ratio > ratioDest) {
+                int height = new Double(getWidth() / ratio).intValue();
+                int fixValue = (getHeight() - height) / 2;
+                rectDest = new Rect(0, fixValue, getWidth(), height + fixValue);
+            } else {
+                int width = new Double(getHeight() * ratio).intValue();
+                int fixValue = (getWidth() - width) / 2;
+                rectDest = new Rect(fixValue, 0, width + fixValue, getHeight());
+            }
+
             paint.reset();
             canvas.drawBitmap(b, rectSrc, rectDest, paint);
 
         } else {
             super.onDraw(canvas);
+        }
+
+        // Draw the text.
+        if (mExampleString != null) {
+            canvas.drawText(mExampleString,
+                    paddingLeft + (contentWidth - mTextWidth) / 2,
+                    paddingTop + (contentHeight + mTextHeight) / 2,
+                    mTextPaint);
         }
     }
 
@@ -137,7 +157,9 @@ public class CircleImageView extends ImageView {
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
         int x = bitmap.getWidth();
-        canvas.drawCircle(x/2, x/2, x/2, paint);
+        int y = bitmap.getHeight();
+        int r = Math.min(x, y);
+        canvas.drawCircle(x/2, y/2, r/2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
