@@ -1,0 +1,26 @@
+{
+  "Base_url": "http://wap.sqbnet.com/index.php/DistributionAppAction/",
+
+  //短信验证码
+  "sms": {
+    "url": "phoneCaptcha",
+    "body": {
+      "mobilephone":""
+    }
+  },
+
+  "user_register": {
+    "url": "userRegister",
+    "body": {
+      "username":"",
+      "password":"",
+      "truename":"",
+      "idcard":"",
+      "idcardphoto":"",
+      "mobilephone":"",
+      "captcha":"",
+      "addr":"",
+      "salt":""
+    }
+  }
+}
