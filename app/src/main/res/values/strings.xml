@@ -42,4 +42,8 @@
     <string name="searching_waiting_for_order">Waiting for the order !</string>
     <string name="searching_hint">Hint:</string>
     <string name="searching_hint_content">Click "Get Order" to get the order nearby.</string>
+    <string name="title_activity_login_failed">loginFailedActivity</string>
+    <string name="login_failed_title">Login Failed</string>
+    <string name="login_failed_info">Your account or password is not corrent, you need to</string>
+    <string name="login_failed_btn_re_login">Try Again</string>
 </resources>

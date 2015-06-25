@@ -25,7 +25,7 @@
 
             android:src="@drawable/status_selection_bg"/>
         <ImageView
-            android:visibility="visible"
+            android:visibility="invisible"
             android:id="@+id/iv_searching_radar"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

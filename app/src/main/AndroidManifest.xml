@@ -14,17 +14,18 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity android:name=".mainActivity" >
-        </activity>
-        <activity
-            android:name=".loginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".loginActivity" >
+        </activity>
+        <activity android:name=".registrationActivity" >
+        </activity>
         <activity
-            android:name=".registrationActivity" >
+            android:name=".loginFailedActivity">
         </activity>
     </application>
 

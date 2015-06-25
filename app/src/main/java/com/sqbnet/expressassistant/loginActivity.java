@@ -43,12 +43,25 @@ public class loginActivity extends Activity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setClass(loginActivity.this, mainActivity.class);
-
                 //TODO: add login api call here
-                startActivity(intent);
-                //overridePendingTransition(R.animator.in_from_right, R.animator.out_to_left);
+
+                Intent intent = new Intent();
+
+                // TODO: for debugging
+                if (et_usr.getText().toString().equals("user")) {
+                    //login success
+                    //intent.putExtra()
+
+                    setResult(ResultCode.LOGIN_SUCCESS);
+                    finish();
+                } else {
+                    //login failed
+                    intent.setClass(loginActivity.this, loginFailedActivity.class);
+
+                    startActivity(intent);
+                    overridePendingTransition(R.animator.in_from_right, R.animator.out_to_left);
+                }
+
             }
         });
 
@@ -78,5 +91,10 @@ public class loginActivity extends Activity {
             return mInputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Do nothing
     }
 }

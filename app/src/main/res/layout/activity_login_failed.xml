@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sqbnet.expressassistant.loginFailedActivity"
+    android:orientation="vertical"
+    android:background="@drawable/bg2">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2">
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="6">
+        <ImageView
+            android:id="@+id/iv_login_failed_circle"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/login_failed_circle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="100dp"
+            android:text="@string/login_failed_title"
+            android:textSize="40sp"
+            android:textColor="@color/font_green"/>
+        <TextView
+            android:id="@+id/tv_login_failed_info"
+            android:layout_width="200dp"
+            android:paddingTop="40dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/login_failed_info"
+            android:textSize="16sp"/>
+        <Button
+            android:id="@+id/btn_login_failed_re_login"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="50dp"
+            android:text="@string/login_failed_btn_re_login"
+            android:textColor="@color/font_white"
+            android:background="@drawable/button_green_selector"
+            android:textSize="20sp"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical">
+    </RelativeLayout>
+</LinearLayout>

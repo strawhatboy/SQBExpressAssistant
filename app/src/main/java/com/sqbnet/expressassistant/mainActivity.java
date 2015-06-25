@@ -2,7 +2,11 @@ package com.sqbnet.expressassistant;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -58,6 +62,8 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
 
         mViewPager = (ViewPager)this.findViewById(R.id.id_viewpager);
+
+        checkLoginStatus();
 
         initView();
 
@@ -116,6 +122,16 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         resources = getResources();
     }
 
+    private void checkLoginStatus() {
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Activity.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", null);
+        if (token == null) {
+            Intent intent = new Intent();
+            intent.setClass(mainActivity.this, loginActivity.class);
+            startActivityForResult(intent, RequestCode.LOGIN);
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -152,5 +168,21 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
             mainLayout.setBackground(bg);
         }
         tabRobOrder.setIsWaiting(isWaiting);
+    }
+
+
+    /**
+     * handler for the login
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RequestCode.LOGIN) {
+            if (resultCode == ResultCode.LOGIN_SUCCESS) {
+
+            }
+        }
     }
 }

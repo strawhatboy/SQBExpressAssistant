@@ -35,8 +35,6 @@ public class registrationActivity extends Activity {
     private TextView tv_photo_placeholder;
     private CheckBox chkbox_accept_protocol;
 
-    private final int PICK_PHOTO = 0;
-
     private Bitmap photo;
 
     @Override
@@ -69,11 +67,12 @@ public class registrationActivity extends Activity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
+                /*Intent intent = new Intent();
                 intent.setClass(registrationActivity.this, loginActivity.class);
 
                 startActivity(intent);
-                overridePendingTransition(R.animator.in_from_left, R.animator.out_to_right);
+                overridePendingTransition(R.animator.in_from_left, R.animator.out_to_right);*/
+                finish();
             }
         });
 
@@ -89,7 +88,7 @@ public class registrationActivity extends Activity {
                 Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
-                startActivityForResult(chooserIntent, PICK_PHOTO);
+                startActivityForResult(chooserIntent, RequestCode.PICK_PHOTO);
             }
         });
     }
@@ -119,7 +118,7 @@ public class registrationActivity extends Activity {
             return;
         }
 
-        if (requestCode == PICK_PHOTO) {
+        if (requestCode == RequestCode.PICK_PHOTO) {
             try {
                 Uri originalUri = data.getData();
                 photo = MediaStore.Images.Media.getBitmap(getContentResolver(), originalUri);
