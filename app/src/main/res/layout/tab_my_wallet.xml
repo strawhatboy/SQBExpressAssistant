@@ -3,20 +3,71 @@
     android:id="@+id/ly_tab_my_wallet"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/bg_white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:gravity="center"
-        android:background="@color/bg_gray">
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/font_black"
-            android:textSize="16dp"
-            android:text="我的钱包"/>
+            android:textSize="16sp"
+            android:text="@string/tab_btn_my_wallet"/>
     </LinearLayout>
+    <RelativeLayout
+        android:background="@color/bg_white"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp">
+        <com.sqbnet.expressassistant.controls.CircleImageView
+            android:layout_margin="5dp"
+            android:id="@+id/civ_wallet_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/index_avatar"/>
+        <LinearLayout
+            android:layout_toRightOf="@+id/civ_wallet_avatar"
+            android:layout_centerVertical="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="赵子龙"
+                android:textSize="15dp"
+                android:textColor="@color/font_black"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="账号：442054851"
+                android:textSize="12dp"
+                android:textColor="@color/font_blue"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2014-06-12"
+                    android:textSize="12dp"
+                    android:textColor="@color/font_black"/>
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="申请通过"
+                    android:textSize="12dp"
+                    android:textColor="@color/font_green"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="5"></LinearLayout>
 </LinearLayout>

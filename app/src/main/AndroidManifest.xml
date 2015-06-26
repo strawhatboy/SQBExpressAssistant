@@ -24,8 +24,11 @@
         </activity>
         <activity android:name=".registrationActivity" >
         </activity>
+        <activity android:name=".loginFailedActivity" >
+        </activity>
         <activity
-            android:name=".loginFailedActivity">
+            android:name=".registrationAgreementActivity"
+            android:label="@string/title_activity_registration_agreement" >
         </activity>
     </application>
 

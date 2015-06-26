@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -136,16 +137,23 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.id_tab_btn_rob_order:
-                if (mViewPager.getCurrentItem() != 0)
+                if (mViewPager.getCurrentItem() != 0) {
                     mViewPager.setCurrentItem(0);
-                else
-                    switchStatus();
+
+                    // need to reset the fragment's status because some wired issue.
+                    setStatus(isWaiting);
+                }
+                else {
+                    setStatus(!isWaiting);
+                }
                 break;
             case R.id.id_tab_btn_history_order:
                 mViewPager.setCurrentItem(1);
+                setBackgroudLight();
                 break;
             case R.id.id_tab_btn_my_wallet:
                 mViewPager.setCurrentItem(2);
+                setBackgroudLight();
                 break;
         }
     }
@@ -153,21 +161,34 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     /**
      * switch the status between waiting & rest
      */
-    private void switchStatus() {
-        isWaiting = !isWaiting;
+    private void setStatus(boolean status) {
+        isWaiting = status;
+        Log.d("Status Change :", Boolean.toString(isWaiting));
         if (isWaiting) {
             mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_green));
             tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
-            Drawable bg = resources.getDrawable(R.drawable.bg);
-            mainLayout.setBackground(bg);
+            setBackgroudLight();
+            //TODO: start to wait for order from server
 
         } else {
             mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_blue));
             tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
-            Drawable bg = resources.getDrawable(R.drawable.bg2);
-            mainLayout.setBackground(bg);
+            setBackgroudDark();
+            //TODO: stop the listening
         }
         tabRobOrder.setIsWaiting(isWaiting);
+    }
+
+    private void setBackgroudLight() {
+        setBackground(true);
+    }
+
+    private void setBackgroudDark() {
+        setBackground(false);
+    }
+
+    private void setBackground(boolean isLight) {
+        mainLayout.setBackground(resources.getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
     }
 
 

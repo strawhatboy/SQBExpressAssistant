@@ -4,9 +4,9 @@
     <string name="title_activity_main">mainActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="tab_btn_rob_order">在线接单</string>
-    <string name="tab_btn_history_order">历史接单</string>
-    <string name="tab_btn_my_wallet">我的钱包</string>
+    <string name="tab_btn_rob_order">Get Order</string>
+    <string name="tab_btn_history_order">History</string>
+    <string name="tab_btn_my_wallet">My Wallet</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -37,8 +37,8 @@
     <string name="registration_pick_photo">Pick Photo</string>
     <string name="registration_get_passcode">Get Passcode</string>
     <string name="registration_accept_license">I have read and agree to the</string>
-    <string name="registration_license"><u> [Protocol]</u></string>
-    <string name="tab_btn_rest">Get Rest</string>
+    <string name="registration_license"><u> [Agreement]</u></string>
+    <string name="tab_btn_rest">Take Rest</string>
     <string name="searching_waiting_for_order">Waiting for the order !</string>
     <string name="searching_hint">Hint:</string>
     <string name="searching_hint_content">Click "Get Order" to get the order nearby.</string>
@@ -46,4 +46,7 @@
     <string name="login_failed_title">Login Failed</string>
     <string name="login_failed_info">Your account or password is not corrent, you need to</string>
     <string name="login_failed_btn_re_login">Try Again</string>
+    <string name="title_activity_registration_agreement">registrationAgreementActivity</string>
+    <string name="registration_agreement">Agreement</string>
+    <string name="history_title">My Historical Orders</string>
 </resources>

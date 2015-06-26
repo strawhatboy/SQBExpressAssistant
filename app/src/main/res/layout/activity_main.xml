@@ -7,12 +7,12 @@
     android:background="@drawable/bg2">
 
 
-    <android.support.v4.view.ViewPager
+    <com.sqbnet.expressassistant.controls.UnScrollableViewPager
         android:id="@+id/id_viewpager"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1" >
-    </android.support.v4.view.ViewPager>
+    </com.sqbnet.expressassistant.controls.UnScrollableViewPager>
 
     <include layout="@layout/main_bottom"/>
 </LinearLayout>

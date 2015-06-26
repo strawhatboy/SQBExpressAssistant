@@ -34,4 +34,6 @@
     <string name="login_failed_title">登录失败</string>
     <string name="login_failed_info">您的账号或密码输入不正确需要您</string>
     <string name="login_failed_btn_re_login">重新登录</string>
+    <string name="registration_agreement">商圈宝配送注册协议</string>
+    <string name="history_title">我的历史接单</string>
 </resources>

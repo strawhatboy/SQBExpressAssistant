@@ -345,7 +345,7 @@
             android:textSize="12sp"
             android:textColor="@color/font_white"
             android:background="@drawable/tv_as_button_selector"
-            android:id="@+id/tv_protocol"
+            android:id="@+id/tv_registration_agreement"
             />
     </LinearLayout>
     <LinearLayout

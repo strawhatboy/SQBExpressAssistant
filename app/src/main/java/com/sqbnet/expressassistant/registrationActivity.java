@@ -31,7 +31,7 @@ public class registrationActivity extends Activity {
     private Button btn_pick_photo;
     private Button btn_get_passcode;
 
-
+    private TextView tv_agreement;
     private TextView tv_photo_placeholder;
     private CheckBox chkbox_accept_protocol;
 
@@ -99,6 +99,7 @@ public class registrationActivity extends Activity {
 
     private void initView_Others() {
         tv_photo_placeholder = (TextView) findViewById(R.id.tv_photo_placeholder);
+        tv_agreement = (TextView) findViewById(R.id.tv_registration_agreement);
         chkbox_accept_protocol = (CheckBox) findViewById(R.id.chkbox_registration_accept_protocol);
         chkbox_accept_protocol.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -108,6 +109,16 @@ public class registrationActivity extends Activity {
                 } else {
                     btn_ok.setEnabled(false);
                 }
+            }
+        });
+
+        tv_agreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(registrationActivity.this, registrationAgreementActivity.class);
+
+                startActivity(intent);
             }
         });
     }

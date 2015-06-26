@@ -3,127 +3,34 @@
     android:id="@+id/ly_tab_history_order"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/bg_white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:gravity="center"
-        android:background="@color/bg_gray">
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/font_black"
             android:textSize="16dp"
-            android:text="我的历史接单"/>
+            android:text="@string/history_title"/>
     </LinearLayout>
-
-    <LinearLayout
+    <ListView
+        android:id="@+id/lv_history"
         android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_height="fill_parent">
+    </ListView>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp">
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_launcher"
-                    android:scaleType="fitCenter"
-                    android:layout_marginLeft="5dp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14dp"
-                    android:textColor="@color/font_black"
-                    android:text="小晶石日用百货店"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="15dp"
-                android:gravity="center|right"
-                android:layout_marginRight="5dp"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:text="时间："/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:text="2015.05.11 15:21:14"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="15dp"
-                android:gravity="center|right"
-                android:layout_marginRight="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:textColor="@color/font_green"
-                    android:text="相距："/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:textColor="@color/font_green"
-                    android:layout_marginRight="30dp"
-                    android:text="1.36km"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:textColor="@color/font_green"
-                    android:text="酬金："/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:textColor="@color/font_green"
-                    android:text="4.88元"/>
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="12dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            >
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/history_seperator"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="fill_parent"></LinearLayout>
 
-    </LinearLayout>
 
-    <LinearLayout
+    <!--LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="1dp">
         <View
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@color/bg_gray"/>
-    </LinearLayout>
+    </LinearLayout-->
 
 </LinearLayout>

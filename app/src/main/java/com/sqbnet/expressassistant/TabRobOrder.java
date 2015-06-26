@@ -3,6 +3,7 @@ package com.sqbnet.expressassistant;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class TabRobOrder extends Fragment {
     }
 
     public void setIsWaiting(boolean value) {
+        Log.d("Fragment Status", Boolean.toString(value));
         isWaiting = value;
         if (isWaiting) {
             civ_avatar.setVisibility(View.VISIBLE);
