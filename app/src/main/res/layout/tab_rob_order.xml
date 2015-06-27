@@ -39,6 +39,15 @@
             android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:src="@drawable/index_avatar"/>
+        <TextView
+            android:id="@+id/tv_searching_timer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/civ_searching_avatar"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/font_white"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="fill_parent"

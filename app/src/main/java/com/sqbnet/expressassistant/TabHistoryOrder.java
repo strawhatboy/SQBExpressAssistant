@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -27,6 +29,7 @@ public class TabHistoryOrder extends Fragment {
     private ListView listView;
     SimpleAdapter adapter;
     List<Map<String, Object>> data;
+    private Animation textRotateAnimation;
 
     public TabHistoryOrder() {
         // Required empty public constructor
@@ -42,6 +45,8 @@ public class TabHistoryOrder extends Fragment {
     }
 
     private void initView(View view) {
+        textRotateAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotated_text_view);
+        textRotateAnimation.setFillAfter(true);
         listView = (ListView) view.findViewById(R.id.lv_history);
 
         data = new ArrayList<Map<String, Object>>();
@@ -49,43 +54,48 @@ public class TabHistoryOrder extends Fragment {
 
         //TODO: read the historical order from the server by api call
         // For debugging:
-        Map<String, Object> hisData0 = new HashMap<String, Object>();
-        hisData0.put("iv_history_list_avatar", R.drawable.index_avatar);
-        hisData0.put("tv_history_list_client_name", "小晶石日用百货店");
-        hisData0.put("tv_history_list_time", "2015.05.11 15:21:14");
-        hisData0.put("tv_history_list_distance", "1.36km");
-        hisData0.put("tv_history_list_reward", "4.88元");
-        Map<String, Object> hisData1 = new HashMap<String, Object>();
-        hisData1.put("iv_history_list_avatar", R.drawable.index_avatar);
-        hisData1.put("tv_history_list_client_name", "hahahahaha");
-        hisData1.put("tv_history_list_time", "2015.06.11 15:22:14");
-        hisData1.put("tv_history_list_distance", "5.36km");
-        hisData1.put("tv_history_list_reward", "22.28元");
-
-        data.add(hisData0);
-        data.add(hisData1);
+        for (int i = 0; i < 15; i++) {
+            Map<String, Object> hisData0 = new HashMap<String, Object>();
+            hisData0.put("avatar", R.drawable.index_avatar);
+            hisData0.put("client_name", "小晶石日用百货店");
+            hisData0.put("time", "2015.05.11 15:21:14");
+            hisData0.put("distance", "1.36");
+            hisData0.put("reward", "4.88");
+            data.add(hisData0);
+        }
 
         adapter = new SimpleAdapter(getActivity(), data, R.layout.tab_history_order_list,
                 new String[] {
-                        "iv_history_list_avatar",
-                        "tv_history_list_client_name",
-                        "tv_history_list_time",
-                        "tv_history_list_distance",
-                        "tv_history_list_reward"
+                        "avatar",
+                        "client_name",
+                        "time",
+                        "distance",
+                        "reward"
                 },
                 new int[] {
-                        R.id.iv_history_list_avatar,
+                        R.id.civ_history_list_avatar,
                         R.id.tv_history_list_client_name,
                         R.id.tv_history_list_time,
                         R.id.tv_history_list_distance,
                         R.id.tv_history_list_reward
-                });
+                }) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+
+                //TODO: set visibility for 'done' according to the real status from server
+                // rotate 'Done'
+                TextView tv_done = (TextView) view.findViewById(R.id.tv_history_list_done);
+                tv_done.setAnimation(textRotateAnimation);
+                return view;
+            }
+        };
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("history", "item" + i + "clicked!");
+                Log.d("history", "item " + i + "clicked!");
             }
         });
     }

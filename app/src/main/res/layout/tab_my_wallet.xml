@@ -34,22 +34,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/tv_wallet_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="赵子龙"
                 android:textSize="15dp"
                 android:textColor="@color/font_black"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="账号：442054851"
-                android:textSize="12dp"
-                android:textColor="@color/font_blue"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wallet_id"
+                    android:textSize="12dp"
+                    android:textColor="@color/font_blue"/>
+                <TextView
+                    android:id="@+id/tv_wallet_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="442054851"
+                    android:textSize="12dp"
+                    android:textColor="@color/font_blue"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_wallet_reg_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2014-06-12"
@@ -59,7 +73,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="申请通过"
+                    android:text="@string/wallet_pass_registration"
                     android:textSize="12dp"
                     android:textColor="@color/font_green"/>
             </LinearLayout>
@@ -67,7 +81,140 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"></LinearLayout>
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="16dp"
+                android:text="@string/wallet_recent_reward"
+                android:textColor="@color/font_black"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="16dp"
+                android:text="（"
+                android:textColor="@color/font_black"/>
+            <TextView
+                android:id="@+id/tv_wallet_count"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="16dp"
+                android:text="4"
+                android:textColor="@color/font_black"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="16dp"
+                android:text="）"
+                android:textColor="@color/font_black"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_wallet"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@null"
+            android:listSelector="#00000000">
+
+        </ListView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:layout_height="70dp"
+        android:background="@color/bg_white">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallet_total_reward"
+                android:textColor="@color/font_black"
+                android:textSize="12dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_wallet_total_reward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="2345.12"
+                    android:textSize="25dp"
+                    android:textColor="@color/font_green"/>
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/unit_yuan"
+                    android:textColor="@color/font_black"
+                    android:textSize="12dp"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/bg_gray"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wallet_unsettled_reward"
+                android:textColor="@color/font_black"
+                android:textSize="12dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_wallet_unsettled_reward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="345.12"
+                    android:textSize="25dp"
+                    android:textColor="@color/font_blue"/>
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/unit_yuan"
+                    android:textColor="@color/font_black"
+                    android:textSize="12dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

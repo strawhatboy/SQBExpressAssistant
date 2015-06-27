@@ -49,4 +49,15 @@
     <string name="title_activity_registration_agreement">registrationAgreementActivity</string>
     <string name="registration_agreement">Agreement</string>
     <string name="history_title">My Historical Orders</string>
+    <string name="history_done">Done</string>
+    <string name="wallet_recent_reward">Recent Reward:</string>
+    <string name="wallet_total_reward">Total Rewards:</string>
+    <string name="wallet_unsettled_reward">Unsettled Rewards:</string>
+    <string name="unit_yuan">RMB</string>
+    <string name="wallet_id">ID:</string>
+    <string name="wallet_pass_registration">registered</string>
+    <string name="history_list_time">Time:</string>
+    <string name="history_list_distance">Distance:</string>
+    <string name="history_list_reward">Reward:</string>
+    <string name="history_list_km">km</string>
 </resources>

@@ -43,6 +43,8 @@ public class loginActivity extends Activity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 //TODO: add login api call here
 
                 Intent intent = new Intent();
@@ -59,7 +61,7 @@ public class loginActivity extends Activity {
                     intent.setClass(loginActivity.this, loginFailedActivity.class);
 
                     startActivity(intent);
-                    overridePendingTransition(R.animator.in_from_right, R.animator.out_to_left);
+                    overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
                 }
 
             }
@@ -72,7 +74,7 @@ public class loginActivity extends Activity {
                 intent.setClass(loginActivity.this, registrationActivity.class);
 
                 startActivity(intent);
-                overridePendingTransition(R.animator.in_from_right, R.animator.out_to_left);
+                overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             }
         });
     }

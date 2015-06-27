@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp">
+        <ImageButton
+            android:id="@+id/ibtn_registration_agreement_back"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/back_arrow"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:background="@null"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/font_black"
+            android:textSize="16dp"
+            android:text="@string/history_title"/>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:background="@color/bg_white"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+        <com.sqbnet.expressassistant.controls.CircleImageView
+            android:layout_margin="5dp"
+            android:id="@+id/civ_wallet_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/index_avatar"/>
+        <LinearLayout
+            android:layout_toRightOf="@+id/civ_wallet_avatar"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小晶石日用百货店"
+                android:textSize="15dp"
+                android:textColor="@color/font_black"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="天府三街88号8座404"
+                android:textSize="12dp"
+                android:textColor="@color/font_blue"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="028-88888888"
+                android:textSize="12dp"
+                android:textColor="@color/font_black"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
