@@ -25,6 +25,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +57,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     TabRobOrder tabRobOrder;
     TabHistoryOrder tabHistoryOrder;
     TabMyWallet tabMyWallet;
+    historyDetailsFragment tabHistoryDetails;
 
 
     @Override
@@ -111,9 +114,26 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         tabRobOrder = new TabRobOrder();
         tabHistoryOrder = new TabHistoryOrder();
         tabMyWallet = new TabMyWallet();
+        tabHistoryDetails = new historyDetailsFragment();
+
+        tabHistoryOrder.gotoDetails = tabHistoryDetails.gotoDetails = new TabHistoryOrder.IGotoDetails() {
+            @Override
+            public void gotoDetails(JSONObject data) {
+                mViewPager.setCurrentItem(2);
+                tabHistoryDetails.setData(data);
+                setBackgroudLight();
+            }
+
+            @Override
+            public void back() {
+                mViewPager.setCurrentItem(1);
+                setBackgroudLight();
+            }
+        };
 
         mFragments.add(tabRobOrder);
         mFragments.add(tabHistoryOrder);
+        mFragments.add(tabHistoryDetails);
         mFragments.add(tabMyWallet);
 
         mTabBtnRobOrder.setOnClickListener(this);
@@ -152,7 +172,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
                 setBackgroudLight();
                 break;
             case R.id.id_tab_btn_my_wallet:
-                mViewPager.setCurrentItem(2);
+                mViewPager.setCurrentItem(3);
                 setBackgroudLight();
                 break;
         }
@@ -204,6 +224,15 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
             if (resultCode == ResultCode.LOGIN_SUCCESS) {
 
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Do nothing
+        if (mViewPager.getCurrentItem() == 2) {
+            mViewPager.setCurrentItem(1);
+            setBackgroudLight();
         }
     }
 }

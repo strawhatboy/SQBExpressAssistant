@@ -17,7 +17,7 @@
             android:layout_width="fill_parent"
             android:layout_height="25dp">
             <com.sqbnet.expressassistant.controls.CircleImageView
-                android:id="@+id/civ_history_list_avatar"
+                android:id="@+id/civ_history_list_from_avatar"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/ic_launcher"
@@ -25,7 +25,7 @@
                 android:layout_marginRight="5dp"
                 />
             <TextView
-                android:id="@+id/tv_history_list_client_name"
+                android:id="@+id/tv_history_list_from_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
@@ -113,6 +113,34 @@
     <RelativeLayout
         android:layout_width="100dp"
         android:layout_height="fill_parent">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:id="@+id/tv_history_list_to_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:textSize="15dp"
+                android:textColor="@color/font_black"
+                android:text="三叶草"/>
+
+            <com.sqbnet.expressassistant.controls.CircleImageView
+                android:id="@+id/civ_history_list_to_avatar"
+                android:layout_gravity="bottom"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_launcher"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/font_black"
+                />
+        </LinearLayout>
         <TextView
             android:layout_margin="14dp"
             android:paddingTop="3dp"
@@ -126,32 +154,6 @@
             android:textColor="@color/font_green"
             android:text="@string/history_done"
             android:textSize="12sp"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textSize="15dp"
-                android:textColor="@color/font_black"
-                android:text="三叶草"/>
-
-            <com.sqbnet.expressassistant.controls.CircleImageView
-                android:id="@+id/civ_history_list_self_avatar"
-                android:layout_gravity="center_vertical"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_launcher"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:textColor="@color/font_black"
-                />
-        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

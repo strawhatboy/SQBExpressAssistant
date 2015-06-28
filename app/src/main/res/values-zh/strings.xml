@@ -47,4 +47,12 @@
     <string name="history_list_distance">相距：</string>
     <string name="history_list_reward">酬金：</string>
     <string name="history_list_km">公里</string>
+    <string name="history_details_goto">到这去</string>
+    <string name="history_details_get_order_time">抢单时间</string>
+    <string name="history_details_take_delivery">取货时间</string>
+    <string name="history_details_Delivered">送达时间</string>
+    <string name="history_details_unit_mins_later">分钟后</string>
+    <string name="history_details_duration">耗时：</string>
+    <string name="history_details_income">收益：</string>
+    <string name="unit_minute">分钟</string>
 </resources>

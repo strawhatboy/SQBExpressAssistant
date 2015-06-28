@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,9 +12,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,9 +31,10 @@ import java.util.Map;
 public class TabHistoryOrder extends Fragment {
 
     private ListView listView;
-    SimpleAdapter adapter;
-    List<Map<String, Object>> data;
+    private SimpleAdapter adapter;
+    private List<Map<String, Object>> data;
     private Animation textRotateAnimation;
+    public IGotoDetails gotoDetails;
 
     public TabHistoryOrder() {
         // Required empty public constructor
@@ -56,28 +61,34 @@ public class TabHistoryOrder extends Fragment {
         // For debugging:
         for (int i = 0; i < 15; i++) {
             Map<String, Object> hisData0 = new HashMap<String, Object>();
-            hisData0.put("avatar", R.drawable.index_avatar);
-            hisData0.put("client_name", "小晶石日用百货店");
+            hisData0.put("from_avatar", R.drawable.index_avatar);
+            hisData0.put("from_name", "小晶石日用百货店");
             hisData0.put("time", "2015.05.11 15:21:14");
             hisData0.put("distance", "1.36");
             hisData0.put("reward", "4.88");
+            hisData0.put("to_name", "ThreeLeaves");
+            hisData0.put("to_avatar", R.drawable.index_avatar);
             data.add(hisData0);
         }
 
         adapter = new SimpleAdapter(getActivity(), data, R.layout.tab_history_order_list,
                 new String[] {
-                        "avatar",
-                        "client_name",
+                        "from_avatar",
+                        "from_name",
                         "time",
                         "distance",
-                        "reward"
+                        "reward",
+                        "to_name",
+                        "to_avatar"
                 },
                 new int[] {
-                        R.id.civ_history_list_avatar,
-                        R.id.tv_history_list_client_name,
+                        R.id.civ_history_list_from_avatar,
+                        R.id.tv_history_list_from_name,
                         R.id.tv_history_list_time,
                         R.id.tv_history_list_distance,
-                        R.id.tv_history_list_reward
+                        R.id.tv_history_list_reward,
+                        R.id.tv_history_list_to_name,
+                        R.id.civ_history_list_to_avatar
                 }) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -96,7 +107,15 @@ public class TabHistoryOrder extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("history", "item " + i + "clicked!");
+                if (gotoDetails != null) {
+                    gotoDetails.gotoDetails(null /*data*/);
+                }
             }
         });
+    }
+
+    public interface IGotoDetails {
+        void gotoDetails(JSONObject data);
+        void back();
     }
 }
