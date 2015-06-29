@@ -174,6 +174,7 @@ public class registrationActivity extends Activity {
         @Override
         public void onFinish() {
             btn_get_passcode.setText("重发验证码");
+            btn_get_passcode.setClickable(true);
         }
 
         @Override
