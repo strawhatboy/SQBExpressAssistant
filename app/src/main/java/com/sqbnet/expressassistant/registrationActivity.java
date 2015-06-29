@@ -34,7 +34,11 @@ import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ResourceBundle;
+import java.util.jar.JarException;
 
 
 public class registrationActivity extends Activity {
@@ -128,23 +132,29 @@ public class registrationActivity extends Activity {
                 }
                 SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
                     @Override
-                    public void onResponse(SQBResponse response) {
-                        if(response != null){
-                            Log.i("virgil", response.getCode());
-                            Log.i("virgil", response.getMsg());
-                            Log.i("virgil", response.getData().toString());
-                        }else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
+                    public void onResponse(final SQBResponse response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run(){
+                                if (response != null) {
+                                    Log.i("virgil", response.getCode());
+                                    Log.i("virgil", response.getMsg());
+                                    Log.i("virgil", response.getData().toString());
+                                    Toast.makeText(getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT).show();
+                                    try {
+                                        String phone_code = ((JSONObject) response.getData()).getString("phone_code");
+                                        Log.i("virgil", phone_code);
+                                    }catch (JSONException e){
+                                        Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
                                     Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 });
             }
-        });
         });
     }
 
