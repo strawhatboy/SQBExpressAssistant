@@ -136,7 +136,7 @@ public class registrationActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "手机号码格式不正确，请重新填写", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
+                SQBProvider.getInst().sendSMS(mobile, new SQBResponseListener() {
                     @Override
                     public void onResponse(final SQBResponse response) {
                         runOnUiThread(new Runnable() {
