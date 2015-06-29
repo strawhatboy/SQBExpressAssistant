@@ -68,4 +68,15 @@
     <string name="history_details_duration">Duration:</string>
     <string name="history_details_income">Income:</string>
     <string name="unit_minute">mins</string>
+    <string name="order_got_title">Delivery Task</string>
+    <string name="order_got_info">SQB platform has assigned you a delivery task, go and</string>
+    <string name="order_got_see_details">See Details</string>
+    <string name="order_got_hint">Please confirm the task as soon as possible, if you failed to confirm within 5 minutes, the system will assgin it to others and you will lose your rank in the system.</string>
+    <string name="order_processbar_confirm">Confirm</string>
+    <string name="order_processbar_take_delivery">Take</string>
+    <string name="order_processbar_deliver">Deliver</string>
+    <string name="order_processbar_done">Finish</string>
+    <string name="order_confirm_hint">Hint: Cancel the task will affect your rank in the system!</string>
+    <string name="order_confirm_btn_confirm">Confirm</string>
+    <string name="order_confirm_btn_cancel">Cancel</string>
 </resources>

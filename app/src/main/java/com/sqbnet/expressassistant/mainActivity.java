@@ -198,6 +198,12 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
             setBackgroudLight();
             //TODO: start to wait for order from server
 
+            //Got Order !! for debug
+            Intent intent = new Intent();
+            intent.setClass(mainActivity.this, orderMainActivity.class);
+
+            startActivity(intent);
+
         } else {
             mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_blue));
             tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));

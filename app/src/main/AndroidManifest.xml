@@ -32,6 +32,8 @@
             android:name=".registrationAgreementActivity"
             android:label="@string/title_activity_registration_agreement" >
         </activity>
+        <activity android:name=".orderMainActivity" >
+        </activity>
     </application>
 
 </manifest>

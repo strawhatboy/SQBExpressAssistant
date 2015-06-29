@@ -17,6 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
+
 
 public class loginActivity extends Activity {
 
@@ -49,6 +53,16 @@ public class loginActivity extends Activity {
                 InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 //TODO: add login api call here
+
+                SQBProvider.getInst().login(et_usr.getText().toString(), et_pwd.getText().toString(), new SQBResponseListener() {
+                    @Override
+                    public void onResponse(SQBResponse response) {
+                        if (response != null) {
+
+                        }
+                    }
+                });
+
 
                 Intent intent = new Intent();
 

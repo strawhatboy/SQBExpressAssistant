@@ -145,7 +145,6 @@ public class registrationActivity extends Activity {
                 });
             }
         });
-        });
     }
 
     private void initView_EditText() {
