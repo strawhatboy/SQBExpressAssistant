@@ -85,7 +85,7 @@ public class loginActivity extends Activity {
                 }
 
                 if (et_usr == null || et_pwd == null) {
-                    Toast.makeText(getApplicationContext(), "用户名密码不能为�, Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(), "用户名密码不能为空", Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -155,14 +155,14 @@ public class loginActivity extends Activity {
     public void onBackPressed() {
         new AlertDialog.Builder(loginActivity.this).setTitle("提示")
                 .setMessage("确认退出？")
-                .setPositiveButton("�, new DialogInterface.OnClickListener() {
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         setResult(ResultCode.QUIT);
                         finish();
                     }
                 })
-                .setNegativeButton("�, null)
+                .setNegativeButton("否", null)
                 .show();
     }
 
