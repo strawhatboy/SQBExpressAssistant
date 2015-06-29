@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="60dp">
+        android:layout_height="45dp">
 
     </LinearLayout>
 
@@ -15,7 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_weight="6">
+        android:layout_weight="13">
         <ImageView
             android:id="@+id/iv_login_failed_circle"
             android:layout_width="fill_parent"
@@ -59,7 +59,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="10"
         android:orientation="vertical">
     </RelativeLayout>
 </LinearLayout>

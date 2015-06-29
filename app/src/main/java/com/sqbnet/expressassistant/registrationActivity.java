@@ -1,8 +1,10 @@
 package com.sqbnet.expressassistant;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,7 +21,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
 
 import java.util.ResourceBundle;
 
@@ -34,6 +41,15 @@ public class registrationActivity extends Activity {
     private TextView tv_agreement;
     private TextView tv_photo_placeholder;
     private CheckBox chkbox_accept_protocol;
+
+    private EditText et_username;
+    private EditText et_password;
+    private EditText et_real_name;
+    private EditText et_id;
+    private int et_photo_id;
+    private EditText et_mobile;
+    private EditText et_passcode;
+    private EditText et_addr;
 
     private Bitmap photo;
 
@@ -85,16 +101,55 @@ public class registrationActivity extends Activity {
                 Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 pickIntent.setType("image/*");
 
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                Intent chooserIntent = Intent.createChooser(getIntent, getResources().getString(R.string.registration_pick_photo));
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
                 startActivityForResult(chooserIntent, RequestCode.PICK_PHOTO);
             }
         });
+
+        btn_get_passcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("passcode", "Start !");
+                String mobile = et_mobile.getText().toString().trim();
+                if (mobile == "" || mobile == null) {
+                    new AlertDialog.Builder(registrationActivity.this)
+                            .setMessage("手机号码不能为空！")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    et_mobile.requestFocus();
+                                }
+                            })
+                            .show();
+                }
+                SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
+                    @Override
+                    public void onResponse(SQBResponse response) {
+                        if (response == null) {
+                            Log.d("passcode", "Unexpected Error from server");
+                            return;
+                        }
+                        if (response.getCode() != "1000") {
+                            Log.d("passcode", "Error when get the passcode");
+                        }
+
+                        Object obj = response.getData();
+                    }
+                });
+            }
+        });
     }
 
     private void initView_EditText() {
-
+        et_username = (EditText) findViewById(R.id.et_registration_username);
+        et_password = (EditText) findViewById(R.id.et_registration_password);
+        et_real_name = (EditText) findViewById(R.id.et_registration_real_name);
+        et_id = (EditText) findViewById(R.id.et_registration_id);
+        et_mobile = (EditText) findViewById(R.id.et_registration_mobile);
+        et_passcode = (EditText) findViewById(R.id.et_registration_passcode);
+        et_addr = (EditText) findViewById(R.id.et_registration_full_addr);
     }
 
     private void initView_Others() {
@@ -139,6 +194,9 @@ public class registrationActivity extends Activity {
                     fileName = fileName.substring(start + 1);
                 }
                 tv_photo_placeholder.setText(fileName);
+
+                // upload the photo
+
 
             } catch (Exception e) {
                 Log.e("registration", e.toString());

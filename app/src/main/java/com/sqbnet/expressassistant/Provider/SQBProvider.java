@@ -35,7 +35,7 @@ public class SQBProvider {
         try {
             String url = BASE_URL + URL_APPREV;
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("mobilephone", mobile);
+            jsonObject.put("phone", mobile);
 
             BaseHttpThread httpThread = new BaseHttpThread(url, jsonObject, new BaseHttpResultListener() {
                 @Override
@@ -58,6 +58,10 @@ public class SQBProvider {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void uploadPhoto() {
+
     }
 }
 
