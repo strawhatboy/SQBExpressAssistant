@@ -2,6 +2,7 @@ package com.sqbnet.expressassistant;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONObject;
 
@@ -152,8 +155,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void checkLoginStatus() {
-        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Activity.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", null);
+        String token = UtilHelper.getSharedUserId(this);
         if (token == null) {
             Intent intent = new Intent();
             intent.setClass(mainActivity.this, loginActivity.class);
@@ -251,6 +253,18 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         if (mViewPager.getCurrentItem() == 2) {
             mViewPager.setCurrentItem(1);
             setBackgroudLight();
+        }else{
+            new AlertDialog.Builder(mainActivity.this).setTitle("提示")
+                    .setMessage("确认退出？")
+                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            UtilHelper.setSharedUserId(null, mainActivity.this);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("否", null)
+                    .show();
         }
     }
 }

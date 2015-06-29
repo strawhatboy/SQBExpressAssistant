@@ -10,9 +10,6 @@ import com.sqbnet.expressassistant.net.BaseHttpThread;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by virgil on 6/24/15.
  */
@@ -23,6 +20,7 @@ public class SQBProvider {
     private static String BASE_URL = "http://wap.sqbnet.com/index.php/APP/DistributionAppAction/";
     private static String URL_APPREV = "phoneCaptcha";
     private static String URL_LOGIN = "userLogin";
+    private static String URL_HISTORY_ORDERS = "getHistoryOrder";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -35,32 +33,49 @@ public class SQBProvider {
         return sInst;
     }
 
-    public void SendSMS(String mobile, final SQBResponseListener listener) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("mobile", mobile);
-        callRest(URL_APPREV, map, listener);
+    public void login(String username, String password, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_LOGIN;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username", username);
+            jsonObject.put("password", password);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public void login(String username, String password, final SQBResponseListener listener) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("username", username);
-        map.put("password", password);
-        callRest(URL_LOGIN, map, listener);
+    public void sendSMS(String mobile, final SQBResponseListener listener) {
+        try {
+            String url = BASE_URL + URL_APPREV;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("phone", mobile);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void uploadPhoto() {
 
     }
 
-    private void callRest(String apiName, Map<String, Object> parameters, final SQBResponseListener listener) {
-        try {
-            String url = BASE_URL + apiName;
+    public void getHistoryOrder(String userId, final SQBResponseListener listener) {
+        try{
+            String url = BASE_URL + URL_HISTORY_ORDERS;
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", userId);
 
-            for (Map.Entry<String, Object> keyValuePair : parameters.entrySet()) {
-                jsonObject.put(keyValuePair.getKey(), keyValuePair.getValue());
-            }
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    private void doPost(String url, JSONObject jsonObject, final SQBResponseListener listener){
+        try{
             BaseHttpThread httpThread = new BaseHttpThread(url, jsonObject, new BaseHttpResultListener() {
                 @Override
                 public void onHttpChanged(JSONObject jsonObject){
@@ -78,7 +93,7 @@ public class SQBProvider {
             });
 
             httpThread.start();
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

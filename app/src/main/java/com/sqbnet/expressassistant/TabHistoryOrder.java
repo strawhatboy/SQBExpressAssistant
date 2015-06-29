@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONObject;
 
@@ -59,17 +62,20 @@ public class TabHistoryOrder extends Fragment {
 
         //TODO: read the historical order from the server by api call
         // For debugging:
-        for (int i = 0; i < 15; i++) {
+/*        for (int i = 0; i < 15; i++) {
             Map<String, Object> hisData0 = new HashMap<String, Object>();
             hisData0.put("from_avatar", R.drawable.index_avatar);
-            hisData0.put("from_name", "Ð¡¾§Ê¯ÈÕÓÃ°Ù»õµê");
+            hisData0.put("from_name", "Ð¡ï¿½ï¿½Ê¯ï¿½ï¿½ï¿½Ã°Ù»ï¿½ï¿½ï¿½");
             hisData0.put("time", "2015.05.11 15:21:14");
             hisData0.put("distance", "1.36");
             hisData0.put("reward", "4.88");
             hisData0.put("to_name", "ThreeLeaves");
             hisData0.put("to_avatar", R.drawable.index_avatar);
             data.add(hisData0);
-        }
+        }*/
+
+        String user_id = UtilHelper.getSharedUserId(getActivity());
+
 
         adapter = new SimpleAdapter(getActivity(), data, R.layout.tab_history_order_list,
                 new String[] {
@@ -101,6 +107,8 @@ public class TabHistoryOrder extends Fragment {
                 return view;
             }
         };
+
+
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
