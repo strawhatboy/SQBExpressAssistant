@@ -133,7 +133,7 @@ public class registrationActivity extends Activity {
                 Log.i("virgil", mobile);
                 if(!UtilHelper.isMobileNO(mobile)){
                     Log.i("virgil", "not valid mobile");
-                    Toast.makeText(getApplicationContext(), "手机号码格式不正确，请重新填�, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "手机号码格式不正确，请重新填写", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
@@ -163,6 +163,7 @@ public class registrationActivity extends Activity {
                 });
                 timeCount.start();
             }
+        });
     }
 
     class TimeCount extends CountDownTimer {
@@ -172,14 +173,14 @@ public class registrationActivity extends Activity {
 
         @Override
         public void onFinish() {
-            btn_get_passcode.setText("重发验证�);
+            btn_get_passcode.setText("重发验证码");
             btn_get_passcode.setClickable(true);
         }
 
         @Override
         public void onTick(long l) {
             btn_get_passcode.setClickable(false);
-            btn_get_passcode.setText(l/1000 + "�);
+            btn_get_passcode.setText(l/1000 + "秒");
         }
     }
 
