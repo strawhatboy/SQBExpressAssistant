@@ -19,7 +19,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import java.util.ResourceBundle;
 
@@ -34,6 +41,8 @@ public class registrationActivity extends Activity {
     private TextView tv_agreement;
     private TextView tv_photo_placeholder;
     private CheckBox chkbox_accept_protocol;
+
+    private EditText et_mobile;
 
     private Bitmap photo;
 
@@ -91,10 +100,42 @@ public class registrationActivity extends Activity {
                 startActivityForResult(chooserIntent, RequestCode.PICK_PHOTO);
             }
         });
+
+        btn_get_passcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(et_mobile.getText() == null || et_mobile.length() == 0){
+                    return;
+                }
+                String mobile = et_mobile.getText().toString();
+                Log.i("virgil", mobile);
+                if(!UtilHelper.isMobileNO(mobile)){
+                    Log.i("virgil", "not valid mobile");
+                    return;
+                }
+                SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
+                    @Override
+                    public void onResponse(SQBResponse response) {
+                        if(response != null){
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
+                        }else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void initView_EditText() {
-
+        et_mobile = (EditText) findViewById(R.id.et_registration_mobile);
     }
 
     private void initView_Others() {
