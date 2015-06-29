@@ -67,8 +67,6 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
 
         mViewPager = (ViewPager)this.findViewById(R.id.id_viewpager);
 
-        checkLoginStatus();
-
         initView();
 
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -101,6 +99,16 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
 
             }
         });
+
+        checkLoginStatus();
+
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i("--virgil", "onResume");
+
+        super.onResume();
     }
 
     private void initView(){
@@ -221,8 +229,12 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RequestCode.LOGIN) {
-            if (resultCode == ResultCode.LOGIN_SUCCESS) {
-
+            switch (resultCode){
+                case ResultCode.LOGIN_SUCCESS:
+                    break;
+                case ResultCode.QUIT:
+                    finish();
+                    break;
             }
         }
     }

@@ -1,10 +1,13 @@
 package com.sqbnet.expressassistant;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -95,8 +98,19 @@ public class loginActivity extends Activity {
         return super.onTouchEvent(event);
     }
 
+
     @Override
     public void onBackPressed() {
-        // Do nothing
+        new AlertDialog.Builder(loginActivity.this).setTitle("提示")
+                .setMessage("确认退出？")
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setResult(ResultCode.QUIT);
+                        finish();
+                    }
+                })
+                .setNegativeButton("否", null)
+                .show();
     }
 }

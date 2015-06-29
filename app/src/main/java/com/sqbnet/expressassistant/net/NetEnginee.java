@@ -51,7 +51,7 @@ public class NetEnginee {
             nameValuePairList.add(new BasicNameValuePair("jsonString", jsonObject.toString()));
             Log.d("virgil: post url", url);
             Log.d("virgil: post body", jsonObject.toString());
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairList, "utf-8"));
+            //httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairList, "utf-8"));
 
             HttpResponse response = httpClient.execute(httpPost);
             int res_code = response.getStatusLine().getStatusCode();

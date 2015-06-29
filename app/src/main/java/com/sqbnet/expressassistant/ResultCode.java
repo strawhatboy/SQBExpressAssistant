@@ -5,4 +5,5 @@ package com.sqbnet.expressassistant;
  */
 public interface ResultCode {
     int LOGIN_SUCCESS = 0;
+    int QUIT = 1;
 }

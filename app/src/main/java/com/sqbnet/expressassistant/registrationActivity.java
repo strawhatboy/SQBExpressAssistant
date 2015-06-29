@@ -23,6 +23,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
@@ -111,34 +117,34 @@ public class registrationActivity extends Activity {
         btn_get_passcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("passcode", "Start !");
-                String mobile = et_mobile.getText().toString().trim();
-                if (mobile == "" || mobile == null) {
-                    new AlertDialog.Builder(registrationActivity.this)
-                            .setMessage("手机号码不能为空！")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    et_mobile.requestFocus();
-                                }
-                            })
-                            .show();
+                if(et_mobile.getText() == null || et_mobile.length() == 0){
+                    return;
+                }
+                String mobile = et_mobile.getText().toString();
+                Log.i("virgil", mobile);
+                if(!UtilHelper.isMobileNO(mobile)){
+                    Log.i("virgil", "not valid mobile");
+                    return;
                 }
                 SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
                     @Override
                     public void onResponse(SQBResponse response) {
-                        if (response == null) {
-                            Log.d("passcode", "Unexpected Error from server");
-                            return;
+                        if(response != null){
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
+                        }else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                        if (response.getCode() != "1000") {
-                            Log.d("passcode", "Error when get the passcode");
-                        }
-
-                        Object obj = response.getData();
                     }
                 });
             }
+        });
         });
     }
 

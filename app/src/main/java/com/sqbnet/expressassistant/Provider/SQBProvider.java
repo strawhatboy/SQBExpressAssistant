@@ -17,7 +17,7 @@ public class SQBProvider {
 
     private static volatile SQBProvider sInst;
 
-    private static String BASE_URL = "http://wap.sqbnet.com/index.php/DistributionAppAction/";
+    private static String BASE_URL = "http://wap.sqbnet.com/index.php/APP/DistributionAppAction/";
     private static String URL_APPREV = "phoneCaptcha";
 
     public static SQBProvider getInst(){
@@ -46,7 +46,7 @@ public class SQBProvider {
                             listener.onResponse(response);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.i("SQBProvider", e.getLocalizedMessage());
+                            Log.i("SQBProvider", e.toString());
                             listener.onResponse(null);
                         }
                     }
