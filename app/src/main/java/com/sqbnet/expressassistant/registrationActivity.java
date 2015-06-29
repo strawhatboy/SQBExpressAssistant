@@ -13,6 +13,7 @@ import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -34,7 +35,12 @@ import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.sql.Time;
 import java.util.ResourceBundle;
+import java.util.jar.JarException;
 
 
 public class registrationActivity extends Activity {
@@ -59,11 +65,14 @@ public class registrationActivity extends Activity {
 
     private Bitmap photo;
 
+    private TimeCount timeCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        timeCount = new TimeCount(60000, 1000);
         initView();
     }
 
@@ -124,27 +133,54 @@ public class registrationActivity extends Activity {
                 Log.i("virgil", mobile);
                 if(!UtilHelper.isMobileNO(mobile)){
                     Log.i("virgil", "not valid mobile");
+                    Toast.makeText(getApplicationContext(), "手机号码格式不正确，请重新填�, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 SQBProvider.getInst().SendSMS(mobile, new SQBResponseListener() {
                     @Override
-                    public void onResponse(SQBResponse response) {
-                        if(response != null){
-                            Log.i("virgil", response.getCode());
-                            Log.i("virgil", response.getMsg());
-                            Log.i("virgil", response.getData().toString());
-                        }else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
+                    public void onResponse(final SQBResponse response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run(){
+                                if (response != null) {
+                                    Log.i("virgil", response.getCode());
+                                    Log.i("virgil", response.getMsg());
+                                    Log.i("virgil", response.getData().toString());
+                                    Toast.makeText(getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT).show();
+                                    try {
+                                        String phone_code = ((JSONObject) response.getData()).getString("phone_code");
+                                        Log.i("virgil", phone_code);
+                                    }catch (JSONException e){
+                                        Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
                                     Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
+                                    timeCount.onFinish();
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 });
+                timeCount.start();
             }
-        });
+    }
+
+    class TimeCount extends CountDownTimer {
+        public TimeCount(long millsInFuture, long countDownInterval){
+            super(millsInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onFinish() {
+            btn_get_passcode.setText("重发验证�);
+            btn_get_passcode.setClickable(true);
+        }
+
+        @Override
+        public void onTick(long l) {
+            btn_get_passcode.setClickable(false);
+            btn_get_passcode.setText(l/1000 + "�);
+        }
     }
 
     private void initView_EditText() {
