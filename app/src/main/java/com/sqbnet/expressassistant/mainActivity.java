@@ -61,6 +61,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
     TabHistoryOrder tabHistoryOrder;
     TabMyWallet tabMyWallet;
     historyDetailsFragment tabHistoryDetails;
+    orderDoneFragment tabOrderDoneFragment;
 
 
     @Override
@@ -126,6 +127,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         tabHistoryOrder = new TabHistoryOrder();
         tabMyWallet = new TabMyWallet();
         tabHistoryDetails = new historyDetailsFragment();
+        tabOrderDoneFragment = new orderDoneFragment();
 
         tabHistoryOrder.gotoDetails = tabHistoryDetails.gotoDetails = new TabHistoryOrder.IGotoDetails() {
             @Override
@@ -146,6 +148,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
         mFragments.add(tabHistoryOrder);
         mFragments.add(tabHistoryDetails);
         mFragments.add(tabMyWallet);
+        mFragments.add(tabOrderDoneFragment);
 
         mTabBtnRobOrder.setOnClickListener(this);
         mTabBtnHistoryOrder.setOnClickListener(this);
@@ -204,7 +207,7 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
             Intent intent = new Intent();
             intent.setClass(mainActivity.this, orderMainActivity.class);
 
-            startActivity(intent);
+            startActivityForResult(intent, RequestCode.ORDER);
 
         } else {
             mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_blue));
@@ -236,14 +239,29 @@ public class mainActivity extends FragmentActivity implements View.OnClickListen
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RequestCode.LOGIN) {
-            switch (resultCode){
-                case ResultCode.LOGIN_SUCCESS:
-                    break;
-                case ResultCode.QUIT:
-                    finish();
-                    break;
+        Log.d("mainActivityResult", "Got activity Result: " + requestCode + "|" + resultCode);
+        switch (requestCode) {
+            case RequestCode.LOGIN: {
+                switch (resultCode){
+                    case ResultCode.LOGIN_SUCCESS:
+                        break;
+                    case ResultCode.QUIT:
+                        finish();
+                        break;
+                }
             }
+            break;
+            case RequestCode.ORDER: {
+                switch (resultCode) {
+                    case ResultCode.ORDER_DONE:
+                        mViewPager.setCurrentItem(4);
+                        setBackgroudDark();
+                        break;
+                    case ResultCode.ORDER_CANCELED:
+                        break;
+                }
+            }
+            break;
         }
     }
 

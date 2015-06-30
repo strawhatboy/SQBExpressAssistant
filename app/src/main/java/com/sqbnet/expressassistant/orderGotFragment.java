@@ -11,7 +11,7 @@ import android.widget.Button;
  */
 public class orderGotFragment extends android.support.v4.app.Fragment implements orderMainActivity.IWizardPage {
 
-    orderMainActivity.IGotoNextFragment delegate;
+    orderMainActivity.IWizardPageDelegate delegate;
 
     private Button btn_seeDetails;
 
@@ -37,7 +37,7 @@ public class orderGotFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void setNextDelegate(orderMainActivity.IGotoNextFragment delegate) {
+    public void setNextDelegate(orderMainActivity.IWizardPageDelegate delegate) {
         this.delegate = delegate;
     }
 }

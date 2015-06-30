@@ -15,35 +15,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Andy on 6/29/2015.
+ * Created by Andy on 6/30/2015.
  */
-public class orderConfirmFragment extends android.support.v4.app.Fragment implements orderMainActivity.IWizardPage {
+public class orderDeliverFragment extends android.support.v4.app.Fragment implements orderMainActivity.IWizardPage {
 
     orderMainActivity.IWizardPageDelegate delegate;
+    Button btn_confirm;
+    private TextView tv_good_count;
 
     private ListView listView;
     private SimpleAdapter adapter;
     private List<Map<String, Object>> mData;
 
-    private TextView tv_good_count;
-    private Button btn_ok;
-    private Button btn_cancel;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.order_confirm_fragment, container, false);
+        View view = inflater.inflate(R.layout.order_deliver_fragment, container, false);
         initView(view);
         return view;
     }
 
-    private void initView(View view) {
-        tv_good_count = (TextView) view.findViewById(R.id.tv_order_confirm_good_count);
-        btn_ok = (Button) view.findViewById(R.id.btn_order_confirm_ok);
-        btn_cancel = (Button) view.findViewById(R.id.btn_order_confirm_cancel);
+    void initView(View view) {
+        btn_confirm = (Button) view.findViewById(R.id.btn_order_deliver_confirm);
 
-        listView = (ListView) view.findViewById(R.id.lv_order_confirm_details);
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (delegate != null) {
+                    delegate.goNext();
+                }
+            }
+        });
+
+
+        tv_good_count = (TextView) view.findViewById(R.id.tv_order_deliver_good_count);
+
+        listView = (ListView) view.findViewById(R.id.lv_order_deliver_details);
         mData = new ArrayList<Map<String, Object>>();
         // For debugging:
         for (int i = 0; i < 15; i++) {
@@ -62,28 +69,7 @@ public class orderConfirmFragment extends android.support.v4.app.Fragment implem
                 R.id.tv_history_details_list_good_count
         });
         listView.setAdapter(adapter);
-
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (delegate != null) {
-                    // add rest to server to confirm the order
-                    delegate.goNext();
-                }
-            }
-        });
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (delegate != null) {
-                    delegate.exit(ResultCode.ORDER_CANCELED, null);
-                }
-            }
-        });
     }
-
-
 
     @Override
     public void setNextDelegate(orderMainActivity.IWizardPageDelegate delegate) {

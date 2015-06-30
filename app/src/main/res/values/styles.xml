@@ -45,4 +45,9 @@
         <item name="android:button">@drawable/checkbox_white_selector</item>
         <item name="android:padding">8dp</item>
     </style>
+
+    <style name="checkbox_black_style">
+        <item name="android:button">@drawable/checkbox_black_selector</item>
+        <item name="android:padding">8dp</item>
+    </style>
 </resources>

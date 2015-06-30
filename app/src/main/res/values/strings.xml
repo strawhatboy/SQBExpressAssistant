@@ -79,4 +79,15 @@
     <string name="order_confirm_hint">Hint: Cancel the task will affect your rank in the system!</string>
     <string name="order_confirm_btn_confirm">Confirm</string>
     <string name="order_confirm_btn_cancel">Cancel</string>
+    <string name="order_take_order_checked">I have checked the items</string>
+    <string name="order_take_confirm_taken">Confirm Taken</string>
+    <string name="order_deliver_confirm_delivered">Confirm Delivered</string>
+    <string name="order_finish_hint_content">You have to ask for the <b>DELIVERY CODE</b> from the consignee, you cannot finish this task without the <b>DELIVERY CODE</b></string>
+    <string name="order_finish_confirm">OK</string>
+    <string name="order_finish_title">Input the DELIVERY CODE to complete this task.</string>
+    <string name="order_finish_delivery_code">Delivery Code:</string>
+    <string name="order_done_balance">Got</string>
+    <string name="order_done_text">You can see all the income in </string>
+    <string name="order_done_continue">Continue</string>
+    <string name="order_done_hint_content">SQB platform will turn your income into cash on 7th, 14th, 21th and 28th every month</string>
 </resources>

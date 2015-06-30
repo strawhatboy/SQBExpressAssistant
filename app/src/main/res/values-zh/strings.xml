@@ -66,4 +66,15 @@
     <string name="order_confirm_hint">提示：取消配送任务会影响你的系统评分！</string>
     <string name="order_confirm_btn_confirm">确认接单</string>
     <string name="order_confirm_btn_cancel">取消</string>
+    <string name="order_take_order_checked">我已经核对过物品清单</string>
+    <string name="order_take_confirm_taken">确认取货</string>
+    <string name="order_deliver_confirm_delivered">确认送达</string>
+    <string name="order_finish_hint_content">您送货给买家时务必索要本单<b>配送码</b>，没有<b>配送码</b>不能完成本次任务！</string>
+    <string name="order_finish_confirm">确认提交</string>
+    <string name="order_finish_title">输入配送码完成本次任务！</string>
+    <string name="order_finish_delivery_code">配送码：</string>
+    <string name="order_done_balance">收益</string>
+    <string name="order_done_text">您可以在右下方“<b>我的钱包</b>”查看收益，您也可以</string>
+    <string name="order_done_continue">继续接单</string>
+    <string name="order_done_hint_content">商圈宝平台会在每月<b>7、14、21、28</b>将您的收益额结算为现金！</string>
 </resources>
