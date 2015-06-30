@@ -3,6 +3,12 @@ package com.sqbnet.expressassistant.utils;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,5 +34,17 @@ public class UtilHelper {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constants.USER_ID, userId);
         editor.commit();
+    }
+
+    public static String getDate(long timeStamp){
+        Calendar calendar = Calendar.getInstance();
+        TimeZone timeZone = calendar.getTimeZone();
+        DateFormat objFormatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        objFormatter.setTimeZone(timeZone);
+
+        calendar.setTimeInMillis(timeStamp * 1000);//edit
+        String result = objFormatter.format(calendar.getTime());
+        calendar.clear();
+        return result;
     }
 }

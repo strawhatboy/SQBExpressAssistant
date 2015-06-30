@@ -3,6 +3,7 @@ package com.sqbnet.expressassistant;
 
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,12 +18,21 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +45,7 @@ public class TabHistoryOrder extends Fragment {
 
     private ListView listView;
     private SimpleAdapter adapter;
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> mData;
     private Animation textRotateAnimation;
     public IGotoDetails gotoDetails;
 
@@ -57,7 +67,7 @@ public class TabHistoryOrder extends Fragment {
         textRotateAnimation.setFillAfter(true);
         listView = (ListView) view.findViewById(R.id.lv_history);
 
-        data = new ArrayList<Map<String, Object>>();
+        mData = new ArrayList<Map<String, Object>>();
 
 
         //TODO: read the historical order from the server by api call
@@ -74,10 +84,7 @@ public class TabHistoryOrder extends Fragment {
             data.add(hisData0);
         }*/
 
-        String user_id = UtilHelper.getSharedUserId(getActivity());
-
-
-        adapter = new SimpleAdapter(getActivity(), data, R.layout.tab_history_order_list,
+        adapter = new SimpleAdapter(getActivity(), mData, R.layout.tab_history_order_list,
                 new String[] {
                         "from_avatar",
                         "from_name",
@@ -108,7 +115,6 @@ public class TabHistoryOrder extends Fragment {
             }
         };
 
-
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -116,8 +122,63 @@ public class TabHistoryOrder extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("history", "item " + i + "clicked!");
                 if (gotoDetails != null) {
-                    gotoDetails.gotoDetails(null /*data*/);
+                    JSONObject jsonObject = (JSONObject)(mData.get(i).get("jsonObject"));
+                    gotoDetails.gotoDetails(jsonObject);
                 }
+            }
+        });
+
+        String user_id = UtilHelper.getSharedUserId(getActivity());
+        SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
+            @Override
+            public void onResponse(final SQBResponse response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response != null) {
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
+                            if (response.getCode().equals("1000")) {
+                                try {
+                                    JSONArray orders = (JSONArray)response.getData();
+                                    for(int i=0; i< orders.length(); i++){
+                                        JSONObject item = orders.getJSONObject(i);
+                                        Log.i("virgil", item.toString());
+                                        JSONObject orderInfo = item.getJSONObject("orderInfo");
+                                        int startTimestamp = item.getInt("starttime");
+                                        String date = UtilHelper.getDate(startTimestamp);
+                                        int status = item.getInt("status");
+                                        String remuneration = item.getString("remuneration");
+                                        String consignee = orderInfo.getString("consignee");
+                                        String company_name = orderInfo.getJSONObject("company").getString("name");
+
+                                        Map<String, Object> data = new HashMap<String, Object>();
+                                        data.put("from_avatar", R.drawable.index_avatar);
+                                        data.put("from_name", company_name);
+                                        data.put("time", date);
+                                        data.put("distance", "1.36");
+                                        data.put("reward", remuneration);
+                                        data.put("to_name", consignee);
+                                        data.put("to_avatar", R.drawable.index_avatar);
+                                        data.put("jsonObject", item);
+
+                                        mData.add(data);
+                                    }
+
+                                    adapter.notifyDataSetChanged();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                }
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                            }
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                        }
+                    }
+                });
             }
         });
     }

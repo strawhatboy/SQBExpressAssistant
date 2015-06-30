@@ -11,6 +11,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.utils.UtilHelper;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -28,7 +31,23 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
     public TabHistoryOrder.IGotoDetails gotoDetails;
     private ListView listView;
     private SimpleAdapter adapter;
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> mData;
+
+    private TextView mCompanyName;
+    private TextView mCompanyAddress;
+    private TextView mCompanyPhone;
+    private TextView mGoodsCount;
+    private TextView mGoodsHasWeight;
+    private TextView mDistance;
+    private TextView mStartTime;
+    private TextView mPickTime;
+    private TextView mEndTime;
+    private TextView mRemuneration;
+    private TextView mTotalDuration;
+    private TextView mRemuneration2;
+    private TextView mConsigneeName;
+    private TextView mConsigneeAddress;
+    private TextView mConsigneePhone;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +58,22 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
     }
 
     private void initView(View view) {
+        mCompanyName = (TextView) view.findViewById(R.id.tv_history_details_company_name);
+        mCompanyAddress = (TextView) view.findViewById(R.id.tv_history_details_company_address);
+        mCompanyPhone = (TextView) view.findViewById(R.id.tv_history_details_company_phone);
+        mGoodsCount = (TextView) view.findViewById(R.id.tv_history_details_list_good_count);
+        mGoodsHasWeight = (TextView) view.findViewById(R.id.tv_history_details_list_good_has_weight);
+        mDistance = (TextView) view.findViewById(R.id.tv_history_details_distance);
+        mStartTime = (TextView) view.findViewById(R.id.tv_history_details_order_got_time);
+        mPickTime = (TextView) view.findViewById(R.id.tv_history_details_delivery_taken_time);
+        mEndTime = (TextView) view.findViewById(R.id.tv_history_details_delivered_time);
+        mRemuneration = (TextView) view.findViewById(R.id.tv_history_details_remuneration);
+        mTotalDuration = (TextView) view.findViewById(R.id.tv_history_details_total_duration);
+        mRemuneration2 = (TextView) view.findViewById(R.id.tv_history_details_remuneration2);
+        mConsigneeName = (TextView) view.findViewById(R.id.tv_history_details_consignee);
+        mConsigneeAddress = (TextView) view.findViewById(R.id.tv_history_details_consignee_address);
+        mConsigneePhone = (TextView) view.findViewById(R.id.tv_history_details_consignee_phone);
+
         textRotateAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotated_text_view);
         textRotateAnimation.setFillAfter(true);
 
@@ -57,16 +92,16 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        data = new ArrayList<Map<String, Object>>();
+        mData = new ArrayList<Map<String, Object>>();
         // For debugging:
-        for (int i = 0; i < 15; i++) {
+       /* for (int i = 0; i < 15; i++) {
             Map<String, Object> hisData0 = new HashMap<String, Object>();
             hisData0.put("good_name", "Rice");
             hisData0.put("good_count", "5.00kg");
             data.add(hisData0);
-        }
+        }*/
 
-        adapter = new SimpleAdapter(getActivity(), data, R.layout.history_details_fragment_list, new String[] {
+        adapter = new SimpleAdapter(getActivity(), mData, R.layout.history_details_fragment_list, new String[] {
                 "good_name",
                 "good_count"
         }, new int[] {
@@ -78,6 +113,38 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
     }
 
     public void setData(JSONObject data) {
+        if(data == null){
+            return;
+        }
 
+        try {
+            JSONObject orderInfo = data.getJSONObject("orderInfo");
+            JSONObject company = orderInfo.getJSONObject("company");
+            mCompanyName.setText(company.getString("name"));
+            mCompanyAddress.setText(company.getString("addr"));
+            mCompanyPhone.setText(company.getString("phone"));
+
+            JSONArray goods = orderInfo.getJSONArray("goods");
+            mGoodsCount.setText(String.valueOf(goods.length()));
+            for(int i=0; i<goods.length(); i++){
+                JSONObject item = (JSONObject)goods.get(i);
+                Map<String, Object> goodData = new HashMap<String, Object>();
+                goodData.put("good_name", item.getString("goods_name"));
+                goodData.put("good_count", item.getString("goods_number"));
+                mData.add(goodData);
+            }
+            adapter.notifyDataSetChanged();
+
+            mStartTime.setText(UtilHelper.getDate(data.getLong("starttime")));
+            mEndTime.setText(UtilHelper.getDate(data.getLong("endtime")));
+            mRemuneration.setText(data.getString("remuneration") + "元");
+            mRemuneration2.setText(data.getString("remuneration"));
+
+            mConsigneeName.setText(orderInfo.getString("consignee"));
+            mConsigneeAddress.setText(orderInfo.getString("address"));
+            mConsigneePhone.setText(orderInfo.getString("mobile"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
