@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_margin="20dp">
+        android:layout_marginTop="15dp">
         <LinearLayout
             android:background="@color/bg_white"
             android:layout_width="fill_parent"
@@ -78,8 +79,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:background="@color/bg_gray">
+            android:paddingBottom="15dp">
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -102,7 +102,7 @@
                             android:textColor="@color/font_black"
                             android:textSize="16dp"/>
                         <TextView
-                            android:id="@+id/tv_order_confirm_good_count"
+                            android:id="@+id/tv_order_take_good_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="6"
@@ -116,7 +116,7 @@
                             android:textSize="16dp"/>
                     </LinearLayout>
                     <ListView
-                        android:id="@+id/lv_order_confirm_details"
+                        android:id="@+id/lv_order_take_details"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_marginTop="10dp"
@@ -198,125 +198,36 @@
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
-        <LinearLayout
-            android:background="@color/bg_white"
-            android:layout_width="fill_parent"
-            android:layout_height="70dp"
-            android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="60dp"
-                android:layout_height="fill_parent"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentBottom="true"
-                    android:orientation="vertical"
-                    >
-
-                    <ImageView
-                        android:layout_gravity="center_horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/order_delivered_confirm_location"/>
-                    <TextView
-                        android:layout_gravity="center_horizontal"
-                        android:id="@+id/tv_history_details_to_goto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/history_details_goto"
-                        android:textColor="@color/font_black"
-                        android:textSize="12dp"/>
-                </LinearLayout>
-            </RelativeLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="fill_parent">
-
-                <LinearLayout
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="三叶草"
-                        android:textSize="15dp"
-                        android:textColor="@color/font_black"/>
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="花样年华小区C栋2单元1004"
-                        android:textSize="12dp"
-                        android:textColor="@color/font_blue"/>
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="13688888888"
-                        android:textSize="12dp"
-                        android:textColor="@color/font_black"/>
-                </LinearLayout>
-            </LinearLayout>
-            <com.sqbnet.expressassistant.controls.CircleImageView
-                android:layout_margin="5dp"
-                android:id="@+id/civ_history_details_to_avatar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/index_avatar"/>
-        </LinearLayout>
     </LinearLayout>
     <LinearLayout
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/chkbox_order_item_checked"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/order_take_order_checked"
+            android:textColor="@color/font_black"
+            android:textSize="12sp"
+            style="@style/checkbox_black_style"/>
+    </LinearLayout>
+    <LinearLayout
+        android:padding="15dp"
+        android:layout_width="fill_parent"
+        android:layout_height="110dp">
         <Button
-            android:id="@+id/btn_order_confirm_ok"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
+            android:id="@+id/btn_order_take_confirm_taken"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/order_take_confirm_taken"
             android:background="@drawable/button_blue_selector"
-            android:text="@string/order_confirm_btn_confirm"
+            android:enabled="false"
             android:textSize="22sp"
+            android:padding="10dp"
             android:textColor="@color/font_white"/>
-        <Button
-            android:id="@+id/btn_order_confirm_cancel"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="fill_parent"
-            android:background="@drawable/button_green_selector"
-            android:text="@string/order_confirm_btn_cancel"
-            android:textSize="22sp"
-            android:textColor="@color/font_white"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
-        <TextView
-            android:paddingTop="10dp"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center_horizontal"
-            android:text="@string/order_confirm_hint"
-            android:textColor="@color/font_white"
-            android:textSize="12dp"/>
     </LinearLayout>
 </LinearLayout>

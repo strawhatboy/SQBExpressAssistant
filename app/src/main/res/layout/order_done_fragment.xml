@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg2"
-    android:id="@+id/ly_order_main">
-
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/ly_order_main_processbar"
@@ -12,8 +10,7 @@
         android:layout_height="45dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:orientation="horizontal"
-        android:visibility="invisible">
+        android:orientation="horizontal">
         <!-- space for the order process bar -->
         <RelativeLayout
             android:layout_width="0dp"
@@ -67,7 +64,7 @@
                 android:layout_alignParentBottom="true"
                 android:paddingBottom="12dp"
                 android:textSize="12dp"
-                android:textColor="@color/font_grey"
+                android:textColor="@color/font_green"
                 android:text="@string/order_processbar_take_delivery"/>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -79,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="4dp"
-                    android:background="@color/font_grey"
+                    android:background="@color/font_green"
                     android:layout_gravity="center_vertical">
 
                 </LinearLayout>
@@ -87,7 +84,7 @@
                     android:id="@+id/ly_order_pb_circle_take"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/grey_circle"
+                    android:background="@drawable/green_circle"
                     android:layout_gravity="center_vertical">
 
                 </LinearLayout>
@@ -106,7 +103,7 @@
                 android:layout_alignParentBottom="true"
                 android:paddingBottom="12dp"
                 android:textSize="12dp"
-                android:textColor="@color/font_grey"
+                android:textColor="@color/font_green"
                 android:text="@string/order_processbar_deliver"/>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -118,7 +115,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="4dp"
-                    android:background="@color/font_grey"
+                    android:background="@color/font_green"
                     android:layout_gravity="center_vertical">
 
                 </LinearLayout>
@@ -126,7 +123,7 @@
                     android:id="@+id/ly_order_pb_circle_deliver"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/grey_circle"
+                    android:background="@drawable/green_circle"
                     android:layout_gravity="center_vertical">
 
                 </LinearLayout>
@@ -145,7 +142,7 @@
                 android:layout_alignParentBottom="true"
                 android:paddingBottom="12dp"
                 android:textSize="12dp"
-                android:textColor="@color/font_grey"
+                android:textColor="@color/font_green"
                 android:text="@string/order_processbar_done"/>
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -157,7 +154,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="4dp"
-                    android:background="@color/font_grey"
+                    android:background="@color/font_green"
                     android:layout_gravity="center_vertical">
 
                 </LinearLayout>
@@ -165,7 +162,7 @@
                     android:id="@+id/ly_order_pb_circle_finish"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/grey_circle"
+                    android:background="@drawable/green_circle"
                     android:layout_gravity="center_vertical">
 
                 </LinearLayout>
@@ -173,10 +170,97 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <com.sqbnet.expressassistant.controls.UnScrollableViewPager
-        android:id="@+id/id_order_viewpager"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
-    </com.sqbnet.expressassistant.controls.UnScrollableViewPager>
+        android:orientation="vertical"
+        android:layout_weight="13"
+        android:layout_marginTop="15dp">
+        <ImageView
+            android:id="@+id/iv_order_got_circle"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/login_failed_circle"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_done_balance"
+                    android:textSize="20sp"
+                    android:textColor="@color/font_blue"/>
+                <TextView
+                    android:layout_marginLeft="4dp"
+                    android:id="@+id/tv_order_done_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.88"
+                    android:textSize="40sp"
+                    android:textColor="@color/font_blue"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unit_yuan"
+                    android:textSize="20sp"
+                    android:textColor="@color/font_blue"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="230dp"
+                android:paddingTop="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/order_done_text"
+                android:textSize="12sp"
+                android:textColor="@color/font_black"/>
+            <Button
+                android:id="@+id/btn_order_got_see_details"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/order_done_continue"
+                android:textColor="@color/font_white"
+                android:background="@drawable/button_blue_selector"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_order_done_hint"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/font_white"
+            android:text="@string/searching_hint"
+            android:textSize="20dp"/>
+        <TextView
+            android:layout_below="@id/tv_order_done_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/font_white"
+            android:text="@string/order_done_hint_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            />
+    </RelativeLayout>
 </LinearLayout>

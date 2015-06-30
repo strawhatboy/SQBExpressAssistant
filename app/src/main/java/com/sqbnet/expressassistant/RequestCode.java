@@ -7,4 +7,5 @@ public interface RequestCode {
     int PICK_PHOTO = 0;
     int LOGIN = 1;
     int REGISTRATION = 2;
+    int ORDER = 3;
 }

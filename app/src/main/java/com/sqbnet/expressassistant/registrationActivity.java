@@ -305,11 +305,7 @@ public class registrationActivity extends Activity {
         chkbox_accept_protocol.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    btn_ok.setEnabled(true);
-                } else {
-                    btn_ok.setEnabled(false);
-                }
+                    btn_ok.setEnabled(b);
             }
         });
 

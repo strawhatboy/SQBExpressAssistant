@@ -1,10 +1,11 @@
 package com.sqbnet.expressassistant;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +23,9 @@ public class orderMainActivity extends FragmentActivity {
     private UnScrollableViewPager viewPager;
     private orderGotFragment _orderGotFragment;
     private orderConfirmFragment _orderConfirmFragment;
+    private orderTakeDeliveryFragment _orderTakeDeliveryFragment;
+    private orderDeliverFragment _orderDeliverFragment;
+    private orderFinishFragment _orderFinishFragment;
     private FragmentPagerAdapter fragmentPagerAdapter;
     private List<Fragment> fragments = new ArrayList<Fragment>();
 
@@ -39,6 +43,8 @@ public class orderMainActivity extends FragmentActivity {
     private LinearLayout ly_circle_deliver;
     private LinearLayout ly_circle_finish;
 
+    private LinearLayout mainLayout;
+
     private List<List<View>> processbarElements = new ArrayList<List<View>>();
 
     @Override
@@ -52,31 +58,59 @@ public class orderMainActivity extends FragmentActivity {
     private void initView() {
         initFragments();
         initProcessbar();
-
+        mainLayout = (LinearLayout) findViewById(R.id.ly_order_main);
     }
 
     private void initFragments() {
         viewPager = (UnScrollableViewPager) findViewById(R.id.id_order_viewpager);
 
-        IGotoNextFragment iGotoNextFragment = new IGotoNextFragment() {
+        IWizardPageDelegate iWizardPageDelegate = new IWizardPageDelegate() {
             @Override
             public void goNext() {
                 int currentPage = viewPager.getCurrentItem();
+                Log.d("orderMain", "current page: " + currentPage + " fragments size: " + fragments.size());
                 // move the processbar
-                setProgressBarIndex(currentPage, true);
+                if (currentPage <= 2)
+                    setProgressBarIndex(currentPage, true);
                 // move to next fragment
                 if (currentPage < fragments.size() - 1) {
                     viewPager.setCurrentItem(currentPage + 1);
                 }
+
+                if (currentPage == 1 || currentPage == 2) {
+                    setBackgroudLight();
+                } else {
+                    setBackgroudDark();
+                }
+            }
+
+            @Override
+            public void exit(int exitCode, String data) {
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("data", data);
+                intent.putExtras(bundle);
+                setResult(exitCode, intent);
+                finish();
             }
         };
 
         _orderGotFragment = new orderGotFragment();
-        _orderGotFragment.setNextDelegate(iGotoNextFragment);
+        _orderGotFragment.setNextDelegate(iWizardPageDelegate);
         _orderConfirmFragment = new orderConfirmFragment();
-        _orderConfirmFragment.setNextDelegate(iGotoNextFragment);
+        _orderConfirmFragment.setNextDelegate(iWizardPageDelegate);
+        _orderTakeDeliveryFragment = new orderTakeDeliveryFragment();
+        _orderTakeDeliveryFragment.setNextDelegate(iWizardPageDelegate);
+        _orderDeliverFragment = new orderDeliverFragment();
+        _orderDeliverFragment.setNextDelegate(iWizardPageDelegate);
+        _orderFinishFragment = new orderFinishFragment();
+        _orderFinishFragment.setNextDelegate(iWizardPageDelegate);
+
         fragments.add(_orderGotFragment);
         fragments.add(_orderConfirmFragment);
+        fragments.add(_orderTakeDeliveryFragment);
+        fragments.add(_orderDeliverFragment);
+        fragments.add(_orderFinishFragment);
 
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -144,11 +178,24 @@ public class orderMainActivity extends FragmentActivity {
         }
     }
 
-    public interface IGotoNextFragment {
+    public interface IWizardPageDelegate {
         void goNext();
+        void exit(int exitCode, String data);
     }
 
     public interface IWizardPage {
-        void setNextDelegate(IGotoNextFragment delegate);
+        void setNextDelegate(IWizardPageDelegate delegate);
+    }
+
+    private void setBackgroudLight() {
+        setBackground(true);
+    }
+
+    private void setBackgroudDark() {
+        setBackground(false);
+    }
+
+    private void setBackground(boolean isLight) {
+        mainLayout.setBackground(getResources().getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
     }
 }
