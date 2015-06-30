@@ -64,16 +64,6 @@ public class loginActivity extends Activity {
                 InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
-                SQBProvider.getInst().login(et_usr.getText().toString(), et_pwd.getText().toString(), new SQBResponseListener() {
-                    @Override
-                    public void onResponse(SQBResponse response) {
-                        if (response != null) {
-
-                        }
-                    }
-                });
-
-
                 String username = null;
                 String password = null;
 
@@ -84,6 +74,7 @@ public class loginActivity extends Activity {
                     password = et_pwd.getText().toString();
                 }
 
+                //password = UtilHelper.MD5(password);
                 if (et_usr == null || et_pwd == null) {
                     Toast.makeText(getApplicationContext(), "用户名密码不能为空", Toast.LENGTH_LONG);
                     return;
