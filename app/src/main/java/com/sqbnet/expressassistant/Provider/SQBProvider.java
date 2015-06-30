@@ -21,6 +21,7 @@ public class SQBProvider {
     private static String URL_APPREV = "phoneCaptcha";
     private static String URL_LOGIN = "userLogin";
     private static String URL_HISTORY_ORDERS = "getHistoryOrder";
+    private static String URL_DISPATCHER_INFO = "getDispatchPerson";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -70,6 +71,18 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getDispatchPerson(String userId, final SQBResponseListener listener) {
+        try {
+            String url = BASE_URL + URL_DISPATCHER_INFO;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", userId);
+
+            doPost(url, jsonObject, listener);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

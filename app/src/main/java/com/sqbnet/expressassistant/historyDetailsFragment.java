@@ -135,8 +135,8 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
             }
             adapter.notifyDataSetChanged();
 
-            mStartTime.setText(UtilHelper.getDate(data.getLong("starttime")));
-            mEndTime.setText(UtilHelper.getDate(data.getLong("endtime")));
+            mStartTime.setText(UtilHelper.getDateString(data.getLong("starttime")).split("\\s+")[1]);
+            mEndTime.setText(UtilHelper.getDateString(data.getLong("endtime")).split("\\s+")[1]);
             mRemuneration.setText(data.getString("remuneration") + "元");
             mRemuneration2.setText(data.getString("remuneration"));
 

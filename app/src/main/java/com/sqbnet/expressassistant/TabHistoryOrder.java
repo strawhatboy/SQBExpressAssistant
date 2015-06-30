@@ -1,9 +1,6 @@
 package com.sqbnet.expressassistant;
 
 
-import android.content.SharedPreferences;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,8 +10,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -26,13 +21,9 @@ import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +138,7 @@ public class TabHistoryOrder extends Fragment {
                                         Log.i("virgil", item.toString());
                                         JSONObject orderInfo = item.getJSONObject("orderInfo");
                                         int startTimestamp = item.getInt("starttime");
-                                        String date = UtilHelper.getDate(startTimestamp);
+                                        String date = UtilHelper.getDateString(startTimestamp);
                                         int status = item.getInt("status");
                                         String remuneration = item.getString("remuneration");
                                         String consignee = orderInfo.getString("consignee");

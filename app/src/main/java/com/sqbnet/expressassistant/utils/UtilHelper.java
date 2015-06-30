@@ -36,15 +36,23 @@ public class UtilHelper {
         editor.commit();
     }
 
-    public static String getDate(long timeStamp){
-        Calendar calendar = Calendar.getInstance();
-        TimeZone timeZone = calendar.getTimeZone();
-        DateFormat objFormatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-        objFormatter.setTimeZone(timeZone);
+    public static String getDateString(long timeStamp) {
+        return getDateString(timeStamp, "yyyy.MM.dd HH:mm:ss");
+    }
 
-        calendar.setTimeInMillis(timeStamp * 1000);//edit
-        String result = objFormatter.format(calendar.getTime());
+    public static String getDateString(long timeStamp, String format){
+        Calendar calendar = Calendar.getInstance();
+        DateFormat objFormatter = new SimpleDateFormat(format);
+        TimeZone timeZone = calendar.getTimeZone();
+        objFormatter.setTimeZone(timeZone);
+        String result = objFormatter.format(getDate(timeStamp));
         calendar.clear();
         return result;
+    }
+
+    public static Date getDate(long timeStamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeStamp * 1000);//edit
+        return calendar.getTime();
     }
 }
