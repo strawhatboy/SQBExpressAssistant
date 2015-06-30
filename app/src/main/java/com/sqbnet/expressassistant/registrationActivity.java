@@ -2,6 +2,7 @@ package com.sqbnet.expressassistant;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -64,6 +65,8 @@ public class registrationActivity extends Activity {
     private EditText et_addr;
 
     private Bitmap photo;
+    private String photoPath;
+    private String phoneCode;
 
     private TimeCount timeCount;
 
@@ -91,6 +94,107 @@ public class registrationActivity extends Activity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(et_username.length() == 0){
+                    showToast("账号不能为空");
+                    return;
+                }
+                if(et_password.length() == 0){
+                    showToast("密码不能为空");
+                    return;
+                }
+                if(et_real_name.length() == 0){
+                    showToast("真实姓名不能为空");
+                    return;
+                }
+                if(et_id.length() == 0){
+                    showToast("身份证号不能为空");
+                    return;
+                }
+                try {
+                    if(!UtilHelper.IDCardValidate(et_id.getText().toString()).equals("")){
+                        showToast("身份证号码不正确");
+                        return;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                if(photoPath == null){
+                    showToast("身份证照片不能为空");
+                    return;
+                }
+                if(et_mobile.length() == 0){
+                    showToast("手机号码不能为空");
+                }
+                if(et_passcode.length() == 0){
+                    showToast("验证码不能为空");
+                    return;
+                }
+                if(!et_passcode.getText().toString().equals(phoneCode)){
+                    showToast("验证码不正确");
+                    return;
+                }
+                if(et_addr.length() == 0){
+                    showToast("地址不能为空");
+                    return;
+                }
+
+                final ProgressDialog progressDialog = new ProgressDialog(registrationActivity.this);
+                progressDialog.setTitle("提示");
+                progressDialog.setMessage("上传身份证图片中，请稍后...");
+                progressDialog.setProgress(ProgressDialog.STYLE_SPINNER);
+                progressDialog.show();
+                progressDialog.setCancelable(false);
+                SQBProvider.getInst().uploadPhoto(photoPath, new SQBResponseListener() {
+                    @Override
+                    public void onResponse(SQBResponse response) {
+                        Log.i("virgil", response.getCode());
+                        Log.i("virgil", response.getMsg());
+                        Log.i("virgil", response.getData().toString());
+                        if(response.getCode().equals("1000")) {
+                            try {
+                                final String photoID = ((JSONObject) response.getData()).getString("id");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressDialog.setMessage("身份证上传成功，注册中...");
+                                        String userName = et_username.getText().toString();
+                                        String password = et_password.getText().toString();
+                                        password = UtilHelper.MD5(UtilHelper.MD5(password) + phoneCode);
+                                        String realName = et_real_name.getText().toString();
+                                        String idCard = et_id.getText().toString();
+                                        String phone = et_mobile.getText().toString();
+                                        String addr = et_addr.getText().toString();
+
+                                        SQBProvider.getInst().userRegister(userName, password, realName, idCard, photoID, phone, addr, phoneCode, new SQBResponseListener() {
+                                            @Override
+                                            public void onResponse(SQBResponse response) {
+                                                Log.i("virgil", response.getCode());
+                                                Log.i("virgil", response.getMsg());
+                                                Log.i("virgil", response.getData().toString());
+                                                if (response.getCode().equals("1000")) {
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            progressDialog.dismiss();
+                                                            showToast("注册成功");
+                                                            finish();
+                                                        }
+                                                    });
+
+
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }catch (Exception e){
+                                progressDialog.dismiss();
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
 
             }
         });
@@ -126,12 +230,12 @@ public class registrationActivity extends Activity {
         btn_get_passcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(et_mobile.getText() == null || et_mobile.length() == 0){
+                if (et_mobile.getText() == null || et_mobile.length() == 0) {
                     return;
                 }
                 String mobile = et_mobile.getText().toString();
                 Log.i("virgil", mobile);
-                if(!UtilHelper.isMobileNO(mobile)){
+                if (!UtilHelper.isMobileNO(mobile)) {
                     Log.i("virgil", "not valid mobile");
                     Toast.makeText(getApplicationContext(), "手机号码格式不正确，请重新填写", Toast.LENGTH_SHORT).show();
                     return;
@@ -141,16 +245,16 @@ public class registrationActivity extends Activity {
                     public void onResponse(final SQBResponse response) {
                         runOnUiThread(new Runnable() {
                             @Override
-                            public void run(){
+                            public void run() {
                                 if (response != null) {
                                     Log.i("virgil", response.getCode());
                                     Log.i("virgil", response.getMsg());
                                     Log.i("virgil", response.getData().toString());
                                     Toast.makeText(getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT).show();
                                     try {
-                                        String phone_code = ((JSONObject) response.getData()).getString("phone_code");
-                                        Log.i("virgil", phone_code);
-                                    }catch (JSONException e){
+                                        phoneCode = ((JSONObject) response.getData()).getString("phone_code");
+                                        Log.i("virgil", phoneCode);
+                                    } catch (JSONException e) {
                                         Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
@@ -227,14 +331,12 @@ public class registrationActivity extends Activity {
                 Uri originalUri = data.getData();
                 photo = MediaStore.Images.Media.getBitmap(getContentResolver(), originalUri);
                 String fileName = getRealPathFromURI(originalUri);
+                photoPath = fileName;
                 int start = fileName.lastIndexOf("/");
                 if (start != -1) {
                     fileName = fileName.substring(start + 1);
                 }
                 tv_photo_placeholder.setText(fileName);
-
-                // upload the photo
-
 
             } catch (Exception e) {
                 Log.e("registration", e.toString());
@@ -254,5 +356,9 @@ public class registrationActivity extends Activity {
     private boolean validateEditText() {
         //TODO: validate all the edittext
         return true;
+    }
+
+    private void showToast(String message){
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

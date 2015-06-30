@@ -124,6 +124,7 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
             mCompanyAddress.setText(company.getString("addr"));
             mCompanyPhone.setText(company.getString("phone"));
 
+            mData.clear();
             JSONArray goods = orderInfo.getJSONArray("goods");
             mGoodsCount.setText(String.valueOf(goods.length()));
             for(int i=0; i<goods.length(); i++){
