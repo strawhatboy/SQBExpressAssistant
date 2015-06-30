@@ -78,7 +78,7 @@ public class UtilHelper {
         }catch (IOException e){
             e.printStackTrace();
         }
-        return Base64.encodeToString(data,Base64.DEFAULT);
+        return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
     public static String MD5(String str)
@@ -122,21 +122,21 @@ public class UtilHelper {
         String[] Wi = { "7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7",
                 "9", "10", "5", "8", "4", "2" };
         String Ai = "";
-        // ================ 号码的长�15位或18�================
+        // ================ 号码的长�15位或18�================
         if (IDStr.length() != 15 && IDStr.length() != 18) {
-            errorInfo = "身份证号码长度应该为15位或18位�;
+            errorInfo = "身份证号码长度应该为15位或18位";
             return errorInfo;
         }
         // =======================(end)========================
 
-        // ================ 数字 除最后以为都为数�================
+        // ================ 数字 除最后以为都为数�================
         if (IDStr.length() == 18) {
             Ai = IDStr.substring(0, 17);
         } else if (IDStr.length() == 15) {
             Ai = IDStr.substring(0, 6) + "19" + IDStr.substring(6, 15);
         }
         if (isNumeric(Ai) == false) {
-            errorInfo = "身份�5位号码都应为数字 ; 18位号码除最后一位外，都应为数字�;
+            errorInfo = "身份�5位号码都应为数字 ; 18位号码除最后一位外，都应为数字";
             return errorInfo;
         }
         // =======================(end)========================
@@ -146,7 +146,7 @@ public class UtilHelper {
         String strMonth = Ai.substring(10, 12);// 月份
         String strDay = Ai.substring(12, 14);// 月份
         if (isDataFormat(strYear + "-" + strMonth + "-" + strDay) == false) {
-            errorInfo = "身份证生日无效�;
+            errorInfo = "身份证生日无效";
             return errorInfo;
         }
         GregorianCalendar gc = new GregorianCalendar();
@@ -154,28 +154,28 @@ public class UtilHelper {
         if ((gc.get(Calendar.YEAR) - Integer.parseInt(strYear)) > 150
                 || (gc.getTime().getTime() - s.parse(
                 strYear + "-" + strMonth + "-" + strDay).getTime()) < 0) {
-            errorInfo = "身份证生日不在有效范围�;
+            errorInfo = "身份证生日不在有效范围内";
             return errorInfo;
         }
         if (Integer.parseInt(strMonth) > 12 || Integer.parseInt(strMonth) == 0) {
-            errorInfo = "身份证月份无�;
+            errorInfo = "身份证月份无效";
             return errorInfo;
         }
         if (Integer.parseInt(strDay) > 31 || Integer.parseInt(strDay) == 0) {
-            errorInfo = "身份证日期无�;
+            errorInfo = "身份证日期无效";
             return errorInfo;
         }
         // =====================(end)=====================
 
-        // ================ 地区码时候有�================
+        // ================ 地区码时候有�================
         Hashtable h = GetAreaCode();
         if (h.get(Ai.substring(0, 2)) == null) {
-            errorInfo = "身份证地区编码错误�;
+            errorInfo = "身份证地区编码错误";
             return errorInfo;
         }
         // ==============================================
 
-        // ================ 判断最后一位的�================
+        // ================ 判断最后一位的�================
         int TotalmulAiWi = 0;
         for (int i = 0; i < 17; i++) {
             TotalmulAiWi = TotalmulAiWi
@@ -214,10 +214,10 @@ public class UtilHelper {
         hashtable.put("12", "天津");
         hashtable.put("13", "河北");
         hashtable.put("14", "山西");
-        hashtable.put("15", "内蒙�);
+        hashtable.put("15", "内蒙古");
         hashtable.put("21", "辽宁");
         hashtable.put("22", "吉林");
-        hashtable.put("23", "黑龙�);
+        hashtable.put("23", "黑龙江");
         hashtable.put("31", "上海");
         hashtable.put("32", "江苏");
         hashtable.put("33", "浙江");
