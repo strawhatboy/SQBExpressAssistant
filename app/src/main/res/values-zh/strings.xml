@@ -10,7 +10,7 @@
     <string name="login_tv_register"><u>前往注册&gt;&gt;</u></string>
     <string name="login_title">商圈宝配送客户端</string>
     <string name="login_remember">记住用户？</string>
-    <string name="title_activity_registration"></string>
+    <string name="title_activity_registration">注册页面</string>
     <string name="registration_title">申请注册</string>
     <string name="title_activity_login">商圈宝配送</string>
     <string name="btn_ok">确定</string>
@@ -77,4 +77,12 @@
     <string name="order_done_text">您可以在右下方“<b>我的钱包</b>”查看收益，您也可以</string>
     <string name="order_done_continue">继续接单</string>
     <string name="order_done_hint_content">商圈宝平台会在每月<b>7、14、21、28</b>将您的收益额结算为现金！</string>
+    <string name="action_settings">设置</string>
+    <string name="dummy_button">假按钮</string>
+    <string name="dummy_content">假内容</string>
+    <string name="hello_blank_fragment">空碎片</string>
+    <string name="hello_world">你好世界</string>
+    <string name="title_activity_login_failed">登录失败页面</string>
+    <string name="title_activity_main">主页面</string>
+    <string name="title_activity_registration_agreement">注册协议同一界面</string>
 </resources>
