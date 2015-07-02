@@ -14,7 +14,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
+        android:theme="@android:style/Theme.NoTitleBar"
+        android:name=".MyApplication">
         <activity android:name=".mainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +29,7 @@
         </activity>
         <activity android:name=".loginFailedActivity" >
         </activity>
+        <activity android:name=".registrationSuccessActivity"></activity>
         <activity
             android:name=".registrationAgreementActivity"
             android:label="@string/title_activity_registration_agreement" >

@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 
-public class loginFailedActivity extends Activity {
+public class loginFailedActivity extends BaseActivity {
 
     private Button btn_re_login;
 

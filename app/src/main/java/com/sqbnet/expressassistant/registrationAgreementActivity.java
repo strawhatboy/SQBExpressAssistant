@@ -9,7 +9,7 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 
 
-public class registrationAgreementActivity extends Activity {
+public class registrationAgreementActivity extends BaseActivity {
 
     private WebView wv_agreement;
     private ImageButton ibtn_back;

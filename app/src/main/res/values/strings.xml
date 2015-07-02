@@ -90,4 +90,9 @@
     <string name="order_done_text">You can see all the income in </string>
     <string name="order_done_continue">Continue</string>
     <string name="order_done_hint_content">SQB platform will turn your income into cash on 7th, 14th, 21th and 28th every month</string>
+    <string name="reg_success">register success</string>
+    <string name="reg_success_sub">Your information has recieved</string>
+    <string name="reg_success_sub_2">please wait for system check</string>
+    <string name="btn_quit">quit</string>
+    <string name="reg_success_sub_3">Please wait for our call</string>
 </resources>

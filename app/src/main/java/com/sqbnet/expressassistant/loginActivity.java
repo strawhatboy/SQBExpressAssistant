@@ -33,7 +33,7 @@ import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 
 
-public class loginActivity extends Activity {
+public class loginActivity extends BaseActivity {
 
     private EditText et_pwd;
     private EditText et_usr;

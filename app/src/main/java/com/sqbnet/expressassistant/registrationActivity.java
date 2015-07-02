@@ -44,7 +44,7 @@ import java.util.ResourceBundle;
 import java.util.jar.JarException;
 
 
-public class registrationActivity extends Activity {
+public class registrationActivity extends BaseActivity {
 
     private Button btn_ok;
     private Button btn_cancel;
@@ -94,47 +94,47 @@ public class registrationActivity extends Activity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(et_username.length() == 0){
+                if (et_username.length() == 0) {
                     showToast("账号不能为空");
                     return;
                 }
-                if(et_password.length() == 0){
+                if (et_password.length() == 0) {
                     showToast("密码不能为空");
                     return;
                 }
-                if(et_real_name.length() == 0){
+                if (et_real_name.length() == 0) {
                     showToast("真实姓名不能为空");
                     return;
                 }
-                if(et_id.length() == 0){
+                if (et_id.length() == 0) {
                     showToast("身份证号不能为空");
                     return;
                 }
                 try {
-                    if(!UtilHelper.IDCardValidate(et_id.getText().toString()).equals("")){
+                    if (!UtilHelper.IDCardValidate(et_id.getText().toString()).equals("")) {
                         showToast("身份证号码不正确");
                         return;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if(photoPath == null){
+                if (photoPath == null) {
                     showToast("身份证照片不能为空");
                     return;
                 }
-                if(et_mobile.length() == 0){
+                if (et_mobile.length() == 0) {
                     showToast("手机号码不能为空");
                 }
-                if(et_passcode.length() == 0){
+                if (et_passcode.length() == 0) {
                     showToast("验证码不能为空");
                     return;
                 }
-                if(!et_passcode.getText().toString().equals(phoneCode)){
+                if (!et_passcode.getText().toString().equals(phoneCode)) {
                     showToast("验证码不正确");
                     return;
                 }
-                if(et_addr.length() == 0){
+                if (et_addr.length() == 0) {
                     showToast("地址不能为空");
                     return;
                 }
@@ -147,16 +147,21 @@ public class registrationActivity extends Activity {
                 progressDialog.setCancelable(false);
                 SQBProvider.getInst().uploadPhoto(photoPath, new SQBResponseListener() {
                     @Override
-                    public void onResponse(SQBResponse response) {
-                        Log.i("virgil", response.getCode());
-                        Log.i("virgil", response.getMsg());
-                        Log.i("virgil", response.getData().toString());
-                        if(response.getCode().equals("1000")) {
-                            try {
-                                final String photoID = ((JSONObject) response.getData()).getString("id");
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
+                    public void onResponse(final SQBResponse response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (response == null) {
+                                    showToast("上传身份证照片出现错误，请重试");
+                                    return;
+                                }
+                                Log.i("virgil", response.getCode());
+                                Log.i("virgil", response.getMsg());
+                                Log.i("virgil", response.getData().toString());
+                                if (response.getCode().equals("1000")) {
+                                    try {
+                                        final String photoID = ((JSONObject) response.getData()).getString("id");
+
                                         progressDialog.setMessage("身份证上传成功，注册中...");
                                         String userName = et_username.getText().toString();
                                         String password = et_password.getText().toString();
@@ -177,25 +182,22 @@ public class registrationActivity extends Activity {
                                                         @Override
                                                         public void run() {
                                                             progressDialog.dismiss();
-                                                            showToast("注册成功");
-                                                            finish();
+                                                            Intent intent = new Intent(registrationActivity.this, registrationSuccessActivity.class);
+                                                            startActivity(intent);
                                                         }
                                                     });
-
-
                                                 }
                                             }
                                         });
+                                    } catch (Exception e) {
+                                        progressDialog.dismiss();
+                                        e.printStackTrace();
                                     }
-                                });
-                            }catch (Exception e){
-                                progressDialog.dismiss();
-                                e.printStackTrace();
+                                }
                             }
-                        }
+                        });
                     }
                 });
-
             }
         });
 
@@ -246,11 +248,15 @@ public class registrationActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (response != null) {
-                                    Log.i("virgil", response.getCode());
-                                    Log.i("virgil", response.getMsg());
-                                    Log.i("virgil", response.getData().toString());
-                                    Toast.makeText(getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT).show();
+                                if (response == null) {
+                                    showToast("注册出现错误，请重试");
+                                    return;
+                                }
+                                Log.i("virgil", response.getCode());
+                                Log.i("virgil", response.getMsg());
+                                Log.i("virgil", response.getData().toString());
+                                Toast.makeText(getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT).show();
+                                if (response.getCode().equals("1000")) {
                                     try {
                                         phoneCode = ((JSONObject) response.getData()).getString("phone_code");
                                         Log.i("virgil", phoneCode);
@@ -258,7 +264,6 @@ public class registrationActivity extends Activity {
                                         Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
                                     timeCount.onFinish();
                                 }
                             }

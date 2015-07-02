@@ -203,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:text="345.12"
+                    android:text="0"
                     android:textSize="25dp"
                     android:textColor="@color/font_blue"/>
                 <TextView

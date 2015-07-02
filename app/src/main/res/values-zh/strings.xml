@@ -77,4 +77,9 @@
     <string name="order_done_text">您可以在右下方“<b>我的钱包</b>”查看收益，您也可以</string>
     <string name="order_done_continue">继续接单</string>
     <string name="order_done_hint_content">商圈宝平台会在每月<b>7、14、21、28</b>将您的收益额结算为现金！</string>
+    <string name="reg_success">提交成功</string>
+    <string name="reg_success_sub">您的信息已经提交到平台系统，正在等待审核</string>
+    <string name="reg_success_sub_2">正在等待审核</string>
+    <string name="btn_quit">退出</string>
+    <string name="reg_success_sub_3">您的资料审核通过后，我们的客服人员会电话联系您，邀您参加培训课程！</string>
 </resources>

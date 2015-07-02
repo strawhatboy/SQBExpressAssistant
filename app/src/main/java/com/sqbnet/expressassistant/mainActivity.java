@@ -40,7 +40,7 @@ import java.util.List;
  *
  * @see
  */
-public class mainActivity extends FragmentActivity implements View.OnClickListener{
+public class mainActivity extends BaseFragmentActivity implements View.OnClickListener{
 
     private ViewPager mViewPager;
     private FragmentPagerAdapter mFragmentPagerAdapter;
