@@ -1,8 +1,16 @@
 package com.sqbnet.expressassistant.utils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.widget.Toast;
+
+import com.sqbnet.expressassistant.MyApplication;
+import com.sqbnet.expressassistant.ResultCode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -258,5 +266,29 @@ public class UtilHelper {
             flag=true;
         }
         return flag;
+    }
+
+    public static ProgressDialog getProgressDialog(String message, Context context){
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("商圈宝提示");
+        progressDialog.setMessage(message);
+        progressDialog.setProgress(ProgressDialog.STYLE_SPINNER);
+        return progressDialog;
+    }
+
+    public static void showToast(String message){
+        Toast.makeText(MyApplication.getInst().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showDialog(String message){
+        new AlertDialog.Builder(MyApplication.getInst().currentActivity()).setTitle("提示")
+                .setMessage("确认退出？")
+                .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .show();
     }
 }

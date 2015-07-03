@@ -2,6 +2,14 @@ package com.sqbnet.expressassistant;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.location.LocationListener;
+import android.os.IBinder;
+import android.util.Log;
+
+import com.sqbnet.expressassistant.service.SQBLocationService;
 
 import java.util.Stack;
 

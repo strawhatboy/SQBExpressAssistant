@@ -139,10 +139,7 @@ public class registrationActivity extends BaseActivity {
                     return;
                 }
 
-                final ProgressDialog progressDialog = new ProgressDialog(registrationActivity.this);
-                progressDialog.setTitle("提示");
-                progressDialog.setMessage("上传身份证图片中，请稍后...");
-                progressDialog.setProgress(ProgressDialog.STYLE_SPINNER);
+                final ProgressDialog progressDialog = UtilHelper.getProgressDialog("正在上传身份证照片，请稍候...", registrationActivity.this);
                 progressDialog.show();
                 progressDialog.setCancelable(false);
                 SQBProvider.getInst().uploadPhoto(photoPath, new SQBResponseListener() {

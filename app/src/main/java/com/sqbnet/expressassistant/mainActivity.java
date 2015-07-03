@@ -4,9 +4,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -16,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,6 +29,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Location.GPSLocation;
+import com.sqbnet.expressassistant.service.SQBLocationService;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONObject;
@@ -104,6 +109,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             }
         });
 
+        startSQBService();
         checkLoginStatus();
 
     }
@@ -113,6 +119,25 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Log.i("--virgil", "onResume");
 
         super.onResume();
+    }
+
+    private void startSQBService(){
+        if(GPSLocation.getInst().openGEPSettings() == false){
+            UtilHelper.showDialog("test");
+            return;
+        }
+        this.bindService(new Intent(SQBLocationService.ACTION), new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                Log.i("virgil", "SQBLocationService connected");
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                Log.i("virgil", "SQBLocatonService disconnected");
+            }
+        }, BIND_AUTO_CREATE);
+        this.startService(new Intent(SQBLocationService.ACTION));
     }
 
     private void initView(){
@@ -278,7 +303,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             UtilHelper.setSharedUserId(null, mainActivity.this);
-                            finish();
+                            MyApplication.getInst().AppExit();
                         }
                     })
                     .setNegativeButton("否", null)

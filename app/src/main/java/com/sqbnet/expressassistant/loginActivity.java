@@ -2,6 +2,7 @@ package com.sqbnet.expressassistant;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -74,11 +75,15 @@ public class loginActivity extends BaseActivity {
                     password = et_pwd.getText().toString();
                 }
 
-                //password = UtilHelper.MD5(password);
-                if (et_usr == null || et_pwd == null) {
-                    Toast.makeText(getApplicationContext(), "用户名密码不能为空", Toast.LENGTH_LONG);
+                if (username == null || password == null) {
+                    UtilHelper.showToast("用户名密码不能为空");
                     return;
                 }
+
+                password = UtilHelper.MD5(password);
+
+                final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
+                progressDialog.show();
 
                 SQBProvider.getInst().login(username, password, new SQBResponseListener() {
                     @Override
@@ -86,6 +91,7 @@ public class loginActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                progressDialog.dismiss();
                                 if (response != null) {
                                     Log.i("virgil", response.getCode());
                                     Log.i("virgil", response.getMsg());
@@ -150,7 +156,7 @@ public class loginActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         setResult(ResultCode.QUIT);
-                        finish();
+                        MyApplication.getInst().AppExit();
                     }
                 })
                 .setNegativeButton("否", null)
