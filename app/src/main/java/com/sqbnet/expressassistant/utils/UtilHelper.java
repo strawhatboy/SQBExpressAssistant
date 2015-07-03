@@ -2,12 +2,16 @@ package com.sqbnet.expressassistant.utils;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -258,5 +262,19 @@ public class UtilHelper {
             flag=true;
         }
         return flag;
+    }
+
+    public static Bitmap getBitmapFromUrl(String httpUrl) {
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(httpUrl);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            InputStream inputStream = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 }

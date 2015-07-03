@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -18,11 +20,13 @@ import android.widget.Toast;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,12 +104,46 @@ public class TabHistoryOrder extends Fragment {
 
                 //TODO: set visibility for 'done' according to the real status from server
                 // rotate 'Done'
-                TextView tv_done = (TextView) view.findViewById(R.id.tv_history_list_done);
-                tv_done.setAnimation(textRotateAnimation);
+                if ((Integer) mData.get(position).get("status") == 1) {
+                    TextView tv_done = (TextView) view.findViewById(R.id.tv_history_list_done);
+                    tv_done.setVisibility(View.VISIBLE);
+                    tv_done.setAnimation(textRotateAnimation);
+                }
+
+                /*try {
+                    final ImageView iv_from = (ImageView) view.findViewById(R.id.civ_history_list_from_avatar);
+                    AsyncImageLoader.getInst().loadBitmap((String) (mData.get(position).get("from_avatar")), new AsyncImageLoader.ImageLoadResultLister() {
+                        @Override
+                        public void onImageLoadResult(final Bitmap bitmap) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    iv_from.setImageBitmap(bitmap);
+                                }
+                            });
+                        }
+                    });
+
+                    final ImageView iv_consignee = (ImageView) view.findViewById(R.id.civ_history_list_to_avatar);
+                    AsyncImageLoader.getInst().loadBitmap((String) (mData.get(position).get("to_avatar")), new AsyncImageLoader.ImageLoadResultLister() {
+                        @Override
+                        public void onImageLoadResult(final Bitmap bitmap) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    iv_consignee.setImageBitmap(bitmap);
+                                }
+                            });
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
                 return view;
             }
         };
 
+        adapter.setViewBinder(new AsyncImageLoader.AsyncImageViewBinder(getActivity()));
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,8 +170,8 @@ public class TabHistoryOrder extends Fragment {
                             Log.i("virgil", response.getData().toString());
                             if (response.getCode().equals("1000")) {
                                 try {
-                                    JSONArray orders = (JSONArray)response.getData();
-                                    for(int i=0; i< orders.length(); i++){
+                                    JSONArray orders = (JSONArray) response.getData();
+                                    for (int i = 0; i < orders.length(); i++) {
                                         JSONObject item = orders.getJSONObject(i);
                                         Log.i("virgil", item.toString());
                                         JSONObject orderInfo = item.getJSONObject("orderInfo");
@@ -143,15 +181,17 @@ public class TabHistoryOrder extends Fragment {
                                         String remuneration = item.getString("remuneration");
                                         String consignee = orderInfo.getString("consignee");
                                         String company_name = orderInfo.getJSONObject("company").getString("name");
+                                        String company_pic = orderInfo.getJSONObject("company").getString("pic");
 
                                         Map<String, Object> data = new HashMap<String, Object>();
-                                        data.put("from_avatar", R.drawable.index_avatar);
+                                        data.put("from_avatar", company_pic);
                                         data.put("from_name", company_name);
                                         data.put("time", date);
                                         data.put("distance", "1.36");
                                         data.put("reward", remuneration);
                                         data.put("to_name", consignee);
-                                        data.put("to_avatar", R.drawable.index_avatar);
+                                        data.put("to_avatar", orderInfo.getString("headimgurl"));
+                                        data.put("status", status);
                                         data.put("jsonObject", item);
 
                                         mData.add(data);
