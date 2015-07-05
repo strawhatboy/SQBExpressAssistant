@@ -153,6 +153,7 @@
             android:background="@drawable/green_border"
             android:textColor="@color/font_green"
             android:text="@string/history_done"
+            android:visibility="invisible"
             android:textSize="12sp"/>
     </RelativeLayout>
 

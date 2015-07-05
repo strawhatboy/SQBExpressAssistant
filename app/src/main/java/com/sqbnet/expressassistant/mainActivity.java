@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.Location.GPSLocation;
-import com.sqbnet.expressassistant.service.SQBLocationService;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONObject;
@@ -67,6 +66,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     TabMyWallet tabMyWallet;
     historyDetailsFragment tabHistoryDetails;
     orderDoneFragment tabOrderDoneFragment;
+
 
 
     @Override
@@ -109,9 +109,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             }
         });
 
-        startSQBService();
         checkLoginStatus();
-
     }
 
     @Override
@@ -121,23 +119,43 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         super.onResume();
     }
 
-    private void startSQBService(){
-        if(GPSLocation.getInst().openGEPSettings() == false){
-            UtilHelper.showDialog("test");
+    @Override
+    protected void onDestroy() {
+        Log.i("virgil", "on destroy main activity");
+        UtilHelper.setSharedUserId(null, mainActivity.this);
+        GPSLocation.getInst().stop();
+        super.onDestroy();
+
+    }
+
+    private void startGPSLocation(){
+        GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
+            @Override
+            public void onStatusChanged(boolean isEnabled) {
+                if(!isEnabled){
+                    startGPSLocation();
+                }
+            }
+        };
+        if(!GPSLocation.getInst().openGEPSettings()){
+            new AlertDialog.Builder(mainActivity.this).setTitle("提示")
+                    .setMessage("GPS定位没有开启，请手动开启！")
+                    .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startGPSLocation();
+                                }
+                            });
+                        }
+                    })
+                    .show();
             return;
         }
-        this.bindService(new Intent(SQBLocationService.ACTION), new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                Log.i("virgil", "SQBLocationService connected");
-            }
 
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                Log.i("virgil", "SQBLocatonService disconnected");
-            }
-        }, BIND_AUTO_CREATE);
-        this.startService(new Intent(SQBLocationService.ACTION));
+        GPSLocation.getInst().start();
     }
 
     private void initView(){
@@ -269,6 +287,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             case RequestCode.LOGIN: {
                 switch (resultCode){
                     case ResultCode.LOGIN_SUCCESS:
+                        startGPSLocation();
                         break;
                     case ResultCode.QUIT:
                         finish();
@@ -302,8 +321,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                     .setPositiveButton("是", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            UtilHelper.setSharedUserId(null, mainActivity.this);
-                            MyApplication.getInst().AppExit();
+                            //UtilHelper.setSharedUserId(null, mainActivity.this);
+                            //MyApplication.getInst().AppExit();
+                            finish();
                         }
                     })
                     .setNegativeButton("否", null)

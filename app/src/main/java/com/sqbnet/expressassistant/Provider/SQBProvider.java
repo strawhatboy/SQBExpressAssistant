@@ -25,6 +25,7 @@ public class SQBProvider {
     private static String URL_UPLOAD_PHOTO = "uploadPhoto";
     private static String URL_HISTORY_ORDERS = "getHistoryOrder";
     private static String URL_DISPATCHER_INFO = "getDispatchPerson";
+    private static String URL_UPDATE_POSITION = "updatePosition";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -115,6 +116,20 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePosition(String userId, String latitude, String longitude, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_UPDATE_POSITION;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", userId);
+            jsonObject.put("latitude", latitude);
+            jsonObject.put("longitude", longitude);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

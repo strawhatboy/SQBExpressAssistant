@@ -50,6 +50,12 @@ public class loginActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.i("virgil", "onDestory Login Activity");
+        super.onDestroy();
+    }
+
     private void initView() {
         et_pwd = (EditText) findViewById(R.id.editTextPwd);
         et_usr = (EditText) findViewById(R.id.editTextUsr);

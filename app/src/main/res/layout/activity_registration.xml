@@ -162,6 +162,7 @@
                     <EditText
                         android:id="@+id/et_registration_id"
                         android:inputType="number"
+                        android:digits="0123456789x"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

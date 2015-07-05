@@ -2,14 +2,9 @@ package com.sqbnet.expressassistant;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.location.LocationListener;
-import android.os.IBinder;
+import android.os.Process;
 import android.util.Log;
-
-import com.sqbnet.expressassistant.service.SQBLocationService;
 
 import java.util.Stack;
 
@@ -25,6 +20,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInst = this;
+        CrashHandler.getInst().init(getApplicationContext());
     }
 
     public static MyApplication getInst(){
@@ -32,6 +28,7 @@ public class MyApplication extends Application {
     }
 
     public void addActivity(Activity activity){
+        Log.i("virgil", "add activity");
         if(activityStack == null){
             activityStack = new Stack<Activity>();
         }
@@ -44,15 +41,15 @@ public class MyApplication extends Application {
     }
 
     public void finishActivity(){
+        Log.i("virgil", "finish activity");
         Activity activity = activityStack.lastElement();
         finishActivity(activity);
     }
 
     public void finishActivity(Activity activity){
+        Log.i("virgil", "finish activity");
         if(activity != null){
             activityStack.remove(activity);
-            activity.finish();
-            activity = null;
         }
     }
 
@@ -67,6 +64,7 @@ public class MyApplication extends Application {
     public void finishAllActivity(){
         for (int i = 0, size = activityStack.size(); i < size; i++) {
             if (null != activityStack.get(i)) {
+                Log.i("virgil", "finish all activity:" + i);
                 activityStack.get(i).finish();
             }
         }
@@ -74,8 +72,11 @@ public class MyApplication extends Application {
     }
 
     public void AppExit() {
+        Log.i("virgil", "app exit");
         try {
             finishAllActivity();
+            Process.killProcess(Process.myPid());
+            System.exit(1);
         } catch (Exception e) {
         }
     }

@@ -6,16 +6,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.widget.Toast;
 
 import com.sqbnet.expressassistant.MyApplication;
-import com.sqbnet.expressassistant.ResultCode;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -24,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +35,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by virgil on 6/29/15.
+ * this is a helper class
  */
 public class UtilHelper {
 
@@ -42,8 +47,7 @@ public class UtilHelper {
 
     public static String getSharedUserId(Activity activity){
         SharedPreferences sharedPreferences = activity.getSharedPreferences(Constants.USER_INFO, Activity.MODE_PRIVATE);
-        String userId = sharedPreferences.getString(Constants.USER_ID, null);
-        return  userId;
+        return sharedPreferences.getString(Constants.USER_ID, null);
     }
 
     public static void setSharedUserId(String userId, Activity activity){
@@ -59,7 +63,7 @@ public class UtilHelper {
 
     public static String getDateString(long timeStamp, String format){
         Calendar calendar = Calendar.getInstance();
-        DateFormat objFormatter = new SimpleDateFormat(format);
+        DateFormat objFormatter = new SimpleDateFormat(format, Locale.SIMPLIFIED_CHINESE);
         TimeZone timeZone = calendar.getTimeZone();
         objFormatter.setTimeZone(timeZone);
         String result = objFormatter.format(getDate(timeStamp));
@@ -76,7 +80,7 @@ public class UtilHelper {
 
     public static String ImagePathToB64(String imagePath){
         File file = new File(imagePath);
-        InputStream in = null;
+        InputStream in;
         byte[] data = null;
         try{
             in = new FileInputStream(file);
@@ -86,7 +90,11 @@ public class UtilHelper {
         }catch (IOException e){
             e.printStackTrace();
         }
-        return Base64.encodeToString(data, Base64.DEFAULT);
+        if( data != null) {
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        }else {
+            return "";
+        }
     }
 
     public static String MD5(String str)
@@ -280,15 +288,18 @@ public class UtilHelper {
         Toast.makeText(MyApplication.getInst().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showDialog(String message){
-        new AlertDialog.Builder(MyApplication.getInst().currentActivity()).setTitle("提示")
-                .setMessage("确认退出？")
-                .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+    public static Bitmap getBitmapFromUrl(String httpUrl) {
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(httpUrl);
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            InputStream inputStream = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                    }
-                })
-                .show();
+        return bitmap;
     }
+
 }

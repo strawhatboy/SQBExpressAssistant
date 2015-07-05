@@ -17,8 +17,7 @@ public class BaseActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         MyApplication.getInst().finishActivity(this);
+        super.onDestroy();
     }
 }

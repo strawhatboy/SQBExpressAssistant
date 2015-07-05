@@ -16,8 +16,7 @@ public class BaseFragmentActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         MyApplication.getInst().finishActivity(this);
+        super.onDestroy();
     }
 }

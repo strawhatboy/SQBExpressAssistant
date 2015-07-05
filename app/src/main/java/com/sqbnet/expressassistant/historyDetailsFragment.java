@@ -1,5 +1,6 @@
 package com.sqbnet.expressassistant;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,10 +8,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
@@ -49,6 +52,9 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
     private TextView mConsigneeAddress;
     private TextView mConsigneePhone;
 
+    private ImageView iv_Company;
+    private ImageView iv_Consignee;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,6 +79,9 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
         mConsigneeName = (TextView) view.findViewById(R.id.tv_history_details_consignee);
         mConsigneeAddress = (TextView) view.findViewById(R.id.tv_history_details_consignee_address);
         mConsigneePhone = (TextView) view.findViewById(R.id.tv_history_details_consignee_phone);
+        iv_Company = (ImageView) view.findViewById(R.id.civ_history_details_from_avatar);
+        iv_Consignee = (ImageView) view.findViewById(R.id.civ_history_details_to_avatar);
+
 
         textRotateAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotated_text_view);
         textRotateAnimation.setFillAfter(true);
@@ -135,6 +144,35 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
                 mData.add(goodData);
             }
             adapter.notifyDataSetChanged();
+
+            String companyAvatar = company.getString("pic");
+            String consigneeAvatar = orderInfo.getString("headimgurl");
+            AsyncImageLoader.getInst().loadBitmap(companyAvatar, new AsyncImageLoader.ImageLoadResultLister() {
+                @Override
+                public void onImageLoadResult(final Bitmap bitmap) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            iv_Company.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            });
+            AsyncImageLoader.getInst().loadBitmap(consigneeAvatar, new AsyncImageLoader.ImageLoadResultLister() {
+                @Override
+                public void onImageLoadResult(final Bitmap bitmap) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            iv_Consignee.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            });
+
+            if (data.getString("status").equals("0")) {
+                tv_done.setVisibility(View.INVISIBLE);
+            }
 
             mStartTime.setText(UtilHelper.getDateString(data.getLong("starttime")).split("\\s+")[1]);
             mEndTime.setText(UtilHelper.getDateString(data.getLong("endtime")).split("\\s+")[1]);
