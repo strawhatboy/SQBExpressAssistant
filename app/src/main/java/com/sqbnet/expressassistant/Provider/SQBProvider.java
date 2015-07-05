@@ -26,6 +26,10 @@ public class SQBProvider {
     private static String URL_HISTORY_ORDERS = "getHistoryOrder";
     private static String URL_DISPATCHER_INFO = "getDispatchPerson";
     private static String URL_UPDATE_POSITION = "updatePosition";
+    private static String URL_GET_ASSIGN_ORDER = "getAssignOrder";
+    private static String URL_GET_ORDER_INFO = "getOrderInfo";
+    private static String URL_UPDATE_STATUS = "updateStatus";
+    private static String URL_VERIFY_CODE = "verifyCode";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -127,6 +131,56 @@ public class SQBProvider {
             jsonObject.put("d_id", userId);
             jsonObject.put("latitude", latitude);
             jsonObject.put("longitude", longitude);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getAssignOrder(String userId, final  SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_GET_ASSIGN_ORDER;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", userId);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getOrderInfo(String order_id, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_GET_ORDER_INFO;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("order_id", order_id);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateOrderStatus(String order_id, String status, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_UPDATE_STATUS;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("order_id", order_id);
+            jsonObject.put("status", status);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void verifyCode(String order_id, String code, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_VERIFY_CODE;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("order_id", order_id);
+            jsonObject.put("code", code);
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){

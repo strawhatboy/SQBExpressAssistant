@@ -9,9 +9,7 @@ import android.widget.Button;
 /**
  * Created by Andy on 6/29/2015.
  */
-public class orderGotFragment extends android.support.v4.app.Fragment implements orderMainActivity.IWizardPage {
-
-    orderMainActivity.IWizardPageDelegate delegate;
+public class orderGotFragment extends OrderBaseFragment {
 
     private Button btn_seeDetails;
 
@@ -37,7 +35,7 @@ public class orderGotFragment extends android.support.v4.app.Fragment implements
     }
 
     @Override
-    public void setNextDelegate(orderMainActivity.IWizardPageDelegate delegate) {
-        this.delegate = delegate;
+    void loadData() {
+
     }
 }

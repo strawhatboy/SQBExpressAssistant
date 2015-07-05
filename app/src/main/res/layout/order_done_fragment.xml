@@ -197,13 +197,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/order_done_balance"
                     android:textSize="20sp"
-                    android:textColor="@color/font_blue"/>
+                    android:textColor="@color/font_blue"
+                    />
                 <TextView
                     android:layout_marginLeft="4dp"
                     android:id="@+id/tv_order_done_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4.88"
+                    android:text="0"
                     android:textSize="40sp"
                     android:textColor="@color/font_blue"/>
                 <TextView
@@ -222,9 +223,10 @@
                 android:layout_centerInParent="true"
                 android:text="@string/order_done_text"
                 android:textSize="12sp"
-                android:textColor="@color/font_black"/>
+                android:textColor="@color/font_black"
+                />
             <Button
-                android:id="@+id/btn_order_got_see_details"
+                android:id="@+id/btn_order_done"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"

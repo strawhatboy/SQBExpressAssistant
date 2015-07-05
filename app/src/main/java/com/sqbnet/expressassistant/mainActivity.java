@@ -1,41 +1,31 @@
 package com.sqbnet.expressassistant;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.Location.GPSLocation;
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -56,10 +46,14 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     private LinearLayout mainLayout;
 
     private TextView tv_rob_order;
+    private TextView tv_history_order;
+    private TextView tv_my_wallet;
 
     private boolean isWaiting = false;
 
     private Resources resources;
+
+    private  Timer timer;
 
     TabRobOrder tabRobOrder;
     TabHistoryOrder tabHistoryOrder;
@@ -124,6 +118,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Log.i("virgil", "on destroy main activity");
         UtilHelper.setSharedUserId(null, mainActivity.this);
         GPSLocation.getInst().stop();
+        if(timer != null){
+            timer.cancel();
+        }
         super.onDestroy();
 
     }
@@ -165,6 +162,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         mainLayout = (LinearLayout)findViewById(R.id.ly_main);
 
         tv_rob_order = (TextView) findViewById(R.id.tv_rob_order);
+        tv_history_order = (TextView) findViewById(R.id.tv_history_order);
+        tv_my_wallet = (TextView) findViewById(R.id.tv_my_wallet);
 
         tabRobOrder = new TabRobOrder();
         tabHistoryOrder = new TabHistoryOrder();
@@ -184,6 +183,15 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             public void back() {
                 mViewPager.setCurrentItem(1);
                 setBackgroudLight();
+            }
+        };
+
+        tabOrderDoneFragment.IGetOrder = new orderDoneFragment.IGetOrder(){
+
+            @Override
+            public void run() {
+                mViewPager.setCurrentItem(0);
+                setStatus(true);
             }
         };
 
@@ -222,14 +230,38 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 else {
                     setStatus(!isWaiting);
                 }
+                if(!isWaiting){
+                    mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
+                    tv_rob_order.setTextColor(getResources().getColorStateList(R.color.font_white));
+                    mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                    tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_black));
+                    mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                    tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
+                }
                 break;
             case R.id.id_tab_btn_history_order:
                 mViewPager.setCurrentItem(1);
                 setBackgroudLight();
+                if(!isWaiting) {
+                    mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                    tv_rob_order.setTextColor(getResources().getColorStateList(R.color.font_black));
+                }
+                mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
+                tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_white));
+                mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
                 break;
             case R.id.id_tab_btn_my_wallet:
                 mViewPager.setCurrentItem(3);
                 setBackgroudLight();
+                if(!isWaiting) {
+                    mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                    tv_rob_order.setTextColor(getResources().getColorStateList(R.color.font_black));
+                }
+                mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_black));
+                mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
+                tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_white));
                 break;
         }
     }
@@ -241,22 +273,26 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         isWaiting = status;
         Log.d("Status Change :", Boolean.toString(isWaiting));
         if (isWaiting) {
-            mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_green));
+            mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_green));
             tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
             setBackgroudLight();
             //TODO: start to wait for order from server
+            getAssignOrder();
 
             //Got Order !! for debug
-            Intent intent = new Intent();
-            intent.setClass(mainActivity.this, orderMainActivity.class);
+           // Intent intent = new Intent();
+            //intent.setClass(mainActivity.this, orderMainActivity.class);
 
-            startActivityForResult(intent, RequestCode.ORDER);
+            //startActivityForResult(intent, RequestCode.ORDER);
 
         } else {
-            mTabBtnRobOrder.setBackground(resources.getDrawable(R.color.button_blue));
+            mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_blue));
             tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
             setBackgroudDark();
             //TODO: stop the listening
+            if(timer != null) {
+                timer.cancel();
+            }
         }
         tabRobOrder.setIsWaiting(isWaiting);
     }
@@ -270,10 +306,67 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void setBackground(boolean isLight) {
-        mainLayout.setBackground(resources.getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
+        mainLayout.setBackgroundDrawable(resources.getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
     }
 
+    private void getAssignOrder(){
+        final String user_id = UtilHelper.getSharedUserId(this);
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SQBProvider.getInst().getAssignOrder(user_id, new SQBResponseListener() {
+                    @Override
+                    public void onResponse(SQBResponse response) {
+                        if(response == null)
+                            return;
+                        Log.i("virgil", "getAssignOrder");
+                        Log.i("virgil", response.getCode());
+                        Log.i("virgil", response.getMsg());
+                        Log.i("virgil", response.getData().toString());
 
+                       /* runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent();
+                                intent.setClass(mainActivity.this, orderMainActivity.class);
+                                intent.putExtra("user_id", user_id);
+                                intent.putExtra("order_id", "939");
+                                intent.putExtra("status", "2");
+                                startActivityForResult(intent, RequestCode.ORDER);
+                                setStatus(false);
+                            }
+                        });*/
+
+                        if(response.getCode().equals("1000")){
+                            timer.cancel();
+                            JSONObject result = (JSONObject)response.getData();
+                            try {
+                                final String order_id = result.getString("order_id");
+                                final String status = result.getString("d_status");
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent();
+                                        intent.setClass(mainActivity.this, orderMainActivity.class);
+                                        intent.putExtra("user_id", user_id);
+                                        intent.putExtra("order_id", order_id);
+                                        intent.putExtra("status", status);
+                                        startActivityForResult(intent, RequestCode.ORDER);
+                                        setStatus(false);
+                                    }
+                                });
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
+        }, 1000, 30*1000);
+    }
     /**
      * handler for the login
      * @param requestCode
@@ -298,10 +391,14 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             case RequestCode.ORDER: {
                 switch (resultCode) {
                     case ResultCode.ORDER_DONE:
+                        Bundle bundle = data.getExtras();
+                        String remuneration = bundle.getString("data");
+                        orderDoneFragment.Remuneration = remuneration;
                         mViewPager.setCurrentItem(4);
                         setBackgroudDark();
                         break;
                     case ResultCode.ORDER_CANCELED:
+                        Log.i("virgil", "order_cancel");
                         break;
                 }
             }

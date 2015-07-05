@@ -95,4 +95,7 @@
     <string name="reg_success_sub_2">please wait for system check</string>
     <string name="btn_quit">quit</string>
     <string name="reg_success_sub_3">Please wait for our call</string>
+    <string name="validFailed">Verify Code Failure</string>
+    <string name="validFailed_txt">please re-enter the code</string>
+    <string name="reValide">Re enter</string>
 </resources>

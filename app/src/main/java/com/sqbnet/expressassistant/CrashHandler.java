@@ -74,6 +74,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 throwable.getCause().printStackTrace(printWriter);
                 printWriter.close();
                 String result = writer.toString();
+                Log.i("virgil", "-------------Application Exception");
                 Log.i("virgil", result);
                 Looper.loop();
             }

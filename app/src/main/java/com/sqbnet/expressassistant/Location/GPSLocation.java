@@ -44,6 +44,10 @@ public class GPSLocation {
         return  sInst;
     }
 
+    public  GPSLocation(){
+        locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
+    }
+
     public interface GPSProviderStatusChanged{
         public void onStatusChanged(boolean isEnabled);
     }
@@ -60,23 +64,25 @@ public class GPSLocation {
 
     public void start(){
         Log.i("virgil", "GPS update start");
-        locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1*1000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60*1000, 10, locationListener);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        sendLocationToServer(location);
     }
 
     public void stop(){
         Log.i("virgil", "GPS update stop");
-        locationManager.removeUpdates(locationListener);
+        if(locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
 
-    private final LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
+    private void sendLocationToServer(Location location){
+        try {
             String latitude = String.valueOf(location.getLatitude());
             String longitude = String.valueOf(location.getLongitude());
             Log.i("virgil", "Lat:" + latitude + ", Lng:" + longitude);
             String useId = UtilHelper.getSharedUserId(MyApplication.getInst().currentActivity());
-            SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener(){
+            SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {
                 @Override
                 public void onResponse(SQBResponse response) {
                     Log.i("virgil", response.getCode());
@@ -84,6 +90,16 @@ public class GPSLocation {
                     Log.i("virgil", response.getData().toString());
                 }
             });
+        }catch (Exception e){
+            Log.e("GPSLocation", "virgil", e);
+            e.printStackTrace();
+        }
+    }
+
+    private final LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+           sendLocationToServer(location);
         }
 
         @Override

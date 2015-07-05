@@ -58,7 +58,7 @@
     <string name="order_got_title">配送任务</string>
     <string name="order_got_info">商圈宝平台给你派发了一个送货任务，赶紧查看吧！</string>
     <string name="order_got_see_details">查看派单</string>
-    <string name="order_got_hint">请尽快确认配送任务，系统默认拍单时间为5分钟，如超过时限未响应，系统将自动匹配下一配送人员，同时会扣除你的系统评分。</string>
+    <string name="order_got_hint">请尽快确认配送任务，系统默认派单时间为5分钟，如超过时限未响应，系统将自动匹配下一配送人员，同时会扣除你的系统评分。</string>
     <string name="order_processbar_confirm">接单</string>
     <string name="order_processbar_take_delivery">取货</string>
     <string name="order_processbar_deliver">送货</string>
@@ -90,4 +90,7 @@
     <string name="title_activity_login_failed">登录失败页面</string>
     <string name="title_activity_main">主页面</string>
     <string name="title_activity_registration_agreement">注册协议同一界面</string>
+    <string name="validFailed">验证失败</string>
+    <string name="validFailed_txt">请重新核对配送码，并检查您的输入是否正确！</string>
+    <string name="reValide">重新输入</string>
 </resources>

@@ -46,14 +46,14 @@ public class UtilHelper {
     }
 
     public static String getSharedUserId(Activity activity){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(Constants.USER_INFO, Activity.MODE_PRIVATE);
-        return sharedPreferences.getString(Constants.USER_ID, null);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
+        return sharedPreferences.getString(CustomConstants.USER_ID, null);
     }
 
     public static void setSharedUserId(String userId, Activity activity){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(Constants.USER_INFO, Activity.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constants.USER_ID, userId);
+        editor.putString(CustomConstants.USER_ID, userId);
         editor.commit();
     }
 

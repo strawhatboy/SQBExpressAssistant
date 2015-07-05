@@ -4,6 +4,62 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <RelativeLayout
+        android:id="@+id/rl_order_input_valid_again"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="13"
+        android:layout_marginTop="15dp">
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/login_failed_circle"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/validFailed"
+                    android:textSize="20sp"
+                    android:textColor="@color/font_blue"
+                    />
+            </LinearLayout>
+            <TextView
+                android:layout_width="230dp"
+                android:paddingTop="20dp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/validFailed_txt"
+                android:textSize="12sp"
+                android:textColor="@color/font_black"
+                />
+            <Button
+                android:id="@+id/btn_order_re_valide"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/reValide"
+                android:textColor="@color/font_white"
+                android:background="@drawable/button_blue_selector"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_order_input_valid"
         android:layout_marginTop="15dp"
         android:layout_width="fill_parent"
         android:layout_height="0dp"

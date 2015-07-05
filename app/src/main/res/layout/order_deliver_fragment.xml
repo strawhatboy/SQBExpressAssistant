@@ -55,31 +55,34 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/tv_order_customer_name"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:text="三叶草"
+                        android:text=""
                         android:textSize="15dp"
                         android:textColor="@color/font_black"/>
                     <TextView
+                        android:id="@+id/tv_order_customer_address"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:text="花样年华小区C栋2单元1004"
+                        android:text=""
                         android:textSize="12dp"
                         android:textColor="@color/font_blue"/>
                     <TextView
+                        android:id="@+id/tv_order_customer_phone"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:text="13688888888"
+                        android:text=""
                         android:textSize="12dp"
                         android:textColor="@color/font_black"/>
                 </LinearLayout>
             </LinearLayout>
             <com.sqbnet.expressassistant.controls.CircleImageView
                 android:layout_margin="5dp"
-                android:id="@+id/civ_history_details_to_avatar"
+                android:id="@+id/civ_order_customer_image"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center_vertical"
@@ -116,7 +119,7 @@
                             android:id="@+id/tv_order_deliver_good_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="6"
+                            android:text="0"
                             android:textColor="@color/font_black"
                             android:textSize="16dp"/>
                         <TextView
@@ -180,9 +183,10 @@
                                 android:textColor="@color/font_black"
                                 android:textSize="12dp"/>
                             <TextView
+                                android:id="@+id/tv_order_distance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1.24km"
+                                android:text="0km"
                                 android:textSize="15dp"
                                 android:textColor="@color/font_orange"/>
                         </LinearLayout>
@@ -199,9 +203,10 @@
                                 android:textColor="@color/font_black"
                                 android:textSize="12dp"/>
                             <TextView
+                                android:id="@+id/tv_order_remuneration"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="4.88元"
+                                android:text="0元"
                                 android:textSize="15dp"
                                 android:textColor="@color/font_orange"/>
                         </LinearLayout>

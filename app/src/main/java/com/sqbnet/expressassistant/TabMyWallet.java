@@ -98,9 +98,9 @@ public class TabMyWallet extends Fragment {
                 TextView tv_index = (TextView) view.findViewById(R.id.tv_wallet_list_index);
                 tv_index.setText(Integer.toString(position + 1));
                 if (position % 2 == 0) {
-                    view.setBackground(getActivity().getResources().getDrawable(R.color.bg_white));
+                    view.setBackgroundDrawable(getActivity().getResources().getDrawable(R.color.bg_white));
                 } else {
-                    view.setBackground(null);
+                    view.setBackgroundDrawable(null);
                 }
                 return view;
             }

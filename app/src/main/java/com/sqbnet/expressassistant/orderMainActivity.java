@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.controls.UnScrollableViewPager;
+import com.sqbnet.expressassistant.utils.CustomConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,10 @@ public class orderMainActivity extends FragmentActivity {
 
     private List<List<View>> processbarElements = new ArrayList<List<View>>();
 
+    private String mOrderId;
+    private String mStatus;
+    private String mUserId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +61,9 @@ public class orderMainActivity extends FragmentActivity {
     }
 
     private void initView() {
-        initFragments();
-        initProcessbar();
         mainLayout = (LinearLayout) findViewById(R.id.ly_order_main);
+        initProcessbar();
+        initFragments();
     }
 
     private void initFragments() {
@@ -74,7 +79,10 @@ public class orderMainActivity extends FragmentActivity {
                     setProgressBarIndex(currentPage, true);
                 // move to next fragment
                 if (currentPage < fragments.size() - 1) {
-                    viewPager.setCurrentItem(currentPage + 1);
+                    int index = currentPage + 1;
+                    viewPager.setCurrentItem(index);
+                    ((IWizardPage)fragments.get(index)).setParameters(mUserId, mOrderId, mStatus);
+                    ((OrderBaseFragment)fragments.get(index)).loadData();
                 }
 
                 if (currentPage == 1 || currentPage == 2) {
@@ -124,6 +132,28 @@ public class orderMainActivity extends FragmentActivity {
             }
         };
         viewPager.setAdapter(fragmentPagerAdapter);
+
+        Intent intent = getIntent();
+        mUserId = intent.getStringExtra("user_id");
+        mOrderId = intent.getStringExtra("order_id");
+        mStatus = intent.getStringExtra("status");
+        if(mStatus.equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)){
+            _orderGotFragment.setParameters(mUserId, mOrderId, mStatus);
+            _orderConfirmFragment.setParameters(mUserId, mOrderId, mStatus);
+        }else if(mStatus.equals(CustomConstants.ASSIGN_ORDER_ACCEPT)){
+            _orderTakeDeliveryFragment.setParameters(mUserId, mOrderId, mStatus);
+            viewPager.setCurrentItem(2);
+            _orderTakeDeliveryFragment.loadData();
+            setProgressBarIndex(0, true);
+            setProgressBarIndex(1, true);
+        }else if(mStatus.equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mStatus.equals(CustomConstants.ASSIGN_ORDER_DELIVERING)){
+            _orderDeliverFragment.setParameters(mUserId, mOrderId, mStatus);
+            viewPager.setCurrentItem(3);
+            _orderDeliverFragment.loadData();
+            setProgressBarIndex(0, true);
+            setProgressBarIndex(1, true);
+            setProgressBarIndex(2, true);
+        }
     }
 
     private void initProcessbar() {
@@ -164,14 +194,14 @@ public class orderMainActivity extends FragmentActivity {
         processbarElements.add(_4th);
     }
 
-    private void setProgressBarIndex(int index, boolean isEnabled) {
+    public void setProgressBarIndex(int index, boolean isEnabled) {
         if (index >= 0) {
             ly_processbar.setVisibility(View.VISIBLE);
             List<View> views = processbarElements.get(index);
             int colorId = isEnabled ? R.color.font_green : R.color.font_grey;
             ((TextView) views.get(0)).setTextColor(getResources().getColorStateList(colorId));
-            views.get(1).setBackground(getResources().getDrawable(colorId));
-            views.get(2).setBackground(getResources().getDrawable(isEnabled ? R.drawable.green_circle : R.drawable.grey_circle));
+            views.get(1).setBackgroundDrawable(getResources().getDrawable(colorId));
+            views.get(2).setBackgroundDrawable(getResources().getDrawable(isEnabled ? R.drawable.green_circle : R.drawable.grey_circle));
 
         } else {
             ly_processbar.setVisibility(View.INVISIBLE);
@@ -185,6 +215,7 @@ public class orderMainActivity extends FragmentActivity {
 
     public interface IWizardPage {
         void setNextDelegate(IWizardPageDelegate delegate);
+        void setParameters(String user_id, String order_id, String status);
     }
 
     private void setBackgroudLight() {
@@ -196,6 +227,6 @@ public class orderMainActivity extends FragmentActivity {
     }
 
     private void setBackground(boolean isLight) {
-        mainLayout.setBackground(getResources().getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
+        mainLayout.setBackgroundDrawable(getResources().getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
     }
 }
