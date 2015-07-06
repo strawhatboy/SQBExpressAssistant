@@ -55,7 +55,7 @@ public class GPSLocation {
     public GPSProviderStatusChanged GPSProviderStatusChanged;
 
     public boolean openGEPSettings(){
-        locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
+        //locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
            return true;
         }
@@ -64,9 +64,27 @@ public class GPSLocation {
 
     public void start(){
         Log.i("virgil", "GPS update start");
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60*1000, 10, locationListener);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        sendLocationToServer(location);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6*1000, 0, locationListener);
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //sendLocationToServer(location);
+    }
+
+    public Location getCurrentLocation(){
+        if(openGEPSettings()) {
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            String provider = locationManager.getBestProvider(criteria, true);
+            Location location = null; locationManager.getLastKnownLocation(provider);
+            while(location == null){
+                location = locationManager.getLastKnownLocation(provider);
+            }
+            return location;
+        }
+        return null;
     }
 
     public void stop(){
@@ -82,6 +100,8 @@ public class GPSLocation {
             String longitude = String.valueOf(location.getLongitude());
             Log.i("virgil", "Lat:" + latitude + ", Lng:" + longitude);
             String useId = UtilHelper.getSharedUserId(MyApplication.getInst().currentActivity());
+            if(useId == null)
+                return;
             SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {
                 @Override
                 public void onResponse(SQBResponse response) {
@@ -99,7 +119,8 @@ public class GPSLocation {
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-           sendLocationToServer(location);
+            Log.i("virgil", "onLocationChanged");
+            sendLocationToServer(location);
         }
 
         @Override

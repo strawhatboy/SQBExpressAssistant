@@ -126,36 +126,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     }
 
-    private void startGPSLocation(){
-        GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
-            @Override
-            public void onStatusChanged(boolean isEnabled) {
-                if(!isEnabled){
-                    startGPSLocation();
-                }
-            }
-        };
-        if(!GPSLocation.getInst().openGEPSettings()){
-            new AlertDialog.Builder(mainActivity.this).setTitle("提示")
-                    .setMessage("GPS定位没有开启，请手动开启！")
-                    .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startGPSLocation();
-                                }
-                            });
-                        }
-                    })
-                    .show();
-            return;
-        }
 
-        GPSLocation.getInst().start();
-        //BaiDuLocationService.getInst().getLocationClient().start();
-    }
 
     private void initView(){
         mTabBtnRobOrder = (LinearLayout)findViewById(R.id.id_tab_btn_rob_order);
@@ -383,7 +354,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             case RequestCode.LOGIN: {
                 switch (resultCode){
                     case ResultCode.LOGIN_SUCCESS:
-                        startGPSLocation();
+                        //startGPSLocation();
                         break;
                     case ResultCode.QUIT:
                         finish();

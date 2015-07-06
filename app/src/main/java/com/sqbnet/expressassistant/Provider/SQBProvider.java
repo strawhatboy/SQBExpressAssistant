@@ -30,6 +30,9 @@ public class SQBProvider {
     private static String URL_GET_ORDER_INFO = "getOrderInfo";
     private static String URL_UPDATE_STATUS = "updateStatus";
     private static String URL_VERIFY_CODE = "verifyCode";
+    private static String URL_GIVEUP_ORDER = "giveUpOrder";
+    private static String URL_UPDATE_USER_STATUS = "updateUserStatus";
+    private static String URL_USER_LOGOUT = "userLogout";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -42,12 +45,14 @@ public class SQBProvider {
         return sInst;
     }
 
-    public void login(String username, String password, final SQBResponseListener listener){
+    public void login(String username, String password, String latitude, String longitude, final SQBResponseListener listener){
         try{
             String url = BASE_URL + URL_LOGIN;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username", username);
             jsonObject.put("password", password);
+            jsonObject.put("latitude", latitude);
+            jsonObject.put("longitude", longitude);
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){

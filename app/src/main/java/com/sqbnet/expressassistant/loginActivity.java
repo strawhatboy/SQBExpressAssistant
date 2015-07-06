@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
@@ -56,6 +58,13 @@ public class loginActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        startGPSLocation();
+    }
+
     private void initView() {
         et_pwd = (EditText) findViewById(R.id.editTextPwd);
         et_usr = (EditText) findViewById(R.id.editTextUsr);
@@ -88,10 +97,12 @@ public class loginActivity extends BaseActivity {
 
                 password = UtilHelper.MD5(password);
 
+                Location location = GPSLocation.getInst().getCurrentLocation();
+
                 final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
                 progressDialog.show();
 
-                SQBProvider.getInst().login(username, password, new SQBResponseListener() {
+                SQBProvider.getInst().login(username, password, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
                     @Override
                     public void onResponse(final SQBResponse response) {
                         runOnUiThread(new Runnable() {
@@ -153,6 +164,36 @@ public class loginActivity extends BaseActivity {
         return super.onTouchEvent(event);
     }
 
+    private void startGPSLocation(){
+        GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
+            @Override
+            public void onStatusChanged(boolean isEnabled) {
+                if(!isEnabled){
+                    startGPSLocation();
+                }
+            }
+        };
+        if(!GPSLocation.getInst().openGEPSettings()){
+            new AlertDialog.Builder(loginActivity.this).setTitle("提示")
+                    .setMessage("GPS定位没有开启，请手动开启！")
+                    .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startGPSLocation();
+                                }
+                            });
+                        }
+                    })
+                    .show();
+            return;
+        }
+
+        GPSLocation.getInst().start();
+        //BaiDuLocationService.getInst().getLocationClient().start();
+    }
 
     @Override
     public void onBackPressed() {
