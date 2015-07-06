@@ -39,6 +39,8 @@ import java.util.regex.Pattern;
  */
 public class UtilHelper {
 
+    public static String userId;
+
     public static boolean isMobileNO(String mobiles){
         Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
         Matcher m = p.matcher(mobiles);
@@ -46,15 +48,17 @@ public class UtilHelper {
     }
 
     public static String getSharedUserId(Activity activity){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
-        return sharedPreferences.getString(CustomConstants.USER_ID, null);
+        //SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
+        //return sharedPreferences.getString(CustomConstants.USER_ID, null);
+        return UtilHelper.userId;
     }
 
     public static void setSharedUserId(String userId, Activity activity){
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(CustomConstants.USER_ID, userId);
-        editor.commit();
+        //SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
+        //SharedPreferences.Editor editor = sharedPreferences.edit();
+        //editor.putString(CustomConstants.USER_ID, userId);
+        //editor.commit();
+        UtilHelper.userId = userId;
     }
 
     public static String getDateString(long timeStamp) {

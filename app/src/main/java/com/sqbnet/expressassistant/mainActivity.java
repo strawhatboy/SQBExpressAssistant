@@ -230,14 +230,15 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 else {
                     setStatus(!isWaiting);
                 }
-                if(!isWaiting){
+                if(!isWaiting) {
                     mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
                     tv_rob_order.setTextColor(getResources().getColorStateList(R.color.font_white));
-                    mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
-                    tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_black));
-                    mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
-                    tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
                 }
+                mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_black));
+                mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
+                tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
+
                 break;
             case R.id.id_tab_btn_history_order:
                 mViewPager.setCurrentItem(1);
