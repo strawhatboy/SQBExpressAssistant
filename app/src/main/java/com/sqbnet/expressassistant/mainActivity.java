@@ -154,7 +154,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         }
 
         GPSLocation.getInst().start();
-        //BaiDuLocationService.getInst().getLocationClient().start();
+        BaiDuLocationService.getInst().getLocationClient().start();
     }
 
     private void initView(){
