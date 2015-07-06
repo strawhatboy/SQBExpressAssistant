@@ -41,6 +41,7 @@ public class AsyncImageLoader {
             Bitmap bitmap = softReference.get();
             if (bitmap != null) {
                 callback.onImageLoadResult(bitmap);
+                Log.d("AsyncImageLoader", "got bitmap from cache for url: " + url);
                 return;
             } else {
                 Log.e("AsyncImageLoader", "cache bitmap is null");
@@ -58,17 +59,17 @@ public class AsyncImageLoader {
     }
 
     private class LoaderThread extends Thread {
-        LinkedHashMap<String, ImageLoadResultLister> mTaskMap;
+        LinkedHashMap<ImageLoadResultLister, String> mTaskMap;
         private boolean mIsWait;
 
         public LoaderThread(String url, ImageLoadResultLister callback) {
-            mTaskMap = new LinkedHashMap<String, ImageLoadResultLister>();
-            mTaskMap.put(url, callback);
+            mTaskMap = new LinkedHashMap<ImageLoadResultLister, String>();
+            mTaskMap.put(callback, url);
         }
 
         public void load(String url, ImageLoadResultLister callback) {
             mTaskMap.remove(callback);
-            mTaskMap.put(url, callback);
+            mTaskMap.put(callback, url);
             if (mIsWait) {
                 synchronized (this) {
                     this.notify();
@@ -80,12 +81,18 @@ public class AsyncImageLoader {
         public void run() {
             while (mTaskMap.size() > 0) {
                 mIsWait = false;
-                final String url  = mTaskMap.keySet().iterator().next();
-                final ImageLoadResultLister callback = mTaskMap.remove(url);
-                final Bitmap bitmap = UtilHelper.getBitmapFromUrl(url);
+                final ImageLoadResultLister callback = mTaskMap.keySet().iterator().next();
+                final String url = mTaskMap.remove(callback);
+                final Bitmap bitmap;
+                if (imageCache.containsKey(url)) {
+                    bitmap = imageCache.get(url).get();
+                } else {
+                    bitmap = UtilHelper.getBitmapFromUrl(url);
+                    imageCache.put(url, new SoftReference<Bitmap>(bitmap));
+                }
 
-                imageCache.put(url, new SoftReference<Bitmap>(bitmap));
                 callback.onImageLoadResult(bitmap);
+                Log.d("AsyncImageLoader", "got bitmap from url: " + url);
 
                 if (mTaskMap.isEmpty()) {
                     try {

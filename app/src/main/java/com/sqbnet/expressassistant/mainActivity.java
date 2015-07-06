@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
@@ -153,6 +154,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         }
 
         GPSLocation.getInst().start();
+        //BaiDuLocationService.getInst().getLocationClient().start();
     }
 
     private void initView(){

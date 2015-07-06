@@ -55,8 +55,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 Log.e(TAG, "virgil", e);
             }
 
-            Process.killProcess(Process.myPid());
-            System.exit(1);
+            //Process.killProcess(Process.myPid());
+            //System.exit(1);
         }
     }
 
