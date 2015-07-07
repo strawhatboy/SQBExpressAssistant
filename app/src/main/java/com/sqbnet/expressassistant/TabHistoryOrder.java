@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class TabHistoryOrder extends BaseFragment {
 
-    private Boolean isPrepared = false;
+    private boolean isPrepared = false;
     private ListView listView;
     private SimpleAdapter adapter;
     private List<Map<String, Object>> mData;

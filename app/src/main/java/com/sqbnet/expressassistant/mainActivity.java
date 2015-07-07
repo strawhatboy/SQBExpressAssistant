@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -40,7 +42,7 @@ import java.util.TimerTask;
 public class mainActivity extends BaseFragmentActivity implements View.OnClickListener{
 
     private ViewPager mViewPager;
-    private FragmentPagerAdapter mFragmentPagerAdapter;
+    private FragmentStatePagerAdapter mFragmentPagerAdapter;
     private List<Fragment> mFragments = new ArrayList<Fragment>();
 
     private LinearLayout mTabBtnRobOrder;
@@ -52,6 +54,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     private TextView tv_history_order;
     private TextView tv_my_wallet;
 
+    private boolean isHistoryDetailsVisible = false;
     private boolean isWaiting = false;
 
     private Resources resources;
@@ -75,7 +78,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
         initView();
 
-        mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        mFragmentPagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 return mFragments.get(position);
@@ -84,6 +87,11 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             @Override
             public int getCount() {
                 return mFragments.size();
+            }
+
+            @Override
+            public int getItemPosition(Object object) {
+                return PagerAdapter.POSITION_NONE;
             }
         };
 
@@ -157,6 +165,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         tabHistoryOrder.gotoDetails = tabHistoryDetails.gotoDetails = new TabHistoryOrder.IGotoDetails() {
             @Override
             public void gotoDetails(JSONObject data) {
+                isHistoryDetailsVisible = true;
+                mFragments.add(2, tabHistoryDetails);
+                mFragmentPagerAdapter.notifyDataSetChanged();
                 mViewPager.setCurrentItem(2);
                 tabHistoryDetails.setData(data);
                 setBackgroudLight();
@@ -164,7 +175,10 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
             @Override
             public void back() {
+                isHistoryDetailsVisible = false;
                 mViewPager.setCurrentItem(1);
+                mFragments.remove(2);
+                mFragmentPagerAdapter.notifyDataSetChanged();
                 setBackgroudLight();
             }
         };
@@ -180,7 +194,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
         mFragments.add(tabRobOrder);
         mFragments.add(tabHistoryOrder);
-        mFragments.add(tabHistoryDetails);
+        //mFragments.add(tabHistoryDetails);
         mFragments.add(tabMyWallet);
         mFragments.add(tabOrderDoneFragment);
 
@@ -212,6 +226,12 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 }
                 else {
                     setStatus(!isWaiting);
+                }
+
+                if (isHistoryDetailsVisible) {
+                    isHistoryDetailsVisible = false;
+                    mFragments.remove(2);
+                    mFragmentPagerAdapter.notifyDataSetChanged();
                 }
                 if(!isWaiting) {
                     mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
@@ -249,6 +269,12 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 task.execute();
                 break;
             case R.id.id_tab_btn_history_order:
+
+                if (isHistoryDetailsVisible) {
+                    isHistoryDetailsVisible = false;
+                    mFragments.remove(2);
+                    mFragmentPagerAdapter.notifyDataSetChanged();
+                }
                 mViewPager.setCurrentItem(1);
                 setBackgroudLight();
                 if(!isWaiting) {
@@ -261,7 +287,14 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
                 break;
             case R.id.id_tab_btn_my_wallet:
-                mViewPager.setCurrentItem(3);
+
+                if (isHistoryDetailsVisible) {
+                    isHistoryDetailsVisible = false;
+                    mFragments.remove(2);
+                    mFragmentPagerAdapter.notifyDataSetChanged();
+                }
+                mViewPager.setCurrentItem(2);
+
                 setBackgroudLight();
                 if(!isWaiting) {
                     mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
