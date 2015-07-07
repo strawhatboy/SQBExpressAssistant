@@ -91,7 +91,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                 String company_phone = company.getString("phone");
                                 String company_latitude = company.getString("latitude");
                                 String company_longitude = company.getString("longitude");
-                                String company_pic = company.getString("pic");
+                                String company_pic = company.has("pic") ? company.getString("pic") : "";
 
                                 String remuneration = result.getString("remuneration");
 
@@ -115,17 +115,19 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                 tv_renueration.setText(remuneration + "元");
                                 tv_good_count.setText(String.valueOf(goods.length()));
 
-                                AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
-                                    @Override
-                                    public void onImageLoadResult(final Bitmap bitmap) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                civ_company_image.setImageBitmap(bitmap);
-                                            }
-                                        });
-                                    }
-                                });
+                                if (company_pic.startsWith("http")) {
+                                    AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
+                                        @Override
+                                        public void onImageLoadResult(final Bitmap bitmap) {
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    civ_company_image.setImageBitmap(bitmap);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

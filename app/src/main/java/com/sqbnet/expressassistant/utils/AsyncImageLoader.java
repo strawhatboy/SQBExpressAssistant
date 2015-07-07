@@ -129,17 +129,19 @@ public class AsyncImageLoader {
             // hook the default behavior of SimpleAdapter
             if (view instanceof ImageView) {
                 final ImageView iv = (ImageView) view;
-                AsyncImageLoader.getInst().loadBitmap(s, new AsyncImageLoader.ImageLoadResultLister() {
-                    @Override
-                    public void onImageLoadResult(final Bitmap bitmap) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                iv.setImageBitmap(bitmap);
-                            }
-                        });
-                    }
-                });
+                if (s.startsWith("http")) {
+                    AsyncImageLoader.getInst().loadBitmap(s, new AsyncImageLoader.ImageLoadResultLister() {
+                        @Override
+                        public void onImageLoadResult(final Bitmap bitmap) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    iv.setImageBitmap(bitmap);
+                                }
+                            });
+                        }
+                    });
+                }
                 return true;
             }
             return false;

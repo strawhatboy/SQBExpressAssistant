@@ -94,14 +94,14 @@ public class orderConfirmFragment extends OrderBaseFragment {
                                 String company_phone = company.getString("phone");
                                 String company_latitude = company.getString("latitude");
                                 String company_longitude = company.getString("longitude");
-                                String company_pic = company.getString("pic");
+                                String company_pic = company.has("pic") ? company.getString("pic") : "";
 
                                 String customer_name = result.getString("consignee");
                                 String customer_province = result.getString("province");
                                 String customer_city = result.getString("city");
                                 String customer_address = result.getString("address");
                                 String customer_phone = result.getString("mobile");
-                                String customer_pic = result.getString("headimgurl");
+                                String customer_pic = result.has("headimgurl") ? result.getString("headimgurl") : "";
 
                                 String remuneration = result.getString("remuneration");
 

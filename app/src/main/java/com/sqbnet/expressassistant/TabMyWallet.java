@@ -32,6 +32,7 @@ import java.util.Map;
  */
 public class TabMyWallet extends BaseFragment {
 
+    private Boolean isPrepared = false;
     private ListView listView;
     private SimpleAdapter adapter;
     private List<Map<String, Object>> mData;
@@ -108,12 +109,13 @@ public class TabMyWallet extends BaseFragment {
 
         listView.setAdapter(adapter);
 
-        //refreshData();
+        isPrepared = true;
+        lazyload();
     }
 
     @Override
     protected void lazyload() {
-        if(!isVisible)
+        if(!isVisible || !isPrepared)
             return;
         refreshData();
     }

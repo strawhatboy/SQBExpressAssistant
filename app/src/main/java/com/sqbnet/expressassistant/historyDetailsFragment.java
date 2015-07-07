@@ -149,33 +149,37 @@ public class historyDetailsFragment extends BaseFragment {
             }
             adapter.notifyDataSetChanged();
 
-            String companyAvatar = company.getString("pic");
-            String consigneeAvatar = orderInfo.getString("headimgurl");
-            AsyncImageLoader.getInst().loadBitmap(companyAvatar, new AsyncImageLoader.ImageLoadResultLister() {
-                @Override
-                public void onImageLoadResult(final Bitmap bitmap) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            iv_Company.setImageBitmap(bitmap);
-                        }
-                    });
-                }
-            });
-            AsyncImageLoader.getInst().loadBitmap(consigneeAvatar, new AsyncImageLoader.ImageLoadResultLister() {
-                @Override
-                public void onImageLoadResult(final Bitmap bitmap) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            iv_Consignee.setImageBitmap(bitmap);
-                        }
-                    });
-                }
-            });
+            String companyAvatar = company.has("pic") ? company.getString("pic") : "";
+            String consigneeAvatar = orderInfo.has("headimgurl") ? orderInfo.getString("headimgurl") : "";
+            if (companyAvatar.startsWith("http")) {
+                AsyncImageLoader.getInst().loadBitmap(companyAvatar, new AsyncImageLoader.ImageLoadResultLister() {
+                    @Override
+                    public void onImageLoadResult(final Bitmap bitmap) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                iv_Company.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                });
+            }
+            if (consigneeAvatar.startsWith("http")) {
+                AsyncImageLoader.getInst().loadBitmap(consigneeAvatar, new AsyncImageLoader.ImageLoadResultLister() {
+                    @Override
+                    public void onImageLoadResult(final Bitmap bitmap) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                iv_Consignee.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                });
 
-            if (data.getString("status").equals("0")) {
-                tv_done.setVisibility(View.INVISIBLE);
+                if (data.getString("status").equals("0")) {
+                    tv_done.setVisibility(View.INVISIBLE);
+                }
             }
 
             mStartTime.setText(UtilHelper.getDateString(data.getLong("starttime")).split("\\s+")[1]);

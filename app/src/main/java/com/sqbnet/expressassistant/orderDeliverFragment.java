@@ -141,7 +141,7 @@ public class orderDeliverFragment extends OrderBaseFragment {
                                 String customer_name = result.getString("consignee");
                                 String customer_address = result.getString("address");
                                 String customer_phone = result.getString("mobile");
-                                String customer_pic = result.getString("headimgurl");
+                                String customer_pic = result.has("headimgurl") ? result.getString("headimgurl") : "";
 
                                 String remuneration = result.getString("remuneration");
 

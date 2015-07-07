@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public class TabHistoryOrder extends BaseFragment {
 
+    private Boolean isPrepared = false;
     private ListView listView;
     private SimpleAdapter adapter;
     private List<Map<String, Object>> mData;
@@ -130,11 +131,14 @@ public class TabHistoryOrder extends BaseFragment {
                 }
             }
         });
+
+        isPrepared = true;
+        lazyload();
     }
 
     @Override
     protected void lazyload() {
-        if(!isVisible)
+        if(!isVisible || !isPrepared)
             return;
         mData.clear();
         String user_id = UtilHelper.getSharedUserId();
@@ -160,8 +164,9 @@ public class TabHistoryOrder extends BaseFragment {
                                         int status = item.getInt("status");
                                         String remuneration = item.getString("remuneration");
                                         String consignee = orderInfo.getString("consignee");
-                                        String company_name = orderInfo.getJSONObject("company").getString("name");
-                                        String company_pic = orderInfo.getJSONObject("company").getString("pic");
+                                        JSONObject company = orderInfo.getJSONObject("company");
+                                        String company_name = company.getString("name");
+                                        String company_pic = company.has("pic") ? company.getString("pic") : "";
 
                                         Map<String, Object> data = new HashMap<String, Object>();
                                         data.put("from_avatar", company_pic);
@@ -170,7 +175,7 @@ public class TabHistoryOrder extends BaseFragment {
                                         data.put("distance", "1.36");
                                         data.put("reward", remuneration);
                                         data.put("to_name", consignee);
-                                        data.put("to_avatar", orderInfo.getString("headimgurl"));
+                                        data.put("to_avatar", orderInfo.has("headimgurl") ? orderInfo.getString("headimgurl") : "");
                                         data.put("status", status);
                                         data.put("jsonObject", item);
 
