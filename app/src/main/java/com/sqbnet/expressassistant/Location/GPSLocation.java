@@ -106,6 +106,8 @@ public class GPSLocation {
             SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {
                 @Override
                 public void onResponse(SQBResponse response) {
+                    if(response == null)
+                        return;
                     Log.i("virgil", response.getCode());
                     Log.i("virgil", response.getMsg());
                     Log.i("virgil", response.getData().toString());

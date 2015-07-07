@@ -92,6 +92,7 @@ public class NetEnginee {
                 return null;
             }
         }catch (Exception e){
+            Log.e("NetEngiee", "virgil", e);
             e.printStackTrace();
             return null;
         }
@@ -115,6 +116,7 @@ public class NetEnginee {
             JSONObject res_object = new JSONObject(result);
             return res_object;
         }catch (Exception e){
+            Log.e("NetEngiee", "virgil", e);
             e.printStackTrace();
             return null;
         }
