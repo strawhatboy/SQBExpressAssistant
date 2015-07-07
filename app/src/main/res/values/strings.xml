@@ -98,4 +98,10 @@
     <string name="validFailed">Verify Code Failure</string>
     <string name="validFailed_txt">please re-enter the code</string>
     <string name="reValide">Re enter</string>
+    <string name="intent_call">Call</string>
+    <string name="dialog_confirm_exit">Quit?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="dialog_title_info">Information</string>
+    <string name="dialog_dial">Make a dial</string>
 </resources>

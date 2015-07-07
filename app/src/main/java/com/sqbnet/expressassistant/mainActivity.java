@@ -455,15 +455,15 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             mViewPager.setCurrentItem(1);
             setBackgroudLight();
         }else{
-            new AlertDialog.Builder(mainActivity.this).setTitle("提示")
-                    .setMessage("确认退出？")
-                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(mainActivity.this).setTitle(resources.getString(R.string.dialog_title_info))
+                    .setMessage(resources.getString(R.string.dialog_confirm_exit))
+                    .setPositiveButton(resources.getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             finish();
                         }
                     })
-                    .setNegativeButton("否", null)
+                    .setNegativeButton(resources.getString(R.string.dialog_no), null)
                     .show();
         }
     }

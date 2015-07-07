@@ -1,6 +1,10 @@
 package com.sqbnet.expressassistant;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,6 +123,29 @@ public class historyDetailsFragment extends BaseFragment {
         });
 
         listView.setAdapter(adapter);
+
+        View.OnClickListener phoneOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view instanceof TextView) {
+                    final String phoneNumber = ((TextView) view).getText().toString();
+
+                    new AlertDialog.Builder(getActivity()).setTitle(getResources().getString(R.string.dialog_dial))
+                            .setMessage(getResources().getString(R.string.intent_call) + " " + phoneNumber + " ?")
+                            .setPositiveButton(getResources().getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton(getResources().getString(R.string.dialog_no), null)
+                            .show();
+                }
+            }
+        };
+        mCompanyPhone.setOnClickListener(phoneOnClickListener);
+        mConsigneePhone.setOnClickListener(phoneOnClickListener);
     }
 
     @Override

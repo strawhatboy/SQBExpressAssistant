@@ -93,4 +93,10 @@
     <string name="validFailed">验证失败</string>
     <string name="validFailed_txt">请重新核对配送码，并检查您的输入是否正确！</string>
     <string name="reValide">重新输入</string>
+    <string name="intent_call">呼叫</string>
+    <string name="dialog_confirm_exit">确认退出？</string>
+    <string name="dialog_no">否</string>
+    <string name="dialog_yes">是</string>
+    <string name="dialog_title_info">提示</string>
+    <string name="dialog_dial">拨号</string>
 </resources>
