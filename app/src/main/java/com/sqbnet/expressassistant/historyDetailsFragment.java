@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,11 +183,16 @@ public class historyDetailsFragment extends BaseFragment {
                 }
             }
 
-            mStartTime.setText(UtilHelper.getDateString(data.getLong("starttime")).split("\\s+")[1]);
-            mPickTime.setText(UtilHelper.getDateString(data.getLong("receivetime")).split("\\s+")[1]);
-            mEndTime.setText(UtilHelper.getDateString(data.getLong("endtime")).split("\\s+")[1]);
-            mRemuneration.setText(data.getString("remuneration") + "元");
+            long startTimestamp = data.getLong("starttime");
+            long endTimestamp = data.getLong("endtime");
+            mStartTime.setText(UtilHelper.getDateString(startTimestamp).split("\\s+")[1]);
+            //mPickTime.setText(UtilHelper.getDateString(data.getLong("receivetime")).split("\\s+")[1]);
+            mEndTime.setText(UtilHelper.getDateString(endTimestamp).split("\\s+")[1]);
+            long durationTimestamp = endTimestamp - startTimestamp;
+            Date durationDate = UtilHelper.getDate(durationTimestamp);
+            mRemuneration.setText(data.getString("remuneration") + getResources().getString(R.string.unit_yuan));
             mRemuneration2.setText(data.getString("remuneration"));
+            mTotalDuration.setText(Integer.toString(durationDate.getMinutes()));
 
             mConsigneeName.setText(orderInfo.getString("consignee"));
             mConsigneeAddress.setText(orderInfo.getString("address"));
