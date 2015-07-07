@@ -163,14 +163,14 @@ public class registrationActivity extends BaseActivity {
                                         String userName = et_username.getText().toString();
                                         String password = et_password.getText().toString();
                                         password = UtilHelper.MD5(UtilHelper.MD5(password) + phoneCode);
-                                        String realName = et_real_name.getText().toString();
+                                        final String realName = et_real_name.getText().toString();
                                         String idCard = et_id.getText().toString();
                                         String phone = et_mobile.getText().toString();
                                         String addr = et_addr.getText().toString();
 
                                         SQBProvider.getInst().userRegister(userName, password, realName, idCard, photoID, phone, addr, phoneCode, new SQBResponseListener() {
                                             @Override
-                                            public void onResponse(SQBResponse response) {
+                                            public void onResponse(final SQBResponse response) {
                                                 Log.i("virgil", response.getCode());
                                                 Log.i("virgil", response.getMsg());
                                                 Log.i("virgil", response.getData().toString());
@@ -183,6 +183,14 @@ public class registrationActivity extends BaseActivity {
                                                             startActivity(intent);
                                                         }
                                                     });
+                                                }else {
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            progressDialog.dismiss();
+                                                            showToast(response.getMsg());
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
@@ -190,6 +198,14 @@ public class registrationActivity extends BaseActivity {
                                         progressDialog.dismiss();
                                         e.printStackTrace();
                                     }
+                                }else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressDialog.dismiss();
+                                            showToast(response.getMsg());
+                                        }
+                                    });
                                 }
                             }
                         });

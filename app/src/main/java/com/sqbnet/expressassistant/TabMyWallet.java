@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabMyWallet extends Fragment {
+public class TabMyWallet extends BaseFragment {
 
     private ListView listView;
     private SimpleAdapter adapter;
@@ -108,6 +108,13 @@ public class TabMyWallet extends Fragment {
 
         listView.setAdapter(adapter);
 
+        //refreshData();
+    }
+
+    @Override
+    protected void lazyload() {
+        if(!isVisible)
+            return;
         refreshData();
     }
 
@@ -116,7 +123,8 @@ public class TabMyWallet extends Fragment {
     }
 
     public void refreshData() {
-        final String user_id = UtilHelper.getSharedUserId(getActivity());
+        mData.clear();
+        final String user_id = UtilHelper.getSharedUserId();
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {

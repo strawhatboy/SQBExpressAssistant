@@ -1,7 +1,6 @@
 package com.sqbnet.expressassistant;
 
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -26,7 +24,6 @@ import com.sqbnet.expressassistant.utils.UtilHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +33,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabHistoryOrder extends Fragment {
+public class TabHistoryOrder extends BaseFragment {
 
     private ListView listView;
     private SimpleAdapter adapter;
@@ -110,35 +107,12 @@ public class TabHistoryOrder extends Fragment {
                     tv_done.setAnimation(textRotateAnimation);
                 }
 
-                /*try {
-                    final ImageView iv_from = (ImageView) view.findViewById(R.id.civ_history_list_from_avatar);
-                    AsyncImageLoader.getInst().loadBitmap((String) (mData.get(position).get("from_avatar")), new AsyncImageLoader.ImageLoadResultLister() {
-                        @Override
-                        public void onImageLoadResult(final Bitmap bitmap) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    iv_from.setImageBitmap(bitmap);
-                                }
-                            });
-                        }
-                    });
+                if (position % 2 == 0) {
+                    view.setBackgroundDrawable(getActivity().getResources().getDrawable(R.color.bg_white));
+                } else {
+                    view.setBackgroundDrawable(null);
+                }
 
-                    final ImageView iv_consignee = (ImageView) view.findViewById(R.id.civ_history_list_to_avatar);
-                    AsyncImageLoader.getInst().loadBitmap((String) (mData.get(position).get("to_avatar")), new AsyncImageLoader.ImageLoadResultLister() {
-                        @Override
-                        public void onImageLoadResult(final Bitmap bitmap) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    iv_consignee.setImageBitmap(bitmap);
-                                }
-                            });
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
                 return view;
             }
         };
@@ -151,13 +125,19 @@ public class TabHistoryOrder extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("history", "item " + i + "clicked!");
                 if (gotoDetails != null) {
-                    JSONObject jsonObject = (JSONObject)(mData.get(i).get("jsonObject"));
+                    JSONObject jsonObject = (JSONObject) (mData.get(i).get("jsonObject"));
                     gotoDetails.gotoDetails(jsonObject);
                 }
             }
         });
+    }
 
-        String user_id = UtilHelper.getSharedUserId(getActivity());
+    @Override
+    protected void lazyload() {
+        if(!isVisible)
+            return;
+        mData.clear();
+        String user_id = UtilHelper.getSharedUserId();
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
@@ -217,5 +197,11 @@ public class TabHistoryOrder extends Fragment {
     public interface IGotoDetails {
         void gotoDetails(JSONObject data);
         void back();
+    }
+
+    /**
+     * Created by virgil on 7/7/15.
+     */
+    public static class BaseFragment {
     }
 }

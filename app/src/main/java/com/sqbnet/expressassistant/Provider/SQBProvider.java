@@ -30,6 +30,9 @@ public class SQBProvider {
     private static String URL_GET_ORDER_INFO = "getOrderInfo";
     private static String URL_UPDATE_STATUS = "updateStatus";
     private static String URL_VERIFY_CODE = "verifyCode";
+    private static String URL_GIVEUP_ORDER = "giveUpOrder";
+    private static String URL_UPDATE_USER_STATUS = "updateUserStatus";
+    private static String URL_USER_LOGOUT = "userLogout";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -42,12 +45,14 @@ public class SQBProvider {
         return sInst;
     }
 
-    public void login(String username, String password, final SQBResponseListener listener){
+    public void login(String username, String password, String latitude, String longitude, final SQBResponseListener listener){
         try{
             String url = BASE_URL + URL_LOGIN;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username", username);
             jsonObject.put("password", password);
+            jsonObject.put("latitude", latitude);
+            jsonObject.put("longitude", longitude);
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){
@@ -181,6 +186,46 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("order_id", order_id);
             jsonObject.put("code", code);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUserStatus(String user_id, String status, String latitude, String longitude, final SQBResponseListener listener){
+        try{
+            String url =BASE_URL + URL_UPDATE_USER_STATUS;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", user_id);
+            jsonObject.put("status", status);
+            jsonObject.put("latitude", latitude);
+            jsonObject.put("longitude", longitude);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void logout(String user_id, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_USER_LOGOUT;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", user_id);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void  giveupOrder(String user_id, String order_id, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_GIVEUP_ORDER;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", user_id);
+            jsonObject.put("order_id", order_id);
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){

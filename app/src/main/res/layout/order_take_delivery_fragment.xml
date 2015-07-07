@@ -149,25 +149,6 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="商品"
-                                android:textColor="@color/font_black"
-                                android:textSize="12dp"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="无重物"
-                                android:textSize="15dp"
-                                android:textColor="@color/font_orange"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="left"
-                            android:padding="4dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
                                 android:text="相距"
                                 android:textColor="@color/font_black"
                                 android:textSize="12dp"/>

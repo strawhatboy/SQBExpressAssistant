@@ -65,7 +65,7 @@
     <string name="order_processbar_done">完成</string>
     <string name="order_confirm_hint">提示：取消配送任务会影响你的系统评分！</string>
     <string name="order_confirm_btn_confirm">确认接单</string>
-    <string name="order_confirm_btn_cancel">取消</string>
+    <string name="order_confirm_btn_cancel">放弃</string>
     <string name="order_take_order_checked">我已经核对过物品清单</string>
     <string name="order_take_confirm_taken">确认取货</string>
     <string name="order_deliver_confirm_delivered">确认送达</string>
