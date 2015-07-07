@@ -37,7 +37,7 @@
                 android:id="@+id/tv_wallet_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="赵子龙"
+                android:text="---"
                 android:textSize="15dp"
                 android:textColor="@color/font_black"/>
             <LinearLayout
@@ -54,7 +54,7 @@
                     android:id="@+id/tv_wallet_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="442054851"
+                    android:text="---"
                     android:textSize="12dp"
                     android:textColor="@color/font_blue"/>
             </LinearLayout>
@@ -66,7 +66,7 @@
                     android:id="@+id/tv_wallet_reg_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2014-06-12"
+                    android:text="0000-00-00"
                     android:textSize="12dp"
                     android:textColor="@color/font_black"/>
                 <TextView
@@ -159,7 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:text="2345.12"
+                    android:text="0"
                     android:textSize="25dp"
                     android:textColor="@color/font_green"/>
                 <TextView
