@@ -117,7 +117,7 @@ public class loginActivity extends BaseActivity {
                                         try {
                                             String userId = ((JSONObject) response.getData()).getString("id");
                                             Log.i("virgil", userId);
-                                            UtilHelper.setSharedUserId(userId, loginActivity.this);
+                                            UtilHelper.setSharedUserId(userId);
                                             setResult(ResultCode.LOGIN_SUCCESS);
                                             finish();
                                         } catch (JSONException e) {

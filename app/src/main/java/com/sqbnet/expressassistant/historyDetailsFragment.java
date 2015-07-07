@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Created by Andy on 6/27/2015.
  */
-public class historyDetailsFragment extends android.support.v4.app.Fragment {
+public class historyDetailsFragment extends BaseFragment {
     private ImageButton backButton;
     private Animation textRotateAnimation;
     private TextView tv_done;
@@ -68,7 +68,6 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
         mCompanyAddress = (TextView) view.findViewById(R.id.tv_history_details_company_address);
         mCompanyPhone = (TextView) view.findViewById(R.id.tv_history_details_company_phone);
         mGoodsCount = (TextView) view.findViewById(R.id.tv_history_details_list_good_count);
-        mGoodsHasWeight = (TextView) view.findViewById(R.id.tv_history_details_list_good_has_weight);
         mDistance = (TextView) view.findViewById(R.id.tv_history_details_distance);
         mStartTime = (TextView) view.findViewById(R.id.tv_history_details_order_got_time);
         mPickTime = (TextView) view.findViewById(R.id.tv_history_details_delivery_taken_time);
@@ -119,6 +118,11 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
         });
 
         listView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void lazyload() {
+        
     }
 
     public void setData(JSONObject data) {
@@ -175,6 +179,7 @@ public class historyDetailsFragment extends android.support.v4.app.Fragment {
             }
 
             mStartTime.setText(UtilHelper.getDateString(data.getLong("starttime")).split("\\s+")[1]);
+            mPickTime.setText(UtilHelper.getDateString(data.getLong("receivetime")).split("\\s+")[1]);
             mEndTime.setText(UtilHelper.getDateString(data.getLong("endtime")).split("\\s+")[1]);
             mRemuneration.setText(data.getString("remuneration") + "元");
             mRemuneration2.setText(data.getString("remuneration"));

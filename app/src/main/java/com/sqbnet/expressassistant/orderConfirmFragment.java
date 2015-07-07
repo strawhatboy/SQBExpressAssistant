@@ -214,6 +214,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
                             if (response == null) {
                                 return;
                             }
+                            Log.i("virgil", "orderAccept");
                             Log.i("virgil", response.getCode());
                             Log.i("virgil", response.getMsg());
                             Log.i("virgil", response.getData().toString());
@@ -235,6 +236,17 @@ public class orderConfirmFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 if (delegate != null) {
+                    SQBProvider.getInst().giveupOrder(mUserId, mOrderId, new SQBResponseListener() {
+                        @Override
+                        public void onResponse(SQBResponse response) {
+                            if(response == null)
+                                return;
+                            Log.i("virgil", "giveupOrder");
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
+                        }
+                    });
                     delegate.exit(ResultCode.ORDER_CANCELED, null);
                 }
             }

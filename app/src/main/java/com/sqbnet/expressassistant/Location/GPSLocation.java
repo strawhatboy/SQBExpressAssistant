@@ -64,7 +64,8 @@ public class GPSLocation {
 
     public void start(){
         Log.i("virgil", "GPS update start");
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 6*1000, 0, locationListener);
+        getCurrentLocation();
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 180*1000, 0, locationListener);
         //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //sendLocationToServer(location);
     }
@@ -99,7 +100,7 @@ public class GPSLocation {
             String latitude = String.valueOf(location.getLatitude());
             String longitude = String.valueOf(location.getLongitude());
             Log.i("virgil", "Lat:" + latitude + ", Lng:" + longitude);
-            String useId = UtilHelper.getSharedUserId(MyApplication.getInst().currentActivity());
+            String useId = UtilHelper.getSharedUserId();
             if(useId == null)
                 return;
             SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {

@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -117,16 +119,24 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         Log.i("virgil", "on destroy main activity");
-        UtilHelper.setSharedUserId(null, mainActivity.this);
         GPSLocation.getInst().stop();
         if(timer != null){
             timer.cancel();
         }
+        SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
+            @Override
+            public void onResponse(SQBResponse response) {
+                if(response == null)
+                    return;
+                Log.i("virgil", "logout");
+                Log.i("virgil", response.getCode());
+                Log.i("virgil", response.getMsg());
+                Log.i("virgil", response.getData().toString());
+            }
+        });
         super.onDestroy();
 
     }
-
-
 
     private void initView(){
         mTabBtnRobOrder = (LinearLayout)findViewById(R.id.id_tab_btn_rob_order);
@@ -182,7 +192,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void checkLoginStatus() {
-        String token = UtilHelper.getSharedUserId(this);
+        String token = UtilHelper.getSharedUserId();
         if (token == null) {
             Intent intent = new Intent();
             intent.setClass(mainActivity.this, loginActivity.class);
@@ -212,6 +222,31 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
                 tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
 
+                AsyncTask task = new AsyncTask() {
+                    @Override
+                    protected Object doInBackground(Object[] objects) {
+                        String user_id = UtilHelper.getSharedUserId();
+                        Location location = GPSLocation.getInst().getCurrentLocation();
+                        String status = "0";
+                        if(isWaiting){
+                            status = "1";
+                        }
+                        Log.i("virgil", "status:" + status);
+                        SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLongitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                            @Override
+                            public void onResponse(SQBResponse response) {
+                                if(response == null)
+                                    return;
+                                Log.i("virgil", "updateUserStatus");
+                                Log.i("virgil", response.getCode());
+                                Log.i("virgil", response.getMsg());
+                                Log.i("virgil", response.getData().toString());
+                            }
+                        });
+                        return null;
+                    }
+                };
+                task.execute();
                 break;
             case R.id.id_tab_btn_history_order:
                 mViewPager.setCurrentItem(1);
@@ -284,7 +319,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void getAssignOrder(){
-        final String user_id = UtilHelper.getSharedUserId(this);
+        final String user_id = UtilHelper.getSharedUserId();
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -305,8 +340,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 Intent intent = new Intent();
                                 intent.setClass(mainActivity.this, orderMainActivity.class);
                                 intent.putExtra("user_id", user_id);
-                                intent.putExtra("order_id", "939");
-                                intent.putExtra("status", "2");
+                                intent.putExtra("order_id", "940");
+                                intent.putExtra("status", "0");
                                 startActivityForResult(intent, RequestCode.ORDER);
                                 setStatus(false);
                             }
@@ -392,8 +427,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                     .setPositiveButton("是", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //UtilHelper.setSharedUserId(null, mainActivity.this);
-                            //MyApplication.getInst().AppExit();
                             finish();
                         }
                     })

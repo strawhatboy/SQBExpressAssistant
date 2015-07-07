@@ -13,4 +13,6 @@ public class CustomConstants {
     public static String ORDER_ACCEPT = "0";
     public static String ORDER_SHIPPING = "1";
     public static String ORDER_ARRIVED = "2";
+    public static String IM_OFFLINE = "0";
+    public static String IM_ONLINE = "1";
 }

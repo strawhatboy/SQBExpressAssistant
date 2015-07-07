@@ -47,17 +47,11 @@ public class UtilHelper {
         return m.matches();
     }
 
-    public static String getSharedUserId(Activity activity){
-        //SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
-        //return sharedPreferences.getString(CustomConstants.USER_ID, null);
+    public static String getSharedUserId(){
         return UtilHelper.userId;
     }
 
-    public static void setSharedUserId(String userId, Activity activity){
-        //SharedPreferences sharedPreferences = activity.getSharedPreferences(CustomConstants.USER_INFO, Activity.MODE_PRIVATE);
-        //SharedPreferences.Editor editor = sharedPreferences.edit();
-        //editor.putString(CustomConstants.USER_ID, userId);
-        //editor.commit();
+    public static void setSharedUserId(String userId){
         UtilHelper.userId = userId;
     }
 

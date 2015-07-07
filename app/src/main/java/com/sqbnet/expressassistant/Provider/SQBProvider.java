@@ -193,6 +193,46 @@ public class SQBProvider {
         }
     }
 
+    public void updateUserStatus(String user_id, String status, String latitude, String longitude, final SQBResponseListener listener){
+        try{
+            String url =BASE_URL + URL_UPDATE_USER_STATUS;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", user_id);
+            jsonObject.put("status", status);
+            jsonObject.put("latitude", latitude);
+            jsonObject.put("longitude", longitude);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void logout(String user_id, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_USER_LOGOUT;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", user_id);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void  giveupOrder(String user_id, String order_id, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_GIVEUP_ORDER;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("d_id", user_id);
+            jsonObject.put("order_id", order_id);
+
+            doPost(url, jsonObject, listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void doPost(String url, JSONObject jsonObject, final SQBResponseListener listener){
         try{
             BaseHttpThread httpThread = new BaseHttpThread(url, jsonObject, new BaseHttpResultListener() {
