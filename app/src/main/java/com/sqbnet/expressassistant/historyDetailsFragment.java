@@ -18,6 +18,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
+import com.sqbnet.expressassistant.utils.SingletonObjects;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
@@ -124,26 +125,7 @@ public class historyDetailsFragment extends BaseFragment {
 
         listView.setAdapter(adapter);
 
-        View.OnClickListener phoneOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view instanceof TextView) {
-                    final String phoneNumber = ((TextView) view).getText().toString();
-
-                    new AlertDialog.Builder(getActivity()).setTitle(getResources().getString(R.string.dialog_dial))
-                            .setMessage(getResources().getString(R.string.intent_call) + " " + phoneNumber + " ?")
-                            .setPositiveButton(getResources().getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
-                                    startActivity(intent);
-                                }
-                            })
-                            .setNegativeButton(getResources().getString(R.string.dialog_no), null)
-                            .show();
-                }
-            }
-        };
+        View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
         mCompanyPhone.setOnClickListener(phoneOnClickListener);
         mConsigneePhone.setOnClickListener(phoneOnClickListener);
     }
