@@ -60,26 +60,7 @@ public class orderDeliverFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 if (delegate != null) {
-                    // add rest to server to confirm the order
-                    SQBProvider.getInst().updateOrderStatus(mOrderId, CustomConstants.ORDER_ARRIVED, new SQBResponseListener() {
-                        @Override
-                        public void onResponse(final SQBResponse response) {
-                            if (response == null) {
-                                return;
-                            }
-                            Log.i("virgil", response.getCode());
-                            Log.i("virgil", response.getMsg());
-                            Log.i("virgil", response.getData().toString());
-                            if (response.getCode().equals("1000")) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        delegate.goNext();
-                                    }
-                                });
-                            }
-                        }
-                    });
+                    delegate.goNext();
                 }
             }
         });

@@ -18,9 +18,10 @@ public class MyApplication extends Application {
 
     @Override
     public void onCreate() {
+        Log.i("virgil", "my application create");
         super.onCreate();
         sInst = this;
-        CrashHandler.getInst().init(getApplicationContext());
+        CrashHandler.getInstance().init(getApplicationContext());
     }
 
     public static MyApplication getInst(){

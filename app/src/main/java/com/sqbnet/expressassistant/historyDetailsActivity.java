@@ -214,7 +214,7 @@ public class historyDetailsActivity extends BaseActivity {
             long startTimestamp = data.getLong("starttime");
             long endTimestamp = data.getLong("endtime");
             mStartTime.setText(UtilHelper.getDateString(startTimestamp).split("\\s+")[1]);
-            //mPickTime.setText(UtilHelper.getDateString(data.getLong("receivetime")).split("\\s+")[1]);
+            mPickTime.setText(UtilHelper.getDateString(data.getLong("receivetime")).split("\\s+")[1]);
             mEndTime.setText(UtilHelper.getDateString(endTimestamp).split("\\s+")[1]);
             long durationTimestamp = endTimestamp - startTimestamp;
             Date durationDate = UtilHelper.getDate(durationTimestamp);

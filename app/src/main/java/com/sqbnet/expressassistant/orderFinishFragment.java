@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.CustomConstants;
 
 /**
  * Created by Andy on 6/30/2015.
@@ -88,8 +89,22 @@ public class orderFinishFragment extends OrderBaseFragment {
 
                             //delegate.exit(ResultCode.ORDER_DONE, /* balance got */ Remuneration);
 
-                            if (response.getCode().equals("1000")) {
-                                delegate.exit(ResultCode.ORDER_DONE, /* balance got */ Remuneration);
+                            if (!response.getCode().equals("1000")) {
+                                // add rest to server to confirm the order
+                                SQBProvider.getInst().updateOrderStatus(mOrderId, CustomConstants.ORDER_ARRIVED, new SQBResponseListener() {
+                                    @Override
+                                    public void onResponse(final SQBResponse response) {
+                                        if (response == null) {
+                                            return;
+                                        }
+                                        Log.i("virgil", response.getCode());
+                                        Log.i("virgil", response.getMsg());
+                                        Log.i("virgil", response.getData().toString());
+                                        if (response.getCode().equals("1000")) {
+                                            delegate.exit(ResultCode.ORDER_DONE, /* balance got */ Remuneration);
+                                        }
+                                    }
+                                });
                             }else {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override

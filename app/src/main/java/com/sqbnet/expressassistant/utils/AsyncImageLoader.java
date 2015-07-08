@@ -131,17 +131,27 @@ public class AsyncImageLoader {
             if (view instanceof ImageView) {
                 final ImageView iv = (ImageView) view;
                 if (s.startsWith("http")) {
-                    AsyncImageLoader.getInst().loadBitmap(s, new AsyncImageLoader.ImageLoadResultLister() {
-                        @Override
-                        public void onImageLoadResult(final Bitmap bitmap) {
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    iv.setImageBitmap(bitmap);
-                                }
-                            });
-                        }
-                    });
+                    try {
+                        AsyncImageLoader.getInst().loadBitmap(s, new AsyncImageLoader.ImageLoadResultLister() {
+                            @Override
+                            public void onImageLoadResult(final Bitmap bitmap) {
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            iv.setImageBitmap(bitmap);
+                                        }catch (Exception e){
+                                            Log.e("AsyncImageLoader", "virgil", e);
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }catch (Exception e){
+                        Log.e("AsyncImageLoader", "virgil", e);
+                        e.printStackTrace();
+                    }
                 }
                 return true;
             }

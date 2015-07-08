@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -21,13 +22,16 @@ import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushConfig;
+import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.service.XGPushService;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 
 /**
@@ -53,10 +57,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     //private boolean isHistoryDetailsVisible = false;
     private boolean isWaiting = false;
+    private boolean isChanged = false;
 
     private Resources resources;
-
-    private  Timer timer;
 
     TabRobOrder tabRobOrder;
     TabHistoryOrder tabHistoryOrder;
@@ -111,7 +114,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             }
         });
 
-
         GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
             @Override
             public void onStatusChanged(boolean isEnabled) {
@@ -125,6 +127,12 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 }
             }
         };
+
+        XGPushConfig.enableDebug(this, true);
+
+        Context context = getApplicationContext();
+        Intent service = new Intent(context, XGPushService.class);
+        context.startService(service);
     }
 
     @Override
@@ -139,9 +147,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     protected void onDestroy() {
         Log.i("virgil", "on destroy main activity");
         GPSLocation.getInst().stop();
-        if(timer != null){
-            timer.cancel();
-        }
+
+        XGPushManager.registerPush(getApplicationContext(), "*");
+        XGPushManager.unregisterPush(this);
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
             public void onResponse(SQBResponse response) {
@@ -260,31 +268,34 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
                 tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
 
-                AsyncTask task = new AsyncTask() {
-                    @Override
-                    protected Object doInBackground(Object[] objects) {
-                        String user_id = UtilHelper.getSharedUserId();
-                        Location location = GPSLocation.getInst().getCurrentLocation();
-                        String status = "0";
-                        if(isWaiting){
-                            status = "1";
-                        }
-                        Log.i("virgil", "status:" + status);
-                        SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLongitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
-                            @Override
-                            public void onResponse(SQBResponse response) {
-                                if(response == null)
-                                    return;
-                                Log.i("virgil", "updateUserStatus");
-                                Log.i("virgil", response.getCode());
-                                Log.i("virgil", response.getMsg());
-                                Log.i("virgil", response.getData().toString());
+                if(isWaiting != isChanged) {
+                    isChanged = isWaiting;
+                    AsyncTask task = new AsyncTask() {
+                        @Override
+                        protected Object doInBackground(Object[] objects) {
+                            String user_id = UtilHelper.getSharedUserId();
+                            Location location = GPSLocation.getInst().getCurrentLocation();
+                            String status = "0";
+                            if (isWaiting) {
+                                status = "1";
                             }
-                        });
-                        return null;
-                    }
-                };
-                task.execute();
+                            Log.i("virgil", "status:" + status);
+                            SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLongitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                                @Override
+                                public void onResponse(SQBResponse response) {
+                                    if (response == null)
+                                        return;
+                                    Log.i("virgil", "updateUserStatus");
+                                    Log.i("virgil", response.getCode());
+                                    Log.i("virgil", response.getMsg());
+                                    Log.i("virgil", response.getData().toString());
+                                }
+                            });
+                            return null;
+                        }
+                    };
+                    task.execute();
+                }
                 break;
             case R.id.id_tab_btn_history_order:
 
@@ -350,9 +361,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
             setBackgroudDark();
             //TODO: stop the listening
-            if(timer != null) {
-                timer.cancel();
-            }
         }
         tabRobOrder.setIsWaiting(isWaiting);
     }
@@ -371,11 +379,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     private void getAssignOrder(){
         final String user_id = UtilHelper.getSharedUserId();
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                SQBProvider.getInst().getAssignOrder(user_id, new SQBResponseListener() {
+
+        SQBProvider.getInst().getAssignOrder(user_id, new SQBResponseListener() {
                     @Override
                     public void onResponse(SQBResponse response) {
                         if(response == null)
@@ -385,7 +390,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-                       /* runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent();
@@ -396,10 +401,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 startActivityForResult(intent, RequestCode.ORDER);
                                 setStatus(false);
                             }
-                        });*/
+                        });
 
-                        if(response.getCode().equals("1000")){
-                            timer.cancel();
+                       /* if(response.getCode().equals("1000")){
                             JSONObject result = (JSONObject)response.getData();
                             try {
                                 final String order_id = result.getString("order_id");
@@ -421,11 +425,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
-                        }
+                        }*/
                     }
-                });
-            }
-        }, 1000, 30*1000);
+        });
     }
     /**
      * handler for the login
@@ -440,6 +442,17 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             case RequestCode.LOGIN: {
                 switch (resultCode){
                     case ResultCode.LOGIN_SUCCESS:
+                        XGPushManager.registerPush(getApplicationContext(), UtilHelper.getSharedUserId(), new XGIOperateCallback() {
+                            @Override
+                            public void onSuccess(Object o, int i) {
+                                Log.i("virgil", "XG register success");
+                            }
+
+                            @Override
+                            public void onFail(Object o, int i, String s) {
+                                Log.i("virgil", "XG register fail," + s);
+                            }
+                        });
                         //startGPSLocation();
                         break;
                     case ResultCode.QUIT:
