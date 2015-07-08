@@ -325,7 +325,7 @@ public class UtilHelper {
             return;
         }
 
-        Log.i("virgil", "check network settings");
+        /*Log.i("virgil", "check network settings");
         if(!GPSLocation.getInst().openNetworkSettings()){
             new AlertDialog.Builder(activity).setTitle("提示")
                     .setMessage("移动网络没有开启，请手动开启！")
@@ -342,7 +342,7 @@ public class UtilHelper {
                     })
                     .show();
             return;
-        }
+        }*/
 
         Log.i("virgil", "start GPSLocation");
         GPSLocation.getInst().start();

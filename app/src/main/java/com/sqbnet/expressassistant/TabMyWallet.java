@@ -110,12 +110,11 @@ public class TabMyWallet extends BaseFragment {
         listView.setAdapter(adapter);
 
         isPrepared = true;
-        lazyload();
     }
 
     @Override
     protected void lazyload() {
-        if(!isVisible || !isPrepared)
+        if(!isVisible || !isPrepared || mData.size() > 0)
             return;
         refreshData();
     }

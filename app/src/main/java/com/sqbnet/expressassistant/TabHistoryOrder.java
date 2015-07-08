@@ -133,13 +133,16 @@ public class TabHistoryOrder extends BaseFragment {
         });
 
         isPrepared = true;
-        lazyload();
     }
 
     @Override
     protected void lazyload() {
-        if(!isVisible || !isPrepared)
+        if (!isVisible || !isPrepared || mData.size() > 0)
             return;
+        refreshData();
+    }
+
+    private void refreshData(){
         mData.clear();
         String user_id = UtilHelper.getSharedUserId();
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,12 +166,17 @@ public class historyDetailsFragment extends BaseFragment {
                 AsyncImageLoader.getInst().loadBitmap(companyAvatar, new AsyncImageLoader.ImageLoadResultLister() {
                     @Override
                     public void onImageLoadResult(final Bitmap bitmap) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                iv_Company.setImageBitmap(bitmap);
-                            }
-                        });
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    iv_Company.setImageBitmap(bitmap);
+                                }
+                            });
+                        }catch (Exception e){
+                            Log.e("historyDetailFragment", "virgil", e);
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
@@ -178,12 +184,17 @@ public class historyDetailsFragment extends BaseFragment {
                 AsyncImageLoader.getInst().loadBitmap(consigneeAvatar, new AsyncImageLoader.ImageLoadResultLister() {
                     @Override
                     public void onImageLoadResult(final Bitmap bitmap) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                iv_Consignee.setImageBitmap(bitmap);
-                            }
-                        });
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    iv_Consignee.setImageBitmap(bitmap);
+                                }
+                            });
+                        }catch (Exception e){
+                            Log.e("historyDetailFragment", "virgil", e);
+                            e.printStackTrace();
+                        }
                     }
                 });
 
