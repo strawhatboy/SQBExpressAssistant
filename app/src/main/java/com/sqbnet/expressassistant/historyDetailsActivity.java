@@ -1,5 +1,6 @@
 package com.sqbnet.expressassistant;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import java.util.Map;
 /**
  * Created by Andy on 6/27/2015.
  */
-public class historyDetailsFragment extends BaseFragment {
+public class historyDetailsActivity extends BaseActivity {
     private ImageButton backButton;
     private Animation textRotateAnimation;
     private TextView tv_done;
@@ -63,47 +64,58 @@ public class historyDetailsFragment extends BaseFragment {
     private ImageView iv_Consignee;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.history_details_fragment, container, false);
-        initView(view);
-        return view;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.history_details_fragment);
+
+        initView();
+        Intent intent = getIntent();
+        if (intent != null) {
+            try {
+                JSONObject data = new JSONObject(intent.getStringExtra("details"));
+                setData(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("historyDetailsActivity", "Failed to get the input object");
+            }
+        }
     }
 
-    private void initView(View view) {
-        mCompanyName = (TextView) view.findViewById(R.id.tv_history_details_company_name);
-        mCompanyAddress = (TextView) view.findViewById(R.id.tv_history_details_company_address);
-        mCompanyPhone = (TextView) view.findViewById(R.id.tv_history_details_company_phone);
-        mGoodsCount = (TextView) view.findViewById(R.id.tv_history_details_list_good_count);
-        mDistance = (TextView) view.findViewById(R.id.tv_history_details_distance);
-        mStartTime = (TextView) view.findViewById(R.id.tv_history_details_order_got_time);
-        mPickTime = (TextView) view.findViewById(R.id.tv_history_details_delivery_taken_time);
-        mEndTime = (TextView) view.findViewById(R.id.tv_history_details_delivered_time);
-        mRemuneration = (TextView) view.findViewById(R.id.tv_history_details_remuneration);
-        mTotalDuration = (TextView) view.findViewById(R.id.tv_history_details_total_duration);
-        mRemuneration2 = (TextView) view.findViewById(R.id.tv_history_details_remuneration2);
-        mConsigneeName = (TextView) view.findViewById(R.id.tv_history_details_consignee);
-        mConsigneeAddress = (TextView) view.findViewById(R.id.tv_history_details_consignee_address);
-        mConsigneePhone = (TextView) view.findViewById(R.id.tv_history_details_consignee_phone);
-        iv_Company = (ImageView) view.findViewById(R.id.civ_history_details_from_avatar);
-        iv_Consignee = (ImageView) view.findViewById(R.id.civ_history_details_to_avatar);
+    private void initView() {
+        mCompanyName = (TextView) findViewById(R.id.tv_history_details_company_name);
+        mCompanyAddress = (TextView) findViewById(R.id.tv_history_details_company_address);
+        mCompanyPhone = (TextView) findViewById(R.id.tv_history_details_company_phone);
+        mGoodsCount = (TextView) findViewById(R.id.tv_history_details_list_good_count);
+        mDistance = (TextView) findViewById(R.id.tv_history_details_distance);
+        mStartTime = (TextView) findViewById(R.id.tv_history_details_order_got_time);
+        mPickTime = (TextView) findViewById(R.id.tv_history_details_delivery_taken_time);
+        mEndTime = (TextView) findViewById(R.id.tv_history_details_delivered_time);
+        mRemuneration = (TextView) findViewById(R.id.tv_history_details_remuneration);
+        mTotalDuration = (TextView) findViewById(R.id.tv_history_details_total_duration);
+        mRemuneration2 = (TextView) findViewById(R.id.tv_history_details_remuneration2);
+        mConsigneeName = (TextView) findViewById(R.id.tv_history_details_consignee);
+        mConsigneeAddress = (TextView) findViewById(R.id.tv_history_details_consignee_address);
+        mConsigneePhone = (TextView) findViewById(R.id.tv_history_details_consignee_phone);
+        iv_Company = (ImageView) findViewById(R.id.civ_history_details_from_avatar);
+        iv_Consignee = (ImageView) findViewById(R.id.civ_history_details_to_avatar);
 
 
-        textRotateAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotated_text_view);
+        textRotateAnimation = AnimationUtils.loadAnimation(historyDetailsActivity.this, R.anim.rotated_text_view);
         textRotateAnimation.setFillAfter(true);
 
-        tv_done = (TextView) view.findViewById(R.id.tv_history_details_done);
+        tv_done = (TextView) findViewById(R.id.tv_history_details_done);
         tv_done.setAnimation(textRotateAnimation);
 
-        listView = (ListView) view.findViewById(R.id.lv_history_details);
+        listView = (ListView) findViewById(R.id.lv_history_details);
 
-        backButton = (ImageButton) view.findViewById(R.id.ibtn_histroy_details_back);
+        backButton = (ImageButton) findViewById(R.id.ibtn_histroy_details_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (gotoDetails != null) {
                     gotoDetails.back();
                 }
+                finish();
             }
         });
 
@@ -116,7 +128,7 @@ public class historyDetailsFragment extends BaseFragment {
             data.add(hisData0);
         }*/
 
-        adapter = new SimpleAdapter(getActivity(), mData, R.layout.history_details_fragment_list, new String[] {
+        adapter = new SimpleAdapter(historyDetailsActivity.this, mData, R.layout.history_details_fragment_list, new String[] {
                 "good_name",
                 "good_count"
         }, new int[] {
@@ -131,10 +143,6 @@ public class historyDetailsFragment extends BaseFragment {
         mConsigneePhone.setOnClickListener(phoneOnClickListener);
     }
 
-    @Override
-    protected void lazyload() {
-        
-    }
 
     public void setData(JSONObject data) {
         if(data == null){
@@ -167,7 +175,7 @@ public class historyDetailsFragment extends BaseFragment {
                     @Override
                     public void onImageLoadResult(final Bitmap bitmap) {
                         try {
-                            getActivity().runOnUiThread(new Runnable() {
+                            historyDetailsActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     iv_Company.setImageBitmap(bitmap);
@@ -185,7 +193,7 @@ public class historyDetailsFragment extends BaseFragment {
                     @Override
                     public void onImageLoadResult(final Bitmap bitmap) {
                         try {
-                            getActivity().runOnUiThread(new Runnable() {
+                            historyDetailsActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     iv_Consignee.setImageBitmap(bitmap);
@@ -220,5 +228,10 @@ public class historyDetailsFragment extends BaseFragment {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
