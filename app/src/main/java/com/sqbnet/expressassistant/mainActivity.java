@@ -114,7 +114,20 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             }
         });
 
-        checkLoginStatus();
+
+        GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
+            @Override
+            public void onStatusChanged(boolean isEnabled) {
+                if(!isEnabled){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UtilHelper.checkGPSLocation(mainActivity.this);
+                        }
+                    });
+                }
+            }
+        };
     }
 
     @Override
@@ -122,6 +135,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Log.i("--virgil", "onResume");
 
         super.onResume();
+        checkLoginStatus();
     }
 
     @Override
@@ -142,6 +156,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 Log.i("virgil", response.getData().toString());
             }
         });
+        UtilHelper.setSharedUserId(null);
         super.onDestroy();
 
     }

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
@@ -62,7 +64,7 @@ public class loginActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        startGPSLocation();
+        UtilHelper.checkGPSLocation(loginActivity.this);
     }
 
     private void initView() {
@@ -80,59 +82,83 @@ public class loginActivity extends BaseActivity {
                 InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
-                String username = null;
-                String password = null;
+                final ProgressDialog locationDialog = UtilHelper.getProgressDialog("定位中，可能需要几分钟，请稍候...", loginActivity.this);
+                locationDialog.show();
 
-                if (et_usr.length() > 0) {
-                    username = et_usr.getText().toString();
-                }
-                if (et_pwd.length() > 0) {
-                    password = et_pwd.getText().toString();
-                }
-
-                if (username == null || password == null) {
-                    UtilHelper.showToast("用户名密码不能为空");
-                    return;
-                }
-
-                password = UtilHelper.MD5(password);
-
-                Location location = GPSLocation.getInst().getCurrentLocation();
-
-                final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
-                progressDialog.show();
-
-                SQBProvider.getInst().login(username, password, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                AsyncTask<String, String, Location> task = new AsyncTask<String, String, Location>() {
                     @Override
-                    public void onResponse(final SQBResponse response) {
-                        runOnUiThread(new Runnable() {
+                    protected Location doInBackground(String... strings) {
+                        Location location = GPSLocation.getInst().getCurrentLocation();
+                        while (location == null) {
+                            try {
+                                Thread.sleep(3000);
+                                location = GPSLocation.getInst().getCurrentLocation();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return location;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Location location) {
+                        super.onPostExecute(location);
+
+                        locationDialog.dismiss();
+                        String username = null;
+                        String password = null;
+
+                        if (et_usr.length() > 0) {
+                            username = et_usr.getText().toString();
+                        }
+                        if (et_pwd.length() > 0) {
+                            password = et_pwd.getText().toString();
+                        }
+
+                        if (username == null || password == null) {
+                            UtilHelper.showToast("用户名密码不能为空");
+                            return;
+                        }
+
+                        password = UtilHelper.MD5(password);
+
+                        final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
+                        progressDialog.show();
+
+                        SQBProvider.getInst().login(username, password, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
                             @Override
-                            public void run() {
-                                progressDialog.dismiss();
-                                if (response != null) {
-                                    Log.i("virgil", response.getCode());
-                                    Log.i("virgil", response.getMsg());
-                                    Log.i("virgil", response.getData().toString());
-                                    if (response.getCode().equals("1000")) {
-                                        try {
-                                            String userId = ((JSONObject) response.getData()).getString("id");
-                                            Log.i("virgil", userId);
-                                            UtilHelper.setSharedUserId(userId);
-                                            setResult(ResultCode.LOGIN_SUCCESS);
-                                            finish();
-                                        } catch (JSONException e) {
+                            public void onResponse(final SQBResponse response) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressDialog.dismiss();
+                                        if (response != null) {
+                                            Log.i("virgil", response.getCode());
+                                            Log.i("virgil", response.getMsg());
+                                            Log.i("virgil", response.getData().toString());
+                                            if (response.getCode().equals("1000")) {
+                                                try {
+                                                    String userId = ((JSONObject) response.getData()).getString("id");
+                                                    Log.i("virgil", userId);
+                                                    UtilHelper.setSharedUserId(userId);
+                                                    setResult(ResultCode.LOGIN_SUCCESS);
+                                                    finish();
+                                                } catch (JSONException e) {
+                                                    loginFall();
+                                                }
+                                            } else {
+                                                loginFall();
+                                            }
+                                        } else {
                                             loginFall();
                                         }
-                                    } else {
-                                        loginFall();
                                     }
-                                } else {
-                                    loginFall();
-                                }
+                                });
                             }
                         });
                     }
-                });
+                };
+                task.execute();
             }
         });
 
@@ -164,36 +190,6 @@ public class loginActivity extends BaseActivity {
         return super.onTouchEvent(event);
     }
 
-    private void startGPSLocation(){
-        GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
-            @Override
-            public void onStatusChanged(boolean isEnabled) {
-                if(!isEnabled){
-                    startGPSLocation();
-                }
-            }
-        };
-        if(!GPSLocation.getInst().openGEPSettings()){
-            new AlertDialog.Builder(loginActivity.this).setTitle("提示")
-                    .setMessage("GPS定位没有开启，请手动开启！")
-                    .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startGPSLocation();
-                                }
-                            });
-                        }
-                    })
-                    .show();
-            return;
-        }
-
-        GPSLocation.getInst().start();
-        //BaiDuLocationService.getInst().getLocationClient().start();
-    }
 
     @Override
     public void onBackPressed() {

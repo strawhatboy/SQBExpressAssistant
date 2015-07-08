@@ -9,8 +9,11 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
+import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.MyApplication;
 
 import java.io.File;
@@ -300,4 +303,49 @@ public class UtilHelper {
         return bitmap;
     }
 
+
+    public static void checkGPSLocation(final Activity activity){
+        Log.i("virgil", "check GPS settings");
+        if(!GPSLocation.getInst().openGEPSettings()){
+            Log.i("virgil", "show dialog");
+            new AlertDialog.Builder(activity).setTitle("提示")
+                    .setMessage("GPS定位没有开启，请手动开启！")
+                    .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    checkGPSLocation(activity);
+                                }
+                            });
+                        }
+                    })
+                    .show();
+            return;
+        }
+
+        Log.i("virgil", "check network settings");
+        if(!GPSLocation.getInst().openNetworkSettings()){
+            new AlertDialog.Builder(activity).setTitle("提示")
+                    .setMessage("移动网络没有开启，请手动开启！")
+                    .setPositiveButton("已开启", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    checkGPSLocation(activity);
+                                }
+                            });
+                        }
+                    })
+                    .show();
+            return;
+        }
+
+        Log.i("virgil", "start GPSLocation");
+        GPSLocation.getInst().start();
+        //BaiDuLocationService.getInst().getLocationClient().start();
+    }
 }

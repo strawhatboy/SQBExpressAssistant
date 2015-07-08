@@ -23,6 +23,7 @@ import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import java.security.Provider;
+import java.util.Date;
 import java.util.concurrent.CancellationException;
 
 /**
@@ -32,6 +33,8 @@ public class GPSLocation {
 
     private static GPSLocation sInst;
     private LocationManager locationManager;
+    private boolean isGPSReady;
+    private long lastSendTime;
 
     public static GPSLocation getInst(){
         if(sInst == null){
@@ -46,6 +49,7 @@ public class GPSLocation {
 
     public  GPSLocation(){
         locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
+        isGPSReady = false;
     }
 
     public interface GPSProviderStatusChanged{
@@ -57,31 +61,53 @@ public class GPSLocation {
     public boolean openGEPSettings(){
         //locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Log.i("virgil", "GPS is on");
            return true;
         }
+        Log.i("virgil", "GPS is off");
+        return false;
+    }
+
+    public boolean openNetworkSettings(){
+        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            Log.i("virgil", "network is on");
+            return true;
+        }
+        Log.i("virgil", "network is off");
         return false;
     }
 
     public void start(){
         Log.i("virgil", "GPS update start");
         getCurrentLocation();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 180*1000, 0, locationListener);
-        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //sendLocationToServer(location);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,   180*1000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 180*1000, 0, networkLocationListener);
+        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
+            @Override
+            public void onGpsStatusChanged(int i) {
+                switch (i){
+                    case GpsStatus.GPS_EVENT_FIRST_FIX:
+                        isGPSReady = true;
+                        Log.i("virgil", "GPS first location");
+                        break;
+                    case GpsStatus.GPS_EVENT_STARTED:
+                        Log.i("virgil", "GPS location start");
+                        break;
+                    case GpsStatus.GPS_EVENT_STOPPED:
+                        Log.i("virgil", "GPS location stop");
+                        break;
+                }
+            }
+        });
     }
 
     public Location getCurrentLocation(){
         if(openGEPSettings()) {
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
-            criteria.setCostAllowed(true);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
-            String provider = locationManager.getBestProvider(criteria, true);
-            Location location = null; locationManager.getLastKnownLocation(provider);
-            while(location == null){
-                location = locationManager.getLastKnownLocation(provider);
+            Log.i("virgil", "get GPS location");
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location == null){
+                Log.i("virgil", "get network location");
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
             return location;
         }
@@ -119,21 +145,51 @@ public class GPSLocation {
         }
     }
 
+    private final  LocationListener networkLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.i("virgil", "network onLocationChanged");
+            Long now = System.currentTimeMillis();
+            Long minutes = (now - lastSendTime)/6000;
+            if(!isGPSReady || minutes > 5) {
+                Log.i("virgil", "network onLocationChanged send location");
+                sendLocationToServer(location);
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            Log.i("virgil", "onLocationChanged");
+            Log.i("virgil", "GPS onLocationChanged send location");
+            isGPSReady = true;
+            lastSendTime = System.currentTimeMillis();
             sendLocationToServer(location);
         }
 
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
-            Log.i("virgil", "onStatusChanged:" + s);
+            Log.i("virgil", "GPS onStatusChanged:" + s);
         }
 
         @Override
         public void onProviderEnabled(String s) {
-            Log.i("virgil", "onProviderEnabled:" + s);
+            Log.i("virgil", "GPS onProviderEnabled:" + s);
             if(GPSProviderStatusChanged!=null){
                 GPSProviderStatusChanged.onStatusChanged(true);
             }
@@ -141,10 +197,11 @@ public class GPSLocation {
 
         @Override
         public void onProviderDisabled(String s) {
-            Log.i("virgil", "onProviderDisabled:" + s);
+            Log.i("virgil", "GPS onProviderDisabled:" + s);
             if(GPSProviderStatusChanged!=null){
                 GPSProviderStatusChanged.onStatusChanged(false);
             }
         }
     };
+
 }
