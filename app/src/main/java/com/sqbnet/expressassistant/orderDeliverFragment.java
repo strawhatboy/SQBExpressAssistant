@@ -17,6 +17,7 @@ import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.CustomConstants;
+import com.sqbnet.expressassistant.utils.SingletonObjects;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -111,6 +112,9 @@ public class orderDeliverFragment extends OrderBaseFragment {
                 R.id.tv_history_details_list_good_count
         });
         listView.setAdapter(adapter);
+
+        View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
+        tv_customer_phone.setOnClickListener(phoneOnClickListener);
     }
 
     @Override
