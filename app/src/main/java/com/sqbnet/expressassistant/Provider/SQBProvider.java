@@ -18,22 +18,22 @@ public class SQBProvider {
 
     private static volatile SQBProvider sInst;
 
-    private static String BASE_URL = "http://wap.sqbnet.com/index.php/APP/DistributionAppAction/";
-    private static String URL_APPREV = "phoneCaptcha";
-    private static String URL_LOGIN = "userLogin";
-    private static String URL_REGISTER = "userRegister";
-    private static String URL_UPLOAD_PHOTO = "uploadPhoto";
-    private static String URL_HISTORY_ORDERS = "getHistoryOrder";
-    private static String URL_DISPATCHER_INFO = "getDispatchPerson";
-    private static String URL_UPDATE_POSITION = "updatePosition";
-    private static String URL_GET_ASSIGN_ORDER = "getAssignOrder";
-    private static String URL_GET_ORDER_INFO = "getOrderInfo";
-    private static String URL_UPDATE_STATUS = "updateStatus";
-    private static String URL_VERIFY_CODE = "verifyCode";
-    private static String URL_GIVEUP_ORDER = "giveUpOrder";
-    private static String URL_UPDATE_USER_STATUS = "updateUserStatus";
-    private static String URL_USER_LOGOUT = "userLogout";
-    private static String URL_GET_AREA = "getArea";
+    public static String BASE_URL = "http://wap.sqbnet.com/index.php/APP/DistributionAppAction/";
+    public static String URL_APPREV = "phoneCaptcha";
+    public static String URL_LOGIN = "userLogin";
+    public static String URL_REGISTER = "userRegister";
+    public static String URL_UPLOAD_PHOTO = "uploadPhoto";
+    public static String URL_HISTORY_ORDERS = "getHistoryOrder";
+    public static String URL_DISPATCHER_INFO = "getDispatchPerson";
+    public static String URL_UPDATE_POSITION = "updatePosition";
+    public static String URL_GET_ASSIGN_ORDER = "getAssignOrder";
+    public static String URL_GET_ORDER_INFO = "getOrderInfo";
+    public static String URL_UPDATE_STATUS = "updateStatus";
+    public static String URL_VERIFY_CODE = "verifyCode";
+    public static String URL_GIVEUP_ORDER = "giveUpOrder";
+    public static String URL_UPDATE_USER_STATUS = "updateUserStatus";
+    public static String URL_USER_LOGOUT = "userLogout";
+    public static String URL_GET_AREA = "getArea";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -46,7 +46,7 @@ public class SQBProvider {
         return sInst;
     }
 
-    public void login(String username, String password, String latitude, String longitude, final SQBResponseListener listener){
+    public void login(String username, String password, String latitude, String longitude, String token, final SQBResponseListener listener){
         try{
             String url = BASE_URL + URL_LOGIN;
             JSONObject jsonObject = new JSONObject();
@@ -54,6 +54,7 @@ public class SQBProvider {
             jsonObject.put("password", password);
             jsonObject.put("latitude", latitude);
             jsonObject.put("longitude", longitude);
+            jsonObject.put("token", token);
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){
@@ -73,7 +74,7 @@ public class SQBProvider {
         }
     }
 
-    public void userRegister(String username, String password, String name, String card, String cardphoto, String phone, String address, String salt, final SQBResponseListener listener){
+    public void userRegister(String username, String password, String name, String card, String cardphoto, String phone, String address, String salt, String province, String city, String district,  final SQBResponseListener listener){
         try{
             String url = BASE_URL + URL_REGISTER;
             JSONObject jsonObject = new JSONObject();
@@ -85,6 +86,9 @@ public class SQBProvider {
             jsonObject.put("phone", phone);
             jsonObject.put("address", address);
             jsonObject.put("salt", salt);
+            jsonObject.put("province", province);
+            jsonObject.put("city", city);
+            jsonObject.put("district", district);
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){

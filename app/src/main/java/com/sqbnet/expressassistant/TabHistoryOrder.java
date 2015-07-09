@@ -133,6 +133,9 @@ public class TabHistoryOrder extends BaseFragment {
         });
 
         isPrepared = true;
+        if(mData.size() == 0){
+            refreshData();
+        }
     }
 
     @Override

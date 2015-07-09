@@ -192,10 +192,26 @@ public class registrationActivity extends BaseActivity {
                                         String idCard = et_id.getText().toString();
                                         String phone = et_mobile.getText().toString();
                                         String addr = et_addr.getText().toString();
+                                        String province = ((Map<String, Object>)sp_province.getSelectedItem()).get("name").toString();
+                                        String city = ((Map<String, Object>)sp_city.getSelectedItem()).get("name").toString();
+                                        String district = ((Map<String, Object>)sp_district.getSelectedItem()).get("name").toString();
 
-                                        SQBProvider.getInst().userRegister(userName, password, realName, idCard, photoID, phone, addr, phoneCode, new SQBResponseListener() {
+                                        Log.i("virgil", "province:" + province);
+                                        Log.i("virgil", "city:" + city);
+                                        Log.i("virgil", "district:" + district);
+                                        SQBProvider.getInst().userRegister(userName, password, realName, idCard, photoID, phone, addr, phoneCode, province, city, district, new SQBResponseListener() {
                                             @Override
                                             public void onResponse(final SQBResponse response) {
+                                                if(response == null){
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            progressDialog.dismiss();
+                                                            showToast("服务器异常，请稍候再试");
+                                                        }
+                                                    });
+                                                    return;
+                                                }
                                                 Log.i("virgil", response.getCode());
                                                 Log.i("virgil", response.getMsg());
                                                 Log.i("virgil", response.getData().toString());

@@ -43,9 +43,20 @@ import java.util.regex.Pattern;
 public class UtilHelper {
 
     public static String userId;
+    public static String token;
+    public static int intentId = 0;
+
+    public interface IHandleXGMessage{
+        void test();
+    }
+
+    public static int getIntentId(){
+        UtilHelper.intentId += 1;
+        return UtilHelper.intentId;
+    }
 
     public static boolean isMobileNO(String mobiles){
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+        Pattern p = Pattern.compile("^1[34578]{1}\\d{9}$");
         Matcher m = p.matcher(mobiles);
         return m.matches();
     }
@@ -56,6 +67,14 @@ public class UtilHelper {
 
     public static void setSharedUserId(String userId){
         UtilHelper.userId = userId;
+    }
+
+    public static void setXGToken(String token){
+        UtilHelper.token = token;
+    }
+
+    public static String getXGToken(String token){
+        return UtilHelper.token;
     }
 
     public static String getDateString(long timeStamp) {

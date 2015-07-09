@@ -15,4 +15,8 @@ public class CustomConstants {
     public static String ORDER_ARRIVED = "2";
     public static String IM_OFFLINE = "0";
     public static String IM_ONLINE = "1";
+    public static String INTENT_FROM = "FROM";
+    public static String INTENT_ACTION = "ACTION";
+    public static String INTENT_CONTENT = "CONTENT";
+    public static String FROM_NOTIFICATION = "notification";
 }

@@ -42,6 +42,7 @@ public class TabMyWallet extends BaseFragment {
     private TextView tv_id;
     private TextView tv_reg_date;
     private TextView tv_balance;
+    private TextView tv_un_reward;
 
     public TabMyWallet() {
         // Required empty public constructor
@@ -61,6 +62,7 @@ public class TabMyWallet extends BaseFragment {
         tv_real_name = (TextView) view.findViewById(R.id.tv_wallet_username);
         tv_reg_date = (TextView) view.findViewById(R.id.tv_wallet_reg_time);
         tv_balance = (TextView) view.findViewById(R.id.tv_wallet_total_reward);
+        tv_un_reward = (TextView) view.findViewById(R.id.tv_wallet_unsettled_reward);
 
         listView = (ListView) view.findViewById(R.id.lv_wallet);
         tv_count = (TextView) view.findViewById(R.id.tv_wallet_count);
@@ -110,6 +112,10 @@ public class TabMyWallet extends BaseFragment {
         listView.setAdapter(adapter);
 
         isPrepared = true;
+
+        if(mData.size() == 0){
+            refreshData();
+        }
     }
 
     @Override
@@ -207,11 +213,16 @@ public class TabMyWallet extends BaseFragment {
                             String realName = userInfo.getString("name");
                             String regDate = UtilHelper.getDateString(userInfo.getInt("add_time"), "yyyy-MM-dd");
                             String balance = userInfo.getString("balance");
+                            String un_reward = userInfo.getString("s_proceeds");
+                            if(un_reward == "null"){
+                                un_reward = "0";
+                            }
 
                             tv_id.setText(user_id);
                             tv_real_name.setText(realName);
                             tv_reg_date.setText(regDate);
                             tv_balance.setText(balance);
+                            tv_un_reward.setText(un_reward);
 
                         } catch (Exception e) {
                             e.printStackTrace();

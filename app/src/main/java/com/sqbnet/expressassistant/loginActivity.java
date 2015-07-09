@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.tencent.android.tpush.XGPushConfig;
 
 
 public class loginActivity extends BaseActivity {
@@ -125,7 +126,10 @@ public class loginActivity extends BaseActivity {
                         final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
                         progressDialog.show();
 
-                        SQBProvider.getInst().login(username, password, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                        String token = XGPushConfig.getToken(getApplicationContext());
+                        Log.i("virgil", "XG token:" + token);
+
+                        SQBProvider.getInst().login(username, password, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), token, new SQBResponseListener() {
                             @Override
                             public void onResponse(final SQBResponse response) {
                                 runOnUiThread(new Runnable() {

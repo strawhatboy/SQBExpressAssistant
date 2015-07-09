@@ -21,6 +21,7 @@ import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.CustomConstants;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -133,6 +135,18 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Context context = getApplicationContext();
         Intent service = new Intent(context, XGPushService.class);
         context.startService(service);
+
+        XGPushManager.registerPush(getApplicationContext(),  new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object o, int i) {
+                Log.i("virgil", "XG register success");
+            }
+
+            @Override
+            public void onFail(Object o, int i, String s) {
+                Log.i("virgil", "XG register fail," + s);
+            }
+        });
     }
 
     @Override
@@ -140,7 +154,47 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Log.i("--virgil", "onResume");
 
         super.onResume();
-        checkLoginStatus();
+        if(checkLoginStatus()){
+            Intent intent = getIntent();
+            if(!intent.hasExtra(CustomConstants.INTENT_FROM))
+                return;
+            Log.i("virgil", "from:" + intent.getStringExtra(CustomConstants.INTENT_FROM));
+            Log.i("virgil", "compare:" + CustomConstants.FROM_NOTIFICATION);
+            if(intent.getStringExtra(CustomConstants.INTENT_FROM).equals(CustomConstants.FROM_NOTIFICATION)){
+                Log.i("virgil","in notification");
+                String action = intent.getStringExtra(CustomConstants.INTENT_ACTION);
+                String content = intent.getStringExtra(CustomConstants.INTENT_CONTENT);
+
+                if(action.equals(SQBProvider.URL_GET_ASSIGN_ORDER)) {
+                    try {
+                        Log.i("virgil", "in getAssignOrder");
+                        JSONObject jsonObject = new JSONObject(content);
+                        JSONObject dataObj = jsonObject.getJSONObject("data");
+                        final String user_id = UtilHelper.getSharedUserId();
+                        final String order_id = dataObj.getString("order_id");
+                        final String status = dataObj.getString("status");
+
+                        TimerTask timerTask = new TimerTask() {
+                            @Override
+                            public void run() {
+                                Intent orderIntent = new Intent();
+                                orderIntent.setClass(mainActivity.this, orderMainActivity.class);
+                                orderIntent.putExtra("user_id", user_id);
+                                orderIntent.putExtra("order_id", order_id);
+                                orderIntent.putExtra("status", status);
+                                startActivityForResult(orderIntent, RequestCode.ORDER);
+                                setStatus(false);
+                            }
+                        };
+                        Timer timer = new Timer();
+                        timer.schedule(timerTask, 3000);
+
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -148,7 +202,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Log.i("virgil", "on destroy main activity");
         GPSLocation.getInst().stop();
 
-        XGPushManager.registerPush(getApplicationContext(), "*");
+        //XGPushManager.registerPush(getApplicationContext(), "*");
         XGPushManager.unregisterPush(this);
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
@@ -231,12 +285,15 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         resources = getResources();
     }
 
-    private void checkLoginStatus() {
+    private boolean checkLoginStatus() {
         String token = UtilHelper.getSharedUserId();
         if (token == null) {
             Intent intent = new Intent();
             intent.setClass(mainActivity.this, loginActivity.class);
             startActivityForResult(intent, RequestCode.LOGIN);
+            return false;
+        }else {
+            return true;
         }
     }
 
@@ -390,7 +447,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-                        runOnUiThread(new Runnable() {
+                        /*runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent();
@@ -401,9 +458,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 startActivityForResult(intent, RequestCode.ORDER);
                                 setStatus(false);
                             }
-                        });
+                        });*/
 
-                       /* if(response.getCode().equals("1000")){
+                        if(response.getCode().equals("1000")){
                             JSONObject result = (JSONObject)response.getData();
                             try {
                                 final String order_id = result.getString("order_id");
@@ -425,7 +482,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
-                        }*/
+                        }
                     }
         });
     }
@@ -442,17 +499,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             case RequestCode.LOGIN: {
                 switch (resultCode){
                     case ResultCode.LOGIN_SUCCESS:
-                        XGPushManager.registerPush(getApplicationContext(), UtilHelper.getSharedUserId(), new XGIOperateCallback() {
-                            @Override
-                            public void onSuccess(Object o, int i) {
-                                Log.i("virgil", "XG register success");
-                            }
-
-                            @Override
-                            public void onFail(Object o, int i, String s) {
-                                Log.i("virgil", "XG register fail," + s);
-                            }
-                        });
                         //startGPSLocation();
                         break;
                     case ResultCode.QUIT:
@@ -482,20 +528,15 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     @Override
     public void onBackPressed() {
         // Do nothing
-        if (mViewPager.getCurrentItem() == 2) {
-            mViewPager.setCurrentItem(1);
-            setBackgroudLight();
-        }else{
-            new AlertDialog.Builder(mainActivity.this).setTitle(resources.getString(R.string.dialog_title_info))
-                    .setMessage(resources.getString(R.string.dialog_confirm_exit))
-                    .setPositiveButton(resources.getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(resources.getString(R.string.dialog_no), null)
-                    .show();
-        }
+        new AlertDialog.Builder(mainActivity.this).setTitle(resources.getString(R.string.dialog_title_info))
+                .setMessage(resources.getString(R.string.dialog_confirm_exit))
+                .setPositiveButton(resources.getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(resources.getString(R.string.dialog_no), null)
+                .show();
     }
 }
