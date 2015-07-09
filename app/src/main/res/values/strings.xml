@@ -104,4 +104,8 @@
     <string name="dialog_no">No</string>
     <string name="dialog_title_info">Information</string>
     <string name="dialog_dial">Make a dial</string>
+    <string name="registration_province">Choose Province</string>
+    <string name="registration_city">Choose City</string>
+    <string name="registration_district">Choose District</string>
+    <string name="registration_district_selection">District Selection:</string>
 </resources>

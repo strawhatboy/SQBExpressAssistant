@@ -19,11 +19,17 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +42,15 @@ import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.jar.JarException;
 
@@ -64,11 +75,25 @@ public class registrationActivity extends BaseActivity {
     private EditText et_passcode;
     private EditText et_addr;
 
+    private Spinner sp_province;
+    private Spinner sp_city;
+    private Spinner sp_district;
+
     private Bitmap photo;
     private String photoPath;
     private String phoneCode;
 
     private TimeCount timeCount;
+
+    private List<Map<String, Object>> mProvinces;
+    private List<Map<String, Object>> mCities;
+    private List<Map<String, Object>> mDistricts;
+    private Map<Integer, List<Integer>> mDistrictCache;
+    private Map<Integer, String> mDistrictMapCache;
+
+    private SimpleAdapter provinceAdapter;
+    private SimpleAdapter cityAdapter;
+    private SimpleAdapter districtAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +208,7 @@ public class registrationActivity extends BaseActivity {
                                                             startActivity(intent);
                                                         }
                                                     });
-                                                }else {
+                                                } else {
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
@@ -198,7 +223,7 @@ public class registrationActivity extends BaseActivity {
                                         progressDialog.dismiss();
                                         e.printStackTrace();
                                     }
-                                }else {
+                                } else {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -316,6 +341,7 @@ public class registrationActivity extends BaseActivity {
         et_addr = (EditText) findViewById(R.id.et_registration_full_addr);
     }
 
+    @SuppressWarnings("unchecked")
     private void initView_Others() {
         tv_photo_placeholder = (TextView) findViewById(R.id.tv_photo_placeholder);
         tv_agreement = (TextView) findViewById(R.id.tv_registration_agreement);
@@ -323,7 +349,7 @@ public class registrationActivity extends BaseActivity {
         chkbox_accept_protocol.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    btn_ok.setEnabled(b);
+                btn_ok.setEnabled(b);
             }
         });
 
@@ -334,6 +360,198 @@ public class registrationActivity extends BaseActivity {
                 intent.setClass(registrationActivity.this, registrationAgreementActivity.class);
 
                 startActivity(intent);
+            }
+        });
+
+        mDistrictCache = new HashMap<Integer, List<Integer>>();
+        mDistrictMapCache = new HashMap<Integer, String>();
+        mProvinces = new ArrayList<Map<String, Object>>();
+        mCities = new ArrayList<Map<String, Object>>();
+        mDistricts = new ArrayList<Map<String, Object>>();
+        sp_province = (Spinner) findViewById(R.id.sp_registration_province);
+        sp_city = (Spinner) findViewById(R.id.sp_registration_city);
+        sp_district = (Spinner) findViewById(R.id.sp_registration_district);
+
+        sp_province.setPromptId(R.string.registration_province);
+        sp_city.setPromptId(R.string.registration_city);
+        sp_district.setPromptId(R.string.registration_district);
+
+        provinceAdapter = new SimpleAdapter(this, mProvinces, android.R.layout.simple_spinner_item,
+                new String[] {
+                       "name"
+                },
+                new int[] {
+                        android.R.id.text1
+                });
+        sp_province.setAdapter(provinceAdapter);
+
+        cityAdapter = new SimpleAdapter(this, mCities, android.R.layout.simple_spinner_item,
+                new String[] {
+                        "name"
+                },
+                new int[] {
+                        android.R.id.text1
+                });
+        sp_city.setAdapter(cityAdapter);
+
+        districtAdapter = new SimpleAdapter(this, mDistricts, android.R.layout.simple_spinner_item,
+                new String[] {
+                        "name"
+                },
+                new int[] {
+                        android.R.id.text1
+                });
+        sp_district.setAdapter(districtAdapter);
+
+        SQBProvider.getInst().getArea("1", new SQBResponseListener() {
+            @Override
+            public void onResponse(final SQBResponse response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response != null) {
+                            try {
+                                JSONArray result = (JSONArray) response.getData();
+                                int length = result.length();
+                                List<Integer> leaves = new ArrayList<Integer>();
+                                for (int i = 0; i < length; i++) {
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    JSONObject obj = (JSONObject) result.get(i);
+                                    int id = obj.getInt("id");
+                                    String name = obj.getString("name");
+                                    data.put("id", id);
+                                    data.put("name", name);
+                                    leaves.add(id);
+                                    mProvinces.add(data);
+                                    mDistrictMapCache.put(id, name);
+                                }
+
+                                mDistrictCache.put(1, leaves);
+                                provinceAdapter.notifyDataSetChanged();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        sp_province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Map<String, Object> map = (Map<String, Object>) provinceAdapter.getItem(i);
+                final Integer id = (Integer) map.get("id");
+                mCities.clear();
+                if (mDistrictCache.containsKey(id)) {
+                    List<Integer> leaves = mDistrictCache.get(id);
+                    int length = leaves.size();
+                    for (int index = 0; index < length; index++) {
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put("id", leaves.get(index));
+                        data.put("name", mDistrictMapCache.get(index));
+                        mCities.add(data);
+                    }
+                    cityAdapter.notifyDataSetChanged();
+                } else {
+                    SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
+                        @Override
+                        public void onResponse(final SQBResponse response) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (response != null) {
+                                        try {
+                                            JSONArray result = (JSONArray) response.getData();
+                                            int length = result.length();
+                                            List<Integer> leaves = new ArrayList<Integer>();
+                                            for (int i = 0; i < length; i++) {
+                                                Map<String, Object> data = new HashMap<String, Object>();
+                                                JSONObject obj = (JSONObject) result.get(i);
+                                                int _id = obj.getInt("id");
+                                                String name = obj.getString("name");
+                                                data.put("id", _id);
+                                                data.put("name", name);
+                                                leaves.add(_id);
+                                                mCities.add(data);
+                                                mDistrictMapCache.put(_id, name);
+                                            }
+
+                                            mDistrictCache.put(id, leaves);
+                                            cityAdapter.notifyDataSetChanged();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        sp_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Map<String, Object> map = (Map<String, Object>) cityAdapter.getItem(i);
+                final Integer id = (Integer) map.get("id");
+                mDistricts.clear();
+                if (mDistrictCache.containsKey(id)) {
+                    List<Integer> leaves = mDistrictCache.get(id);
+                    int length = leaves.size();
+                    for (int index = 0; index < length; index++) {
+                        Map<String, Object> data = new HashMap<String, Object>();
+                        data.put("id", leaves.get(index));
+                        data.put("name", mDistrictMapCache.get(index));
+                        mDistricts.add(data);
+                    }
+                    districtAdapter.notifyDataSetChanged();
+                } else {
+                    SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
+                        @Override
+                        public void onResponse(final SQBResponse response) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (response != null) {
+                                        try {
+                                            JSONArray result = (JSONArray) response.getData();
+                                            int length = result.length();
+                                            List<Integer> leaves = new ArrayList<Integer>();
+                                            for (int i = 0; i < length; i++) {
+                                                Map<String, Object> data = new HashMap<String, Object>();
+                                                JSONObject obj = (JSONObject) result.get(i);
+                                                int _id = obj.getInt("id");
+                                                String name = obj.getString("name");
+                                                data.put("id", _id);
+                                                data.put("name", name);
+                                                leaves.add(_id);
+                                                mDistricts.add(data);
+                                                mDistrictMapCache.put(_id, name);
+                                            }
+
+                                            mDistrictCache.put(id, leaves);
+                                            districtAdapter.notifyDataSetChanged();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
@@ -378,5 +596,28 @@ public class registrationActivity extends BaseActivity {
 
     private void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (this.getCurrentFocus() != null) {
+            clearFocus(et_username);
+            clearFocus(et_password);
+            clearFocus(et_real_name);
+            clearFocus(et_id);
+            clearFocus(et_addr);
+            clearFocus(et_mobile);
+            clearFocus(et_passcode);
+
+            InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            return mInputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void clearFocus(EditText et) {
+        if (et != null && et.hasFocus()) {
+            et.clearFocus();
+        }
     }
 }

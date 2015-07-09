@@ -33,6 +33,7 @@ public class SQBProvider {
     private static String URL_GIVEUP_ORDER = "giveUpOrder";
     private static String URL_UPDATE_USER_STATUS = "updateUserStatus";
     private static String URL_USER_LOGOUT = "userLogout";
+    private static String URL_GET_AREA = "getArea";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -229,6 +230,18 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener);
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getArea(String parent_id, final SQBResponseListener listener) {
+        try {
+            String url = BASE_URL + URL_GET_AREA;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("parent_id", parent_id);
+
+            doPost(url, jsonObject, listener);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

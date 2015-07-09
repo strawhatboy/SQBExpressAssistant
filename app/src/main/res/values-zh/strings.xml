@@ -99,4 +99,8 @@
     <string name="dialog_yes">是</string>
     <string name="dialog_title_info">提示</string>
     <string name="dialog_dial">拨号</string>
+    <string name="registration_city">选择城市</string>
+    <string name="registration_province">选择省份</string>
+    <string name="registration_district">选择地区</string>
+    <string name="registration_district_selection">地区选择：</string>
 </resources>
