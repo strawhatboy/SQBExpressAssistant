@@ -120,28 +120,44 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".mainActivity" >
+        <activity android:name=".mainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".loginActivity" >
+        <activity android:name=".loginActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity android:name=".registrationActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
-        <activity android:name=".loginFailedActivity" >
+        <activity android:name=".loginFailedActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
-        <activity android:name=".registrationSuccessActivity"></activity>
+        <activity android:name=".registrationSuccessActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"></activity>
         <activity
             android:name=".registrationAgreementActivity"
-            android:label="@string/title_activity_registration_agreement" >
+            android:label="@string/title_activity_registration_agreement"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
-        <activity android:name=".orderMainActivity" >
+        <activity android:name=".orderMainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
-        <activity android:name=".historyDetailsActivity" >
+        <activity android:name=".historyDetailsActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
     </application>
 

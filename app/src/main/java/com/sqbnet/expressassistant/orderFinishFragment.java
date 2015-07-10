@@ -89,7 +89,7 @@ public class orderFinishFragment extends OrderBaseFragment {
 
                             //delegate.exit(ResultCode.ORDER_DONE, /* balance got */ Remuneration);
 
-                            if (!response.getCode().equals("1000")) {
+                            if (response.getCode().equals("1000")) {
                                 // add rest to server to confirm the order
                                 SQBProvider.getInst().updateOrderStatus(mOrderId, CustomConstants.ORDER_ARRIVED, new SQBResponseListener() {
                                     @Override
