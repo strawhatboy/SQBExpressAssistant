@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.controls.CustomListView;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
@@ -35,8 +36,7 @@ import java.util.Map;
  */
 public class TabHistoryOrder extends BaseFragment {
 
-    private boolean isPrepared = false;
-    private ListView listView;
+    private CustomListView listView;
     private SimpleAdapter adapter;
     private List<Map<String, Object>> mData;
     private Animation textRotateAnimation;
@@ -48,17 +48,30 @@ public class TabHistoryOrder extends BaseFragment {
 
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i("virgil", "TabHistoryOrder onCreate");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i("virgil", "TabHistoryOrder onCreateView");
         View view = inflater.inflate(R.layout.tab_history_order, container, false);
         initView(view);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        Log.i("virgil", "TabHistoryOrder onResume");
+        super.onResume();
+    }
+
     private void initView(View view) {
         textRotateAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotated_text_view);
         textRotateAnimation.setFillAfter(true);
-        listView = (ListView) view.findViewById(R.id.lv_history);
+        listView = (CustomListView) view.findViewById(R.id.lv_history);
 
         mData = new ArrayList<Map<String, Object>>();
 
@@ -132,17 +145,17 @@ public class TabHistoryOrder extends BaseFragment {
             }
         });
 
-        isPrepared = true;
+        listView.setonRefreshListener(new CustomListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i("virgil", "CustomListView onRefresh");
+                refreshData();
+            }
+        });
+
         if(mData.size() == 0){
             refreshData();
         }
-    }
-
-    @Override
-    protected void lazyload() {
-        if (!isVisible || !isPrepared || mData.size() > 0)
-            return;
-        refreshData();
     }
 
     private void refreshData(){
@@ -155,6 +168,7 @@ public class TabHistoryOrder extends BaseFragment {
                     @Override
                     public void run() {
                         if (response != null) {
+                            Log.i("virgil", "TabHsitoryOrder getHisotryOrder");
                             Log.i("virgil", response.getCode());
                             Log.i("virgil", response.getMsg());
                             Log.i("virgil", response.getData().toString());
@@ -189,6 +203,7 @@ public class TabHistoryOrder extends BaseFragment {
                                     }
 
                                     adapter.notifyDataSetChanged();
+                                    listView.onRefreshComplete();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);

@@ -16,13 +16,13 @@
             android:textSize="16dp"
             android:text="@string/history_title"/>
     </LinearLayout>
-    <ListView
+    <com.sqbnet.expressassistant.controls.CustomListView
         android:id="@+id/lv_history"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@null"
         android:dividerHeight="1dp"  >
-    </ListView>
+    </com.sqbnet.expressassistant.controls.CustomListView>
 
 
 

@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +45,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     private ViewPager mViewPager;
     private FragmentStatePagerAdapter mFragmentPagerAdapter;
+    private FragmentViewPagerAdapter mFragmentViewPagerAdapter;
     private List<Fragment> mFragments = new ArrayList<Fragment>();
 
     private LinearLayout mTabBtnRobOrder;
@@ -80,41 +80,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
         initView();
 
-        mFragmentPagerAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return mFragments.get(position);
-            }
-
-            @Override
-            public int getCount() {
-                return mFragments.size();
-            }
-
-            @Override
-            public int getItemPosition(Object object) {
-                return PagerAdapter.POSITION_NONE;
-            }
-        };
-
-        mViewPager.setAdapter(mFragmentPagerAdapter);
-
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        mFragmentViewPagerAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mViewPager, mFragments);
 
         GPSLocation.getInst().GPSProviderStatusChanged = new GPSLocation.GPSProviderStatusChanged(){
             @Override
@@ -151,7 +117,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     @Override
     protected void onResume() {
-        Log.i("--virgil", "onResume");
+        Log.i("--virgil", "mainActivity onResume");
 
         super.onResume();
         if(checkLoginStatus()){
@@ -233,24 +199,17 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         tabRobOrder = new TabRobOrder();
         tabHistoryOrder = new TabHistoryOrder();
         tabMyWallet = new TabMyWallet();
-        //tabHistoryDetails = new historyDetailsActivity();
         tabOrderDoneFragment = new orderDoneFragment();
 
         tabHistoryOrder.gotoDetails = new TabHistoryOrder.IGotoDetails() {
             @Override
             public void gotoDetails(JSONObject data) {
-                //isHistoryDetailsVisible = true;
-                //mFragments.add(2, tabHistoryDetails);
-                //mFragmentPagerAdapter.notifyDataSetChanged();
-                //mViewPager.setCurrentItem(2);
-                //tabHistoryDetails.setData(data);
 
                 Intent intent = new Intent();
                 intent.putExtra("details", data.toString());
 
                 intent.setClass(mainActivity.this, historyDetailsActivity.class);
                 startActivity(intent);
-                //setBackgroudLight();
             }
 
             @Override

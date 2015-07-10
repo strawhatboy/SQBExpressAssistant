@@ -13,18 +13,8 @@ public abstract class BaseFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(getUserVisibleHint()){
             isVisible = true;
-            onVisible();
         }else {
             isVisible = false;
-            onInVisible();
         }
     }
-
-    protected abstract void lazyload();
-
-    protected void onVisible(){
-        lazyload();
-    }
-
-    protected void  onInVisible(){}
 }

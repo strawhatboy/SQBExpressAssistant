@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.controls.CustomListView;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
@@ -32,8 +33,7 @@ import java.util.Map;
  */
 public class TabMyWallet extends BaseFragment {
 
-    private boolean isPrepared = false;
-    private ListView listView;
+    private CustomListView listView;
     private SimpleAdapter adapter;
     private List<Map<String, Object>> mData;
     private TextView tv_count;
@@ -48,13 +48,43 @@ public class TabMyWallet extends BaseFragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i("virgil", "TabMyWallet onCreate");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i("virgil", "TabMyWallet onCreateView");
         View view = inflater.inflate(R.layout.tab_my_wallet, container, false);
         initView(view);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("virgil", "TabMyWallet onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i("virgil", "TabMyWallet onPause");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i("virgil", "TabMyWallet onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i("virgil", "TabMyWallet onDestroy");
     }
 
     private void initView(View view) {
@@ -64,7 +94,7 @@ public class TabMyWallet extends BaseFragment {
         tv_balance = (TextView) view.findViewById(R.id.tv_wallet_total_reward);
         tv_un_reward = (TextView) view.findViewById(R.id.tv_wallet_unsettled_reward);
 
-        listView = (ListView) view.findViewById(R.id.lv_wallet);
+        listView = (CustomListView) view.findViewById(R.id.lv_wallet);
         tv_count = (TextView) view.findViewById(R.id.tv_wallet_count);
 
         mData = new ArrayList<Map<String, Object>>();
@@ -111,18 +141,17 @@ public class TabMyWallet extends BaseFragment {
 
         listView.setAdapter(adapter);
 
-        isPrepared = true;
+        listView.setonRefreshListener(new CustomListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i("virgil", "listview onRefresh");
+                refreshData();
+            }
+        });
 
         if(mData.size() == 0){
             refreshData();
         }
-    }
-
-    @Override
-    protected void lazyload() {
-        if(!isVisible || !isPrepared || mData.size() > 0)
-            return;
-        refreshData();
     }
 
     private void setCount(int count) {
@@ -139,6 +168,7 @@ public class TabMyWallet extends BaseFragment {
                     @Override
                     public void run() {
                         if (response != null) {
+                            Log.i("virgil", "TabMyWallet get History order");
                             Log.i("virgil", response.getCode());
                             Log.i("virgil", response.getMsg());
                             Log.i("virgil", response.getData().toString());
@@ -177,6 +207,7 @@ public class TabMyWallet extends BaseFragment {
 
                                     setCount(mData.size());
                                     adapter.notifyDataSetChanged();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
@@ -198,6 +229,7 @@ public class TabMyWallet extends BaseFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
                         if (response == null) {
                             Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
                             return;
@@ -224,6 +256,7 @@ public class TabMyWallet extends BaseFragment {
                             tv_balance.setText(balance);
                             tv_un_reward.setText(un_reward);
 
+                            listView.onRefreshComplete();
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);

@@ -121,14 +121,14 @@
                 android:textColor="@color/font_black"/>
         </LinearLayout>
 
-        <ListView
+        <com.sqbnet.expressassistant.controls.CustomListView
             android:id="@+id/lv_wallet"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:divider="@null"
             android:listSelector="#00000000">
 
-        </ListView>
+        </com.sqbnet.expressassistant.controls.CustomListView>
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
