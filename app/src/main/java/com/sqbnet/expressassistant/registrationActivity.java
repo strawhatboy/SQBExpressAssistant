@@ -95,6 +95,8 @@ public class registrationActivity extends BaseActivity {
     private SimpleAdapter cityAdapter;
     private SimpleAdapter districtAdapter;
 
+    private Map<String, Object> mEmptyItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -392,6 +394,10 @@ public class registrationActivity extends BaseActivity {
         sp_city.setPromptId(R.string.registration_city);
         sp_district.setPromptId(R.string.registration_district);
 
+        mEmptyItem = new HashMap<String, Object>();
+        mEmptyItem.put("id", -1);
+        mEmptyItem.put("name", "");
+
         provinceAdapter = new SimpleAdapter(this, mProvinces, android.R.layout.simple_spinner_item,
                 new String[] {
                        "name"
@@ -419,6 +425,7 @@ public class registrationActivity extends BaseActivity {
                 });
         sp_district.setAdapter(districtAdapter);
 
+        mProvinces.add(mEmptyItem);
         SQBProvider.getInst().getArea("1", new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
@@ -444,6 +451,8 @@ public class registrationActivity extends BaseActivity {
 
                                 mDistrictCache.put(1, leaves);
                                 provinceAdapter.notifyDataSetChanged();
+                                sp_province.setSelection(0);
+                                sp_city.setSelection(0);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -458,17 +467,26 @@ public class registrationActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = (Map<String, Object>) provinceAdapter.getItem(i);
                 final Integer id = (Integer) map.get("id");
+                if (id == -1) {
+                    return;
+                }
+
                 mCities.clear();
+                mCities.add(mEmptyItem);
                 if (mDistrictCache.containsKey(id)) {
                     List<Integer> leaves = mDistrictCache.get(id);
                     int length = leaves.size();
                     for (int index = 0; index < length; index++) {
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("id", leaves.get(index));
-                        data.put("name", mDistrictMapCache.get(index));
+                        data.put("name", mDistrictMapCache.get(leaves.get(index)));
                         mCities.add(data);
                     }
                     cityAdapter.notifyDataSetChanged();
+                    mDistricts.clear();
+                    districtAdapter.notifyDataSetChanged();
+                    sp_district.setSelection(0);
+                    sp_city.setSelection(0);
                 } else {
                     SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
                         @Override
@@ -492,13 +510,16 @@ public class registrationActivity extends BaseActivity {
                                                 mCities.add(data);
                                                 mDistrictMapCache.put(_id, name);
                                             }
-
                                             mDistrictCache.put(id, leaves);
-                                            cityAdapter.notifyDataSetChanged();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                     }
+                                    cityAdapter.notifyDataSetChanged();
+                                    mDistricts.clear();
+                                    districtAdapter.notifyDataSetChanged();
+                                    sp_district.setSelection(0);
+                                    sp_city.setSelection(0);
                                 }
                             });
                         }
@@ -517,17 +538,23 @@ public class registrationActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = (Map<String, Object>) cityAdapter.getItem(i);
                 final Integer id = (Integer) map.get("id");
+                if (id == -1) {
+                    return;
+                }
+
                 mDistricts.clear();
+                mDistricts.add(mEmptyItem);
                 if (mDistrictCache.containsKey(id)) {
                     List<Integer> leaves = mDistrictCache.get(id);
                     int length = leaves.size();
                     for (int index = 0; index < length; index++) {
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("id", leaves.get(index));
-                        data.put("name", mDistrictMapCache.get(index));
+                        data.put("name", mDistrictMapCache.get(leaves.get(index)));
                         mDistricts.add(data);
                     }
                     districtAdapter.notifyDataSetChanged();
+                    sp_district.setSelection(0);
                 } else {
                     SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
                         @Override
@@ -553,11 +580,12 @@ public class registrationActivity extends BaseActivity {
                                             }
 
                                             mDistrictCache.put(id, leaves);
-                                            districtAdapter.notifyDataSetChanged();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                     }
+                                    districtAdapter.notifyDataSetChanged();
+                                    sp_district.setSelection(0);
                                 }
                             });
                         }

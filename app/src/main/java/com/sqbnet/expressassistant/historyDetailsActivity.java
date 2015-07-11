@@ -15,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -59,9 +60,13 @@ public class historyDetailsActivity extends BaseActivity {
     private TextView mConsigneeName;
     private TextView mConsigneeAddress;
     private TextView mConsigneePhone;
+    private TextView mDuration1;
+    private TextView mDuration2;
 
     private ImageView iv_Company;
     private ImageView iv_Consignee;
+
+    private LinearLayout ly_FromGoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +103,9 @@ public class historyDetailsActivity extends BaseActivity {
         mConsigneePhone = (TextView) findViewById(R.id.tv_history_details_consignee_phone);
         iv_Company = (ImageView) findViewById(R.id.civ_history_details_from_avatar);
         iv_Consignee = (ImageView) findViewById(R.id.civ_history_details_to_avatar);
-
+        ly_FromGoto = (LinearLayout) findViewById(R.id.ly_history_details_from_goto);
+        mDuration1 = (TextView) findViewById(R.id.tv_history_details_1st_duration);
+        mDuration2 = (TextView) findViewById(R.id.tv_history_details_2nd_duration);
 
         textRotateAnimation = AnimationUtils.loadAnimation(historyDetailsActivity.this, R.anim.rotated_text_view);
         textRotateAnimation.setFillAfter(true);
@@ -141,6 +148,8 @@ public class historyDetailsActivity extends BaseActivity {
         View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
         mCompanyPhone.setOnClickListener(phoneOnClickListener);
         mConsigneePhone.setOnClickListener(phoneOnClickListener);
+
+        ly_FromGoto.setOnClickListener(SingletonObjects.getInst().getMapOnClickListener());
     }
 
 
@@ -213,14 +222,22 @@ public class historyDetailsActivity extends BaseActivity {
 
             long startTimestamp = data.getLong("starttime");
             long endTimestamp = data.getLong("endtime");
+            long recieveTimestamp = data.getLong("receivetime");
             mStartTime.setText(UtilHelper.getDateString(startTimestamp).split("\\s+")[1]);
-            mPickTime.setText(UtilHelper.getDateString(data.getLong("receivetime")).split("\\s+")[1]);
+            mPickTime.setText(UtilHelper.getDateString(recieveTimestamp).split("\\s+")[1]);
             mEndTime.setText(UtilHelper.getDateString(endTimestamp).split("\\s+")[1]);
             long durationTimestamp = endTimestamp - startTimestamp;
             Date durationDate = UtilHelper.getDate(durationTimestamp);
+            long duration1to2 = recieveTimestamp - startTimestamp;
+            Date duration1to2Date = UtilHelper.getDate(duration1to2);
+            long duration2to3 = endTimestamp - recieveTimestamp;
+            Date duration2to3Date = UtilHelper.getDate(duration2to3);
+
             mRemuneration.setText(data.getString("remuneration") + getResources().getString(R.string.unit_yuan));
             mRemuneration2.setText(data.getString("remuneration"));
             mTotalDuration.setText(Integer.toString(durationDate.getMinutes()));
+            mDuration1.setText(Integer.toString(duration1to2Date.getMinutes()));
+            mDuration2.setText(Integer.toString(duration2to3Date.getMinutes()));
 
             mConsigneeName.setText(orderInfo.getString("consignee"));
             mConsigneeAddress.setText(orderInfo.getString("address"));

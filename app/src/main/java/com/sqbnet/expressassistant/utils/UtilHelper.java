@@ -367,4 +367,16 @@ public class UtilHelper {
         GPSLocation.getInst().start();
         //BaiDuLocationService.getInst().getLocationClient().start();
     }
+
+    public void startMapByAddress(String address) {
+
+    }
+
+    public void startMapByLocation(double latitude, double longtitude) {
+
+    }
+
+    private boolean isInstallByread(String packageName) {
+        return new File("/data/data/" + packageName).exists();
+    }
 }
