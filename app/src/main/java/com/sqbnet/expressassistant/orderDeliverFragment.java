@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.CustomConstants;
 import com.sqbnet.expressassistant.utils.SingletonObjects;
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,6 +42,8 @@ public class orderDeliverFragment extends OrderBaseFragment {
     private TextView tv_customer_name;
     private TextView tv_customer_address;
     private TextView tv_customer_phone;
+
+    private LinearLayout ly_goto;
 
     private ListView listView;
     private SimpleAdapter adapter;
@@ -75,6 +79,8 @@ public class orderDeliverFragment extends OrderBaseFragment {
         civ_customer_image = (CircleImageView) view.findViewById(R.id.civ_order_customer_image);
 
         listView = (ListView) view.findViewById(R.id.lv_order_deliver_details);
+
+        ly_goto = (LinearLayout) view.findViewById(R.id.ly_order_deliver_goto);
         mData = new ArrayList<Map<String, Object>>();
         // For debugging:
         /*for (int i = 0; i < 15; i++) {
@@ -96,6 +102,21 @@ public class orderDeliverFragment extends OrderBaseFragment {
 
         View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
         tv_customer_phone.setOnClickListener(phoneOnClickListener);
+
+        ly_goto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (mJSONData != null) {
+                        UtilHelper.startMapByAddress(
+                                getActivity(),
+                                mJSONData.getString("address"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -120,9 +141,8 @@ public class orderDeliverFragment extends OrderBaseFragment {
 
                         if (response.getCode().equals("1000")) {
                             JSONObject result = (JSONObject) response.getData();
+                            mJSONData = result;
                             try {
-                                JSONObject company = result.getJSONObject("company");
-
                                 String customer_name = result.getString("consignee");
                                 String customer_address = result.getString("address");
                                 String customer_phone = result.getString("mobile");

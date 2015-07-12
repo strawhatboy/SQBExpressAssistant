@@ -58,6 +58,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical"
+                    android:id="@+id/ly_order_confirm_from_goto"
                     >
 
                     <ImageView
@@ -200,6 +201,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical"
+                    android:id="@+id/ly_order_confirm_to_goto"
                     >
 
                     <ImageView

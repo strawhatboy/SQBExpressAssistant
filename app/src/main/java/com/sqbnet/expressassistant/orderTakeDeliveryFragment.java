@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
     private TextView tv_company_address;
     private TextView tv_company_phone;
     private CircleImageView civ_company_image;
+
+    private LinearLayout ly_goto;
 
     private ListView listView;
     private SimpleAdapter adapter;
@@ -85,6 +88,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
 
                         if (response.getCode().equals("1000")) {
                             JSONObject result = (JSONObject) response.getData();
+                            mJSONData = result;
                             try {
                                 JSONObject company = result.getJSONObject("company");
                                 String company_name = company.getString("name");
@@ -159,14 +163,14 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(response == null){
+                                    if (response == null) {
                                         return;
                                     }
                                     Log.i("virgil", "take delivery confirm");
                                     Log.i("virgil", response.getCode());
                                     Log.i("virgil", response.getMsg());
                                     Log.i("virgil", response.getData().toString());
-                                    if(response.getCode().equals("1000")){
+                                    if (response.getCode().equals("1000")) {
                                         delegate.goNext();
                                     }
                                 }
@@ -186,6 +190,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
         tv_company_address = (TextView) view.findViewById(R.id.tv_order_company_address);
         tv_company_phone = (TextView) view.findViewById(R.id.tv_order_company_phone);
         civ_company_image = (CircleImageView) view.findViewById(R.id.civ_order_company_image);
+        ly_goto = (LinearLayout) view.findViewById(R.id.ly_order_take_deliver_goto);
 
         listView = (ListView) view.findViewById(R.id.lv_order_take_details);
         mData = new ArrayList<Map<String, Object>>();
@@ -209,6 +214,25 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
 
         View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
         tv_company_phone.setOnClickListener(phoneOnClickListener);
+
+        ly_goto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (mJSONData != null) {
+                        JSONObject company = mJSONData.getJSONObject("company");
+                        UtilHelper.startMapByLocation(
+                                getActivity(),
+                                company.getDouble("latitude"),
+                                company.getDouble("longitude"),
+                                company.getString("name"),
+                                company.getString("addr"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

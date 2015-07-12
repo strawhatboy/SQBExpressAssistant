@@ -108,4 +108,6 @@
     <string name="registration_city">Choose City</string>
     <string name="registration_district">Choose District</string>
     <string name="registration_district_selection">District Selection:</string>
+    <string name="dialog_open_map">Open Map</string>
+    <string name="dialog_map_no_map">Cannot detect one of these application installed: [ Baidu Map | Gaode Map ]. Please install them at first.</string>
 </resources>

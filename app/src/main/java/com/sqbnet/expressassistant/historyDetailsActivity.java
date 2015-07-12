@@ -67,6 +67,8 @@ public class historyDetailsActivity extends BaseActivity {
     private ImageView iv_Consignee;
 
     private LinearLayout ly_FromGoto;
+    private LinearLayout ly_ToGoto;
+    protected JSONObject mJSONData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,7 @@ public class historyDetailsActivity extends BaseActivity {
         iv_Company = (ImageView) findViewById(R.id.civ_history_details_from_avatar);
         iv_Consignee = (ImageView) findViewById(R.id.civ_history_details_to_avatar);
         ly_FromGoto = (LinearLayout) findViewById(R.id.ly_history_details_from_goto);
+        ly_ToGoto = (LinearLayout) findViewById(R.id.ly_history_details_to_goto);
         mDuration1 = (TextView) findViewById(R.id.tv_history_details_1st_duration);
         mDuration2 = (TextView) findViewById(R.id.tv_history_details_2nd_duration);
 
@@ -149,7 +152,41 @@ public class historyDetailsActivity extends BaseActivity {
         mCompanyPhone.setOnClickListener(phoneOnClickListener);
         mConsigneePhone.setOnClickListener(phoneOnClickListener);
 
-        ly_FromGoto.setOnClickListener(SingletonObjects.getInst().getMapOnClickListener());
+        ly_FromGoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (mJSONData != null) {
+                        JSONObject orderInfo = mJSONData.getJSONObject("orderInfo");
+                        JSONObject company = orderInfo.getJSONObject("company");
+                        UtilHelper.startMapByLocation(
+                                historyDetailsActivity.this,
+                                company.getDouble("latitude"),
+                                company.getDouble("longitude"),
+                                company.getString("name"),
+                                company.getString("addr"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ly_ToGoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (mJSONData != null) {
+                        JSONObject orderInfo = mJSONData.getJSONObject("orderInfo");
+                        UtilHelper.startMapByAddress(
+                                historyDetailsActivity.this,
+                                orderInfo.getString("address"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -157,6 +194,8 @@ public class historyDetailsActivity extends BaseActivity {
         if(data == null){
             return;
         }
+
+        mJSONData = data;
 
         try {
             JSONObject orderInfo = data.getJSONObject("orderInfo");

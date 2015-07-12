@@ -19,4 +19,7 @@ public class CustomConstants {
     public static String INTENT_ACTION = "ACTION";
     public static String INTENT_CONTENT = "CONTENT";
     public static String FROM_NOTIFICATION = "notification";
+
+    public static final String APP_BAIDU_DITU = "com.baidu.BaiduMap";
+    public static final String APP_GAODE_DITU = "com.autonavi.minimap";
 }

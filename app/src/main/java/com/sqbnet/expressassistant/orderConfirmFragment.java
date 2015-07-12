@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -52,6 +53,9 @@ public class orderConfirmFragment extends OrderBaseFragment {
     private Button btn_ok;
     private Button btn_cancel;
 
+    private LinearLayout ly_from_goto;
+    private LinearLayout ly_to_goto;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +92,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
 
                         if(response.getCode().equals("1000")) {
                             JSONObject result = (JSONObject) response.getData();
+                            mJSONData = result;
                             try {
                                 JSONObject company = result.getJSONObject("company");
                                 String company_name = company.getString("name");
@@ -185,6 +190,10 @@ public class orderConfirmFragment extends OrderBaseFragment {
         btn_cancel = (Button) view.findViewById(R.id.btn_order_confirm_cancel);
 
         listView = (ListView) view.findViewById(R.id.lv_order_confirm_details);
+
+        ly_from_goto = (LinearLayout) view.findViewById(R.id.ly_order_confirm_from_goto);
+        ly_to_goto = (LinearLayout) view.findViewById(R.id.ly_order_confirm_to_goto);
+
         mData = new ArrayList<Map<String, Object>>();
         // For debugging:
         /*for (int i = 0; i < 15; i++) {
@@ -256,5 +265,39 @@ public class orderConfirmFragment extends OrderBaseFragment {
         View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
         tv_company_phone.setOnClickListener(phoneOnClickListener);
         tv_customer_phone.setOnClickListener(phoneOnClickListener);
+
+        ly_from_goto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (mJSONData != null) {
+                        JSONObject company = mJSONData.getJSONObject("company");
+                        UtilHelper.startMapByLocation(
+                                getActivity(),
+                                company.getDouble("latitude"),
+                                company.getDouble("longitude"),
+                                company.getString("name"),
+                                company.getString("addr"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ly_to_goto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (mJSONData != null) {
+                        UtilHelper.startMapByAddress(
+                                getActivity(),
+                                mJSONData.getString("address"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

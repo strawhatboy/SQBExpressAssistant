@@ -54,6 +54,7 @@
                 android:layout_height="fill_parent"
                 android:padding="12dp">
                 <LinearLayout
+                    android:id="@+id/ly_order_take_deliver_goto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

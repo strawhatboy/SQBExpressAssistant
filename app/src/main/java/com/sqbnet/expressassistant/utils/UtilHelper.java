@@ -5,16 +5,19 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.sqbnet.expressassistant.Location.BaiDuLocationService;
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.MyApplication;
+import com.sqbnet.expressassistant.R;
+import com.sqbnet.expressassistant.external.map.IMapProvider;
+import com.sqbnet.expressassistant.external.map.MapProviderFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +29,13 @@ import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -368,15 +374,93 @@ public class UtilHelper {
         //BaiDuLocationService.getInst().getLocationClient().start();
     }
 
-    public void startMapByAddress(String address) {
+    public static void startMapByAddress(final Activity currentActivity, final String address) {
+        List<IMapProvider> availableMapApps = MapProviderFactory.getInst().getAvailableMapProviders();
+        if (availableMapApps == null) {
+            showNoMapWarning(currentActivity);
+            return;
+        }
 
+        if (availableMapApps.size() != 1) {
+            // show selector
+            showMapAppSelector(currentActivity, availableMapApps, new OnMapAppSelected() {
+                @Override
+                public void select(IMapProvider provider) {
+                    provider.startMapByAddress(currentActivity, address);
+                }
+            });
+        } else {
+            IMapProvider availableMapApp = availableMapApps.get(0);
+            availableMapApp.startMapByAddress(currentActivity, address);
+        }
     }
 
-    public void startMapByLocation(double latitude, double longtitude) {
+    public static void startMapByLocation(final Activity currentActivity, final double latitude, final double longitude, final String title, final String content) {
+        List<IMapProvider> availableMapApps = MapProviderFactory.getInst().getAvailableMapProviders();
+        if (availableMapApps == null) {
+            showNoMapWarning(currentActivity);
+            return;
+        }
 
+        if (availableMapApps.size() != 1) {
+            // show selector
+            showMapAppSelector(currentActivity, availableMapApps, new OnMapAppSelected() {
+                @Override
+                public void select(IMapProvider provider) {
+                    provider.startMapByLocation(currentActivity, latitude, longitude, title, content);
+                }
+            });
+        } else {
+            IMapProvider availableMapApp = availableMapApps.get(0);
+            availableMapApp.startMapByLocation(currentActivity, latitude, longitude, title, content);
+        }
     }
 
-    private boolean isInstallByread(String packageName) {
-        return new File("/data/data/" + packageName).exists();
+    public interface OnMapAppSelected {
+        void select(IMapProvider provider);
+    }
+
+    public static void showMapAppSelector(Activity currentActivity, final List<IMapProvider> providers, final OnMapAppSelected callback) {
+        if (providers.size() == 0) {
+            return;
+        } else if (providers.size() == 1) {
+            callback.select(providers.get(0));
+        }
+        List<String> appNames = new ArrayList<String>();
+        for (IMapProvider provider : providers) {
+            String appDisplayName = provider.getPackageDisplayName()
+                                            .replace(new String(new char[]{ 160 }), "")
+                                            .trim();
+            appNames.add(appDisplayName);
+            Log.i("Map", "get the app displayname: " + appDisplayName);
+        }
+        AlertDialog dialog = new AlertDialog.Builder(currentActivity)
+                .setTitle(R.string.dialog_open_map)
+                .setItems(Arrays.copyOf(appNames.toArray(), appNames.size(), String[].class), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        callback.select(providers.get(i));
+                    }
+                }).create();
+        dialog.show();
+    }
+
+    public static void showNoMapWarning(Activity currentActivity) {
+        AlertDialog dialog = new AlertDialog.Builder(currentActivity)
+                .setTitle(R.string.dialog_title_info)
+                .setMessage(R.string.dialog_map_no_map)
+                .create();
+        dialog.show();
+    }
+
+    public static boolean isAppInstalled(String packageName) {
+        final PackageManager packageManager = MyApplication.getInst().getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        for ( int i = 0; i < pinfo.size(); i++ )
+        {
+            if(pinfo.get(i).packageName.equalsIgnoreCase(packageName))
+                return true;
+        }
+        return false;
     }
 }
