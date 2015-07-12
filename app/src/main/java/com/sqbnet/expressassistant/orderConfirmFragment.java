@@ -94,6 +94,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
                             JSONObject result = (JSONObject) response.getData();
                             mJSONData = result;
                             try {
+
                                 JSONObject company = result.getJSONObject("company");
                                 String company_name = company.getString("name");
                                 String company_addr = company.getString("addr");

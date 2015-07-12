@@ -406,7 +406,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-                        /*runOnUiThread(new Runnable() {
+/*                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent();

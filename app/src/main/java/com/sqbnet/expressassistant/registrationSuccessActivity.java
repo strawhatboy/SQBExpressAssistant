@@ -3,8 +3,16 @@ package com.sqbnet.expressassistant;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.sqbnet.expressassistant.Location.GPSLocation;
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.UtilHelper;
+import com.tencent.android.tpush.XGPushManager;
 
 /**
  * Created by virgil on 7/1/15.
@@ -27,6 +35,8 @@ public class registrationSuccessActivity extends BaseActivity {
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GPSLocation.getInst().stop();
+                XGPushManager.unregisterPush(getApplicationContext());
                 MyApplication.getInst().AppExit();
             }
         });

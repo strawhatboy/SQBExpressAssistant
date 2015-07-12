@@ -194,9 +194,9 @@ public class registrationActivity extends BaseActivity {
                                         String idCard = et_id.getText().toString();
                                         String phone = et_mobile.getText().toString();
                                         String addr = et_addr.getText().toString();
-                                        String province = ((Map<String, Object>)sp_province.getSelectedItem()).get("name").toString();
-                                        String city = ((Map<String, Object>)sp_city.getSelectedItem()).get("name").toString();
-                                        String district = ((Map<String, Object>)sp_district.getSelectedItem()).get("name").toString();
+                                        String province = ((Map<String, Object>)sp_province.getSelectedItem()).get("id").toString();
+                                        String city = ((Map<String, Object>)sp_city.getSelectedItem()).get("id").toString();
+                                        String district = ((Map<String, Object>)sp_district.getSelectedItem()).get("id").toString();
 
                                         Log.i("virgil", "province:" + province);
                                         Log.i("virgil", "city:" + city);
