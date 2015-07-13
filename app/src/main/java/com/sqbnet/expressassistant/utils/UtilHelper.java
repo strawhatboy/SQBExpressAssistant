@@ -5,12 +5,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sqbnet.expressassistant.Location.GPSLocation;
@@ -462,5 +466,31 @@ public class UtilHelper {
                 return true;
         }
         return false;
+    }
+
+    public static View.OnClickListener getPhoneNumberOnClickListener(final Activity activity) {
+
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view instanceof TextView) {
+                    final String phoneNumber = ((TextView) view).getText().toString();
+
+                    if (phoneNumber.matches("[\\d-]+")) {
+                        new AlertDialog.Builder(activity).setTitle(activity.getResources().getString(R.string.dialog_dial))
+                                .setMessage(activity.getResources().getString(R.string.intent_call) + " " + phoneNumber + " ?")
+                                .setPositiveButton(activity.getResources().getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+                                        activity.startActivity(intent);
+                                    }
+                                })
+                                .setNegativeButton(activity.getResources().getString(R.string.dialog_no), null)
+                                .show();
+                    }
+                }
+            }
+        };
     }
 }

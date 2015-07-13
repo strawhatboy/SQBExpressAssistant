@@ -165,6 +165,19 @@ public class registrationActivity extends BaseActivity {
                     showToast("地址不能为空");
                     return;
                 }
+                if (sp_province.getCount() > 1 && sp_province.getSelectedItemPosition() == 0) {
+                    showToast("省份不能为空");
+                    return;
+                }
+                if (sp_city.getCount() > 1 && sp_city.getSelectedItemPosition() == 0) {
+                    showToast("城市不能为空");
+                    return;
+                }
+                if (sp_district.getCount() > 1 && sp_district.getSelectedItemPosition() == 0) {
+                    showToast("地区不能为空");
+                    return;
+                }
+
 
                 final ProgressDialog progressDialog = UtilHelper.getProgressDialog("正在上传身份证照片，请稍候...", registrationActivity.this);
                 progressDialog.show();

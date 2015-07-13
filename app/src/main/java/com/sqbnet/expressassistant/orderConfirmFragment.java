@@ -19,7 +19,6 @@ import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.CustomConstants;
-import com.sqbnet.expressassistant.utils.SingletonObjects;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
@@ -263,7 +262,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
             }
         });
 
-        View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
+        View.OnClickListener phoneOnClickListener = UtilHelper.getPhoneNumberOnClickListener(getActivity());
         tv_company_phone.setOnClickListener(phoneOnClickListener);
         tv_customer_phone.setOnClickListener(phoneOnClickListener);
 

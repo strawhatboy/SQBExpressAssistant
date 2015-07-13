@@ -21,7 +21,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
-import com.sqbnet.expressassistant.utils.SingletonObjects;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
@@ -148,7 +147,7 @@ public class historyDetailsActivity extends BaseActivity {
 
         listView.setAdapter(adapter);
 
-        View.OnClickListener phoneOnClickListener = SingletonObjects.getInst().getPhoneNumberOnClickListener();
+        View.OnClickListener phoneOnClickListener = UtilHelper.getPhoneNumberOnClickListener(historyDetailsActivity.this);
         mCompanyPhone.setOnClickListener(phoneOnClickListener);
         mConsigneePhone.setOnClickListener(phoneOnClickListener);
 

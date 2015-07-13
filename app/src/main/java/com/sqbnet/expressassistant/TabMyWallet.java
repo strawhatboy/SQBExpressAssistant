@@ -88,7 +88,7 @@ public class TabMyWallet extends BaseFragment {
     }
 
     private void initView(View view) {
-        tv_id = (TextView) view.findViewById(R.id.tv_wallet_id);
+        //tv_id = (TextView) view.findViewById(R.id.tv_wallet_id);
         tv_real_name = (TextView) view.findViewById(R.id.tv_wallet_username);
         tv_reg_date = (TextView) view.findViewById(R.id.tv_wallet_reg_time);
         tv_balance = (TextView) view.findViewById(R.id.tv_wallet_total_reward);
@@ -250,7 +250,7 @@ public class TabMyWallet extends BaseFragment {
                                 un_reward = "0";
                             }
 
-                            tv_id.setText(user_id);
+                            //tv_id.setText(user_id);
                             tv_real_name.setText(realName);
                             tv_reg_date.setText(regDate);
                             tv_balance.setText(balance);

@@ -55,10 +55,11 @@
         android:id="@+id/btn_login"/>
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="right">
         <CheckBox
+            android:id="@+id/chkbox_login_remember_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/font_black"

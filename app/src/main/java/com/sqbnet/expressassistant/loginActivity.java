@@ -3,6 +3,7 @@ package com.sqbnet.expressassistant;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +48,8 @@ public class loginActivity extends BaseActivity {
     private EditText et_usr;
     private Button btn_login;
     private TextView tv_register;
-
+    private CheckBox chkbox_remember;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,12 @@ public class loginActivity extends BaseActivity {
         et_usr = (EditText) findViewById(R.id.editTextUsr);
         btn_login = (Button) findViewById(R.id.btn_login);
         tv_register = (TextView) findViewById(R.id.tv_register);
+        chkbox_remember = (CheckBox) findViewById(R.id.chkbox_login_remember_username);
+        sharedPreferences = getSharedPreferences("userInfo", Context.MODE_WORLD_WRITEABLE);
+        if (sharedPreferences.getBoolean("isRemember", false)) {
+            et_usr.setText(sharedPreferences.getString("username", ""));
+            chkbox_remember.setChecked(true);
+        }
 
         et_pwd.setTypeface(Typeface.DEFAULT);
         et_pwd.setTransformationMethod(new PasswordTransformationMethod());
@@ -146,6 +156,15 @@ public class loginActivity extends BaseActivity {
                                                     Log.i("virgil", userId);
                                                     UtilHelper.setSharedUserId(userId);
                                                     setResult(ResultCode.LOGIN_SUCCESS);
+                                                    if (chkbox_remember.isChecked()) {
+                                                        sharedPreferences.edit()
+                                                                         .putBoolean("isRemember", true)
+                                                                         .apply();
+                                                        sharedPreferences.edit()
+                                                                         .putString("username", et_usr.getText().toString())
+                                                                         .apply();
+                                                    }
+
                                                     finish();
                                                 } catch (JSONException e) {
                                                     loginFall();
@@ -176,6 +195,15 @@ public class loginActivity extends BaseActivity {
                 overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             }
         });
+
+        /*chkbox_remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                sharedPreferences.edit()
+                        .putBoolean("isRemember", b)
+                        .apply();
+            }
+        });*/
     }
 
     @Override
