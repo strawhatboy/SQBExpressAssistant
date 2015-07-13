@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Process;
 import android.util.Log;
 
+import com.baidu.mapapi.SDKInitializer;
+
 import java.util.Stack;
 
 /**
@@ -22,6 +24,7 @@ public class MyApplication extends Application {
         super.onCreate();
         sInst = this;
         CrashHandler.getInstance().init(getApplicationContext());
+        SDKInitializer.initialize(this);
     }
 
     public static MyApplication getInst(){

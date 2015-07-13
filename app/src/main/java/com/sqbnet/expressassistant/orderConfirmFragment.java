@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.controls.CircleImageView;
 import com.sqbnet.expressassistant.mode.SQBResponse;
@@ -98,8 +99,8 @@ public class orderConfirmFragment extends OrderBaseFragment {
                                 String company_name = company.getString("name");
                                 String company_addr = company.getString("addr");
                                 String company_phone = company.getString("phone");
-                                String company_latitude = company.getString("latitude");
-                                String company_longitude = company.getString("longitude");
+                                final double company_latitude = company.getDouble("latitude");
+                                final double company_longitude = company.getDouble("longitude");
                                 String company_pic = company.has("pic") ? company.getString("pic") : "";
 
                                 String customer_name = result.getString("consignee");
@@ -161,6 +162,27 @@ public class orderConfirmFragment extends OrderBaseFragment {
                                         }
                                     });
                                 }
+
+                                // calculate distance
+                                BaiDuLocationService.getInst().getLocationByAddress(customer_address, new BaiDuLocationService.IGeoEncoderCallback() {
+                                    @Override
+                                    public void handleLocationGot(double latitude, double longitude) {
+                                        if (latitude != -1) {
+                                            double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(
+                                                    company_latitude,
+                                                    company_longitude,
+                                                    latitude,
+                                                    longitude);
+                                            Log.d("orderConfirmFragment", "got distance: " + distance);
+                                            tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void handleAddressGot(String address) {
+
+                                    }
+                                });
 
                             }catch (Exception e){
                                 Log.e("orderConfirmFragment", "virgil", e);

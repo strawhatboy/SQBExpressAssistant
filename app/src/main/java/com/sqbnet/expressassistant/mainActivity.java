@@ -406,20 +406,20 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-/*                        runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent();
                                 intent.setClass(mainActivity.this, orderMainActivity.class);
                                 intent.putExtra("user_id", user_id);
-                                intent.putExtra("order_id", "940");
+                                intent.putExtra("order_id", "921");
                                 intent.putExtra("status", "0");
                                 startActivityForResult(intent, RequestCode.ORDER);
                                 setStatus(false);
                             }
-                        });*/
+                        });
 
-                        if(response.getCode().equals("1000")){
+/*                        if(response.getCode().equals("1000")){
                             JSONObject result = (JSONObject)response.getData();
                             try {
                                 final String order_id = result.getString("order_id");
@@ -441,7 +441,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
-                        }
+                        }*/
                     }
         });
     }
