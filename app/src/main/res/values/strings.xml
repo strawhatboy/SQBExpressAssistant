@@ -37,7 +37,7 @@
     <string name="registration_pick_photo">Pick Photo</string>
     <string name="registration_get_passcode">Get Passcode</string>
     <string name="registration_accept_license">I have read and agree to the</string>
-    <string name="registration_license"><u> [Agreement]</u></string>
+    <string name="registration_license"><u>[Agreement]</u></string>
     <string name="tab_btn_rest">Take Rest</string>
     <string name="searching_waiting_for_order">Waiting for the order !</string>
     <string name="searching_hint">Hint:</string>
