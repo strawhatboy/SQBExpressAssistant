@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.controls.CircleImageView;
+import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +32,7 @@ public class TabRobOrder extends Fragment {
     private boolean isWaiting;
 
     private CircleImageView civ_avatar;
+    private CircleImageView civ_map;
     private TextView tv_waiting;
     private TextView tv_hint;
     private TextView tv_hint_content;
@@ -57,6 +60,7 @@ public class TabRobOrder extends Fragment {
 
     private void initView(View view) {
         civ_avatar = (CircleImageView) view.findViewById(R.id.civ_searching_avatar);
+        civ_map = (CircleImageView) view.findViewById(R.id.civ_searching_map);
         tv_waiting = (TextView) view.findViewById(R.id.tv_searching_waiting);
         tv_hint = (TextView) view.findViewById(R.id.tv_searching_hint);
         tv_hint_content = (TextView) view.findViewById(R.id.tv_searching_hint_content);
@@ -85,6 +89,7 @@ public class TabRobOrder extends Fragment {
             tv_hint_content.setVisibility(View.INVISIBLE);
             iv_radar.setVisibility(View.VISIBLE);
             tv_timer.setVisibility(View.VISIBLE);
+            civ_map.setVisibility(View.VISIBLE);
             iv_radar.clearAnimation();
             iv_radar.setAnimation(animation);
             if (needRefreshTimer) startTimer();
@@ -95,6 +100,7 @@ public class TabRobOrder extends Fragment {
             tv_hint_content.setVisibility(View.VISIBLE);
             iv_radar.setVisibility(View.INVISIBLE);
             tv_timer.setVisibility(View.INVISIBLE);
+            civ_map.setVisibility(View.INVISIBLE);
             iv_radar.clearAnimation();
             if (needRefreshTimer) stopTimer();
         }
@@ -128,5 +134,19 @@ public class TabRobOrder extends Fragment {
         int minutes = seconds / 60;
         int seconds_left = seconds % 60;
         tv_timer.setText((minutes < 10 ? "0" : "") + minutes + ":" + (seconds_left < 10 ? "0" : "") + seconds_left);
+    }
+
+    public void setAvatar(String url) {
+        AsyncImageLoader.getInst().loadBitmap(url, new AsyncImageLoader.ImageLoadResultLister() {
+            @Override
+            public void onImageLoadResult(final Bitmap bitmap) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        civ_avatar.setImageBitmap(bitmap);
+                    }
+                });
+            }
+        });
     }
 }

@@ -24,6 +24,15 @@
             android:layout_centerInParent="true"
 
             android:src="@drawable/status_selection_bg"/>
+        <com.sqbnet.expressassistant.controls.CircleImageView
+            android:id="@+id/civ_searching_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+
+            android:src="@drawable/map"/>
         <ImageView
             android:visibility="invisible"
             android:id="@+id/iv_searching_radar"
@@ -31,7 +40,7 @@
             android:layout_height="fill_parent"
             android:scaleType="fitCenter"
             android:layout_centerInParent="true"
-            android:src="@drawable/radar2"/>
+            android:src="@drawable/radar"/>
         <com.sqbnet.expressassistant.controls.CircleImageView
             android:visibility="invisible"
             android:id="@+id/civ_searching_avatar"
