@@ -26,6 +26,7 @@
                 android:layout_height="match_parent"
                 android:textColor="@color/font_white"
                 android:text="@string/tab_btn_rob_order"
+                android:textSize="18sp"
                 android:gravity="center"/>
 
             <LinearLayout
@@ -55,6 +56,7 @@
                 android:layout_height="match_parent"
                 android:textColor="@color/font_black"
                 android:text="@string/tab_btn_history_order"
+                android:textSize="18sp"
                 android:gravity="center" />
 
             <LinearLayout
@@ -82,6 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/font_black"
+                android:textSize="18sp"
                 android:text="@string/tab_btn_my_wallet"/>
 
         </LinearLayout>

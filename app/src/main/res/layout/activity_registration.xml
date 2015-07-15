@@ -74,7 +74,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_usr"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_username"
@@ -83,6 +84,7 @@
                                 android:layout_gravity="center"
                                 android:background="@null"
                                 android:inputType="textEmailAddress"
+                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 
@@ -100,7 +102,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_pwd"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_password"
@@ -109,6 +112,7 @@
                                 android:layout_gravity="center"
                                 android:background="@null"
                                 android:inputType="textPassword"
+                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 
@@ -155,7 +159,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_name"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_real_name"
@@ -164,6 +169,7 @@
                                 android:layout_gravity="center"
                                 android:background="@null"
                                 android:inputType="textPersonName"
+                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 
@@ -181,7 +187,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_id"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_id"
@@ -191,6 +198,7 @@
                                 android:background="@null"
                                 android:digits="0123456789x"
                                 android:inputType="number"
+                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 
@@ -210,7 +218,8 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:text="@string/registration_photo_placeholder"
-                                android:textColor="@color/font_green"/>
+                                android:textColor="@color/font_green"
+                                android:textSize="14sp"/>
 
                             <Button
                                 android:id="@+id/btn_registration_pick_photo"
@@ -222,7 +231,7 @@
                                 android:background="@drawable/button_green_selector"
                                 android:text="@string/registration_pick_photo"
                                 android:textColor="@color/font_white"
-                                android:textSize="10sp"
+                                android:textSize="14sp"
                                 />
                         </LinearLayout>
 
@@ -269,7 +278,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_mobile"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_mobile"
@@ -279,6 +289,7 @@
                                 android:layout_weight="1"
                                 android:background="@null"
                                 android:inputType="number"
+                                android:textSize="12sp"
                                 />
 
                             <Button
@@ -291,7 +302,7 @@
                                 android:background="@drawable/button_blue_selector"
                                 android:text="@string/registration_get_passcode"
                                 android:textColor="@color/font_white"
-                                android:textSize="10sp"
+                                android:textSize="14sp"
                                 />
                         </LinearLayout>
 
@@ -309,7 +320,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_passcode"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_passcode"
@@ -318,6 +330,7 @@
                                 android:layout_gravity="center"
                                 android:background="@null"
                                 android:inputType="number"
+                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 
@@ -335,13 +348,16 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_district_selection"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <Spinner
                                 android:layout_gravity="center"
                                 android:layout_width="150dp"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/sp_registration_province"
+                                android:animationCache="true"
+                                android:drawSelectorOnTop="true"
                                 >
 
                             </Spinner>
@@ -360,7 +376,8 @@
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <Spinner
                                 android:layout_gravity="center"
@@ -410,7 +427,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="@string/registration_addr"
-                                android:textColor="@color/font_black"/>
+                                android:textColor="@color/font_black"
+                                android:textSize="14sp"/>
 
                             <EditText
                                 android:id="@+id/et_registration_full_addr"
@@ -418,6 +436,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:background="@null"
+                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 
