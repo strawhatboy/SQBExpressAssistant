@@ -71,7 +71,7 @@ public class UtilHelper {
     public static boolean isMobileNO(String mobiles){
         Pattern p = Pattern.compile("^1[34578]{1}\\d{9}$");
         Matcher m = p.matcher(mobiles);
-        return m.matches();
+        return m.matches() && mobiles.length() > 0;
     }
 
     public static String getSharedUserId(){

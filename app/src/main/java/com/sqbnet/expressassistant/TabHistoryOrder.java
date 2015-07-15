@@ -142,7 +142,7 @@ public class TabHistoryOrder extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("history", "item " + i + "clicked!");
                 if (gotoDetails != null) {
-                    JSONObject jsonObject = (JSONObject) (mData.get(i).get("jsonObject"));
+                    JSONObject jsonObject = (JSONObject) (mData.get(i - 1).get("jsonObject"));
                     gotoDetails.gotoDetails(jsonObject);
                 }
             }
