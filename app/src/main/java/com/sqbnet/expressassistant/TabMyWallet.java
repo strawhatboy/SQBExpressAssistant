@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -175,21 +177,21 @@ public class TabMyWallet extends BaseFragment {
                             if (response.getCode().equals("1000")) {
                                 try {
                                     JSONArray orders = (JSONArray)response.getData();
-                                    for(int i=0; i< orders.length(); i++){
+                                    for(int i=orders.length() -1; i >= 0; i--){
                                         JSONObject item = orders.getJSONObject(i);
                                         Log.i("virgil", item.toString());
                                         JSONObject orderInfo = item.getJSONObject("orderInfo");
                                         int startTimestamp = item.getInt("starttime");
-                                        int endTimestamp = item.getInt("endtime");
+                                        int endTimestamp = item.optInt("endtime", 0);
                                         int durationTimestamp = endTimestamp - startTimestamp;
                                         Date durationDate = UtilHelper.getDate(durationTimestamp);
                                         String date = UtilHelper.getDateString(startTimestamp, "yyyy-MM-dd");
                                         String startDate = UtilHelper.getDateString(startTimestamp, "HH:mm:ss");
                                         String endDate = UtilHelper.getDateString(endTimestamp, "HH:mm:ss");
-                                        int status = item.getInt("status");
+                                        //int status = item.getInt("status");
                                         String remuneration = item.getString("remuneration");
-                                        String consignee = orderInfo.getString("consignee");
-                                        String company_name = orderInfo.getJSONObject("company").getString("name");
+                                        //String consignee = orderInfo.getString("consignee");
+                                        //String company_name = orderInfo.getJSONObject("company").getString("name");
 
                                         Map<String, Object> data = new HashMap<String, Object>();
                                         data.put("from_avatar", R.drawable.index_avatar);
@@ -205,9 +207,25 @@ public class TabMyWallet extends BaseFragment {
                                         mData.add(data);
                                     }
 
+                                   /* Collections.sort(mData, new Comparator<Map<String, Object>>() {
+                                        @Override
+                                        public int compare(Map<String, Object> stringObjectMap, Map<String, Object> t1) {
+                                            Date dateLeft = UtilHelper.getString2Date2(stringObjectMap.get("date").toString());
+                                            Date dateRight = UtilHelper.getString2Date2(t1.get("date").toString());
+                                            //String dateLeft = stringObjectMap.get("time").toString();
+                                            //String dateRight = stringObjectMap.get("time").toString();
+                                            if (dateLeft.compareTo(dateRight) > 0) {
+                                                return 1;
+                                            } else {
+                                                return 0;
+                                            }
+                                        }
+                                    });*/
+
+
                                     setCount(mData.size());
                                     adapter.notifyDataSetChanged();
-
+                                    listView.onRefreshComplete();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);

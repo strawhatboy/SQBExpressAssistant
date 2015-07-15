@@ -26,6 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +178,7 @@ public class TabHistoryOrder extends BaseFragment {
                             if (response.getCode().equals("1000")) {
                                 try {
                                     JSONArray orders = (JSONArray) response.getData();
-                                    for (int i = 0; i < orders.length(); i++) {
+                                    for (int i = orders.length() -1; i >= 0; i--) {
                                         JSONObject item = orders.getJSONObject(i);
                                         Log.i("virgil", item.toString());
                                         JSONObject orderInfo = item.getJSONObject("orderInfo");
@@ -201,6 +204,22 @@ public class TabHistoryOrder extends BaseFragment {
 
                                         mData.add(data);
                                     }
+
+                                  /*  Collections.sort(mData, new Comparator<Map<String, Object>>() {
+                                        @Override
+                                        public int compare(Map<String, Object> stringObjectMap, Map<String, Object> t1) {
+                                            //Date dateLeft = UtilHelper.getString2Date(stringObjectMap.get("time").toString());
+                                            //Date dateRight = UtilHelper.getString2Date(t1.get("time").toString());
+
+                                            String dateLeft = stringObjectMap.get("time").toString();
+                                            String dateRight = stringObjectMap.get("time").toString();
+                                            if(dateLeft.compareTo(dateRight) > 0){
+                                                return 1;
+                                            }else {
+                                                return 0;
+                                            }
+                                        }
+                                    });*/
 
                                     adapter.notifyDataSetChanged();
                                     listView.onRefreshComplete();

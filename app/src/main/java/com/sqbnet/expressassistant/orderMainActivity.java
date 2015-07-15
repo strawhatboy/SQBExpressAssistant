@@ -1,5 +1,7 @@
 package com.sqbnet.expressassistant;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +12,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.controls.UnScrollableViewPager;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.CustomConstants;
+import com.sqbnet.expressassistant.utils.UtilHelper;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,23 +145,127 @@ public class orderMainActivity extends FragmentActivity {
         mUserId = intent.getStringExtra("user_id");
         mOrderId = intent.getStringExtra("order_id");
         mStatus = intent.getStringExtra("status");
-        if(mStatus.equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)){
-            _orderGotFragment.setParameters(mUserId, mOrderId, mStatus);
-            _orderConfirmFragment.setParameters(mUserId, mOrderId, mStatus);
-        }else if(mStatus.equals(CustomConstants.ASSIGN_ORDER_ACCEPT)){
-            _orderTakeDeliveryFragment.setParameters(mUserId, mOrderId, mStatus);
-            viewPager.setCurrentItem(2);
-            _orderTakeDeliveryFragment.loadData();
-            setProgressBarIndex(0, true);
-            setProgressBarIndex(1, true);
-        }else if(mStatus.equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mStatus.equals(CustomConstants.ASSIGN_ORDER_DELIVERING)){
-            _orderDeliverFragment.setParameters(mUserId, mOrderId, mStatus);
-            viewPager.setCurrentItem(3);
-            _orderDeliverFragment.loadData();
-            setProgressBarIndex(0, true);
-            setProgressBarIndex(1, true);
-            setProgressBarIndex(2, true);
+        final String from = intent.getStringExtra("from");
+
+
+        if(from.equals("XG")) {
+            SQBProvider.getInst().getOrderInfo(mOrderId, new SQBResponseListener() {
+                @Override
+                public void onResponse(SQBResponse response) {
+                    Log.i("virgil", "order confirm");
+                    Log.i("virgil", response.getCode());
+                    Log.i("virgil", response.getMsg());
+                    Log.i("virgil", response.getData().toString());
+
+                    if (response.getCode().equals("1000")) {
+                        JSONObject result = (JSONObject) response.getData();
+                        try {
+
+                            String id = result.getString("d_id");
+                            if (!id.equals(UtilHelper.getSharedUserId())) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new AlertDialog.Builder(orderMainActivity.this).setTitle(getApplicationContext().getResources().getString(R.string.dialog_title_info))
+                                                .setMessage("接单超时，该单已指派给他人")
+                                                .setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        finish();
+                                                    }
+                                                })
+                                                .show();
+
+                                    }
+                                });
+                                return;
+                            }
+
+
+                            SQBProvider.getInst().getAssignOrder(mUserId, new SQBResponseListener() {
+                                @Override
+                                public void onResponse(SQBResponse response) {
+                                    Log.i("virgil", "getAssignOrder");
+                                    Log.i("virgil", response.getCode());
+                                    Log.i("virgil", response.getMsg());
+                                    Log.i("virgil", response.getData().toString());
+
+                                    if (response.getCode().equals("1000")) {
+                                        JSONObject result = (JSONObject) response.getData();
+                                        try{
+                                            mStatus = result.getString("d_status");
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (mStatus.equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
+                                                        _orderGotFragment.setParameters(mUserId, mOrderId, mStatus);
+                                                        _orderConfirmFragment.setParameters(mUserId, mOrderId, mStatus);
+                                                    } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
+                                                        _orderTakeDeliveryFragment.setParameters(mUserId, mOrderId, mStatus);
+                                                        viewPager.setCurrentItem(2);
+                                                        _orderTakeDeliveryFragment.loadData();
+                                                        setProgressBarIndex(0, true);
+                                                        setProgressBarIndex(1, true);
+                                                    } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mStatus.equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
+                                                        _orderDeliverFragment.setParameters(mUserId, mOrderId, mStatus);
+                                                        viewPager.setCurrentItem(3);
+                                                        _orderDeliverFragment.loadData();
+                                                        setProgressBarIndex(0, true);
+                                                        setProgressBarIndex(1, true);
+                                                        setProgressBarIndex(2, true);
+                                                    }
+                                                }
+                                            });
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                new AlertDialog.Builder(orderMainActivity.this).setTitle(getApplicationContext().getResources().getString(R.string.dialog_title_info))
+                                                        .setMessage("没有指派的订单，或该订单已指派给他人")
+                                                        .setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                finish();
+                                                            }
+                                                        })
+                                                        .show();
+
+                                            }
+                                        });
+                                        return;
+                                    }
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        }else{
+            if (mStatus.equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
+                _orderGotFragment.setParameters(mUserId, mOrderId, mStatus);
+                _orderConfirmFragment.setParameters(mUserId, mOrderId, mStatus);
+            } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
+                _orderTakeDeliveryFragment.setParameters(mUserId, mOrderId, mStatus);
+                viewPager.setCurrentItem(2);
+                _orderTakeDeliveryFragment.loadData();
+                setProgressBarIndex(0, true);
+                setProgressBarIndex(1, true);
+            } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mStatus.equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
+                _orderDeliverFragment.setParameters(mUserId, mOrderId, mStatus);
+                viewPager.setCurrentItem(3);
+                _orderDeliverFragment.loadData();
+                setProgressBarIndex(0, true);
+                setProgressBarIndex(1, true);
+                setProgressBarIndex(2, true);
+            }
         }
+
     }
 
     private void initProcessbar() {

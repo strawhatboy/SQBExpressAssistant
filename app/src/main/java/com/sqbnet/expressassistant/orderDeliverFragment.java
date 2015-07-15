@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +13,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
+import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.controls.CircleImageView;
+import com.sqbnet.expressassistant.mode.MyLocation;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
@@ -185,6 +189,30 @@ public class orderDeliverFragment extends OrderBaseFragment {
                                         }
                                     });
                                 }
+
+                                final MyLocation location = GPSLocation.getInst().getCurrentLocation();
+                                if(location != null) {
+                                    BaiDuLocationService.getInst().getLocationByAddress(customer_address, new BaiDuLocationService.IGeoEncoderCallback() {
+                                        @Override
+                                        public void handleLocationGot(double latitude, double longitude) {
+                                            if (latitude != -1) {
+                                                double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(
+                                                        location.getLatitude(),
+                                                        location.getLongitude(),
+                                                        latitude,
+                                                        longitude);
+                                                Log.d("orderConfirmFragment", "got distance: " + distance);
+                                                tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void handleAddressGot(String address) {
+
+                                        }
+                                    });
+                                }
+
 
                             } catch (Exception e) {
                                 Log.e("orderDeliverFragment", "virgil", e);

@@ -42,13 +42,13 @@ public class BaiDuLocationService {
     private BaiDuLocationService() {
         Context context = MyApplication.getInst().getApplicationContext();
         mLocationClient = new LocationClient(context);
-        mLocationClient.registerLocationListener(new BDLocationListener() {
+       /* mLocationClient.registerLocationListener(new BDLocationListener() {
             @Override
             public void onReceiveLocation(BDLocation bdLocation) {
                 Log.i("BDLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
                 bdLocation.getLongitude() + ", time: " + bdLocation.getTime() + ", type: " + bdLocation.getLocType());
             }
-        });
+        });*/
         mGeofenceClient = new GeofenceClient(context);
     }
 

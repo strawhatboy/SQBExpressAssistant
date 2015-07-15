@@ -65,7 +65,7 @@ public class FragmentViewPagerAdapter  extends PagerAdapter implements ViewPager
         if(!fragment.isAdded()){
             FragmentTransaction ft = fragmentManager.beginTransaction();
             ft.add(fragment, fragment.getClass().getSimpleName());
-            ft.commit();
+            ft.commitAllowingStateLoss();
             fragmentManager.executePendingTransactions();
         }
 

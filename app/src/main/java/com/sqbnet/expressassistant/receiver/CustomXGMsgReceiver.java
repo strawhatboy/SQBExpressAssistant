@@ -28,6 +28,9 @@ import  com.sqbnet.expressassistant.mainActivity;
 
 import org.json.JSONObject;
 
+import java.util.Observable;
+import java.util.UUID;
+
 /**
  * Created by virgil on 7/9/15.
  */
@@ -60,8 +63,14 @@ public class CustomXGMsgReceiver extends XGPushBaseReceiver {
         Log.i("virgil", "title:" + xgPushTextMessage.getTitle());
         Log.i("virgil", "content:" + xgPushTextMessage.getContent());
         Log.i("virgil", "custom content:" + xgPushTextMessage.getCustomContent());
-        MediaPlayer mediaPlayer = MediaPlayer.create(MyApplication.getInst().getApplicationContext(), R.raw.notification);
-        mediaPlayer.start();
+        try {
+            MediaPlayer mediaPlayer = MediaPlayer.create(MyApplication.getInst().getApplicationContext(), R.raw.notification);
+            //mediaPlayer.prepare();
+            mediaPlayer.start();
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("CustomXGMsgReciever", "virgil",e);
+        }
 
         String title = xgPushTextMessage.getTitle();
         String content = xgPushTextMessage.getContent();
@@ -78,9 +87,13 @@ public class CustomXGMsgReceiver extends XGPushBaseReceiver {
                 orderIntent.putExtra("user_id", user_id);
                 orderIntent.putExtra("order_id", order_id);
                 orderIntent.putExtra("status", status);
+                orderIntent.putExtra("from", "XG");
 
-                int intentId = UtilHelper.getIntentId();
-                PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.getInst().getApplicationContext(), intentId,
+                if(UtilHelper.iHandleXGMessage != null){
+                    UtilHelper.iHandleXGMessage.getMessage(user_id, order_id, status);
+                }
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.getInst().getApplicationContext(), UUID.randomUUID().hashCode(),
                         orderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Notification notification = new Notification.Builder(MyApplication.getInst().getApplicationContext())
                         .setSmallIcon(R.drawable.logo_icon)

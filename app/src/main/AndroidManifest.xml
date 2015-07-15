@@ -43,6 +43,7 @@
         android:theme="@android:style/Theme.NoTitleBar"
         android:screenOrientation="portrait"
         android:name=".MyApplication">
+        <service android:name=".service.LocalService"></service>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

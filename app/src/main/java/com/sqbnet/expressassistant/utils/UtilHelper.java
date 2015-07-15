@@ -22,6 +22,7 @@ import com.sqbnet.expressassistant.MyApplication;
 import com.sqbnet.expressassistant.R;
 import com.sqbnet.expressassistant.external.map.IMapProvider;
 import com.sqbnet.expressassistant.external.map.MapProviderFactory;
+import com.sqbnet.expressassistant.service.LocalService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,8 +58,10 @@ public class UtilHelper {
     public static int intentId = 0;
 
     public interface IHandleXGMessage{
-        void test();
+        void getMessage(String user_id, String order_id, String status);
     }
+
+    public static IHandleXGMessage iHandleXGMessage;
 
     public static int getIntentId(){
         UtilHelper.intentId += 1;
@@ -89,6 +92,28 @@ public class UtilHelper {
 
     public static String getDateString(long timeStamp) {
         return getDateString(timeStamp, "yyyy.MM.dd HH:mm:ss");
+    }
+
+    public static Date getString2Date(String dateStr){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try{
+            Date date = format.parse(dateStr);
+            return date;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Date getString2Date2(String dateStr){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            Date date = format.parse(dateStr);
+            return date;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String getDateString(long timeStamp, String format){
@@ -373,8 +398,10 @@ public class UtilHelper {
             return;
         }*/
 
-        Log.i("virgil", "start GPSLocation");
-        GPSLocation.getInst().start();
+        //Log.i("virgil", "start GPSLocation");
+        //GPSLocation.getInst().start();
+        Intent service = new Intent(MyApplication.getInst().getApplicationContext(), LocalService.class);
+        MyApplication.getInst().getApplicationContext().startService(service);
         //BaiDuLocationService.getInst().getLocationClient().start();
     }
 

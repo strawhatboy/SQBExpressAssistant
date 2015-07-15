@@ -16,8 +16,12 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClientOption;
 import com.sqbnet.expressassistant.MyApplication;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.MyLocation;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
@@ -32,9 +36,11 @@ import java.util.concurrent.CancellationException;
 public class GPSLocation {
 
     private static GPSLocation sInst;
+    private static String FROM_GPS = "GPS";
+    private static String FROM_NETWORK = "network";
+    private static String FROM_BAIDU = "baidu";
     private LocationManager locationManager;
-    private boolean isGPSReady;
-    private long lastSendTime;
+    private static long lastSendTime;
 
     public static GPSLocation getInst(){
         if(sInst == null){
@@ -49,7 +55,6 @@ public class GPSLocation {
 
     public  GPSLocation(){
         locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
-        isGPSReady = false;
     }
 
     public interface GPSProviderStatusChanged{
@@ -80,14 +85,13 @@ public class GPSLocation {
     public void start(){
         Log.i("virgil", "GPS update start");
         getCurrentLocation();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,   180*1000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 180*1000, 0, networkLocationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60 * 1000, 0, networkLocationListener);
         locationManager.addGpsStatusListener(new GpsStatus.Listener() {
             @Override
             public void onGpsStatusChanged(int i) {
-                switch (i){
+                switch (i) {
                     case GpsStatus.GPS_EVENT_FIRST_FIX:
-                        isGPSReady = true;
                         Log.i("virgil", "GPS first location");
                         break;
                     case GpsStatus.GPS_EVENT_STARTED:
@@ -99,9 +103,28 @@ public class GPSLocation {
                 }
             }
         });
+       startBaiduLocation();
     }
 
-    public Location getCurrentLocation(){
+    private void startBaiduLocation(){
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true);
+        option.setCoorType("bd0911");
+        option.setAddrType("all");
+        option.setScanSpan(120*1000);
+        BaiDuLocationService.getInst().getLocationClient().setLocOption(option);
+        BaiDuLocationService.getInst().getLocationClient().registerLocationListener(new BDLocationListener() {
+            @Override
+            public void onReceiveLocation(BDLocation bdLocation) {
+                Log.i("BDLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
+                        bdLocation.getLongitude() + ", time: " + bdLocation.getTime() + ", type: " + bdLocation.getLocType());
+                sendLocationToServer(String.valueOf(bdLocation.getLatitude()), String.valueOf(bdLocation.getLongitude()), FROM_BAIDU);
+            }
+        });
+        BaiDuLocationService.getInst().getLocationClient().start();
+    }
+
+    public MyLocation getCurrentLocation(){
         if(openGEPSettings()) {
             Log.i("virgil", "get GPS location");
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -109,7 +132,14 @@ public class GPSLocation {
                 Log.i("virgil", "get network location");
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
-            return location;
+            if(location != null) {
+                return new MyLocation(location.getLatitude(), location.getLongitude());
+            }else {
+                BDLocation bdLocation = BaiDuLocationService.getInst().getLocationClient().getLastKnownLocation();
+                if(bdLocation != null){
+                    return new MyLocation(bdLocation.getLatitude(), bdLocation.getLongitude());
+                }
+            }
         }
         return null;
     }
@@ -119,21 +149,30 @@ public class GPSLocation {
         if(locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
+        if(networkLocationListener != null){
+            locationManager.removeUpdates(networkLocationListener);
+        }
     }
 
-    private void sendLocationToServer(Location location){
+    private void sendLocationToServer(String latitude, String longitude, String from){
         try {
-            String latitude = String.valueOf(location.getLatitude());
-            String longitude = String.valueOf(location.getLongitude());
-            Log.i("virgil", "Lat:" + latitude + ", Lng:" + longitude);
+            Log.i("virgil", "Lat:" + latitude + ", Lng:" + longitude + ", from:" + from);
             String useId = UtilHelper.getSharedUserId();
             if(useId == null)
                 return;
+            Long now = System.currentTimeMillis();
+            Log.i("virgil", String.valueOf(now - lastSendTime));
+            Long minutes = (now - lastSendTime)/(60*1000);
+            Log.i("virgil", "minutes:" + minutes);
+            if(minutes < 2)
+                return;
+            lastSendTime = System.currentTimeMillis();
             SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {
                 @Override
                 public void onResponse(SQBResponse response) {
                     if(response == null)
                         return;
+                    Log.i("virgil", "Location update success");
                     Log.i("virgil", response.getCode());
                     Log.i("virgil", response.getMsg());
                     Log.i("virgil", response.getData().toString());
@@ -149,12 +188,7 @@ public class GPSLocation {
         @Override
         public void onLocationChanged(Location location) {
             Log.i("virgil", "network onLocationChanged");
-            Long now = System.currentTimeMillis();
-            Long minutes = (now - lastSendTime)/6000;
-            if(!isGPSReady || minutes > 5) {
-                Log.i("virgil", "network onLocationChanged send location");
-                sendLocationToServer(location);
-            }
+            sendLocationToServer(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), FROM_NETWORK);
         }
 
         @Override
@@ -177,9 +211,7 @@ public class GPSLocation {
         @Override
         public void onLocationChanged(Location location) {
             Log.i("virgil", "GPS onLocationChanged send location");
-            isGPSReady = true;
-            lastSendTime = System.currentTimeMillis();
-            sendLocationToServer(location);
+            sendLocationToServer(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), FROM_GPS);
         }
 
         @Override

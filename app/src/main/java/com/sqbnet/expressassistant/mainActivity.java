@@ -18,8 +18,10 @@ import android.widget.TextView;
 
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.MyLocation;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.service.LocalService;
 import com.sqbnet.expressassistant.utils.CustomConstants;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 import com.tencent.android.tpush.XGIOperateCallback;
@@ -60,6 +62,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     //private boolean isHistoryDetailsVisible = false;
     private boolean isWaiting = false;
     private boolean isChanged = false;
+    private boolean isVisible = false;
 
     private Resources resources;
 
@@ -102,7 +105,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Intent service = new Intent(context, XGPushService.class);
         context.startService(service);
 
-        XGPushManager.registerPush(getApplicationContext(),  new XGIOperateCallback() {
+        XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
             @Override
             public void onSuccess(Object o, int i) {
                 Log.i("virgil", "XG register success");
@@ -113,6 +116,33 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 Log.i("virgil", "XG register fail," + s);
             }
         });
+
+        UtilHelper.iHandleXGMessage = new UtilHelper.IHandleXGMessage() {
+            @Override
+            public void getMessage(final String user_id, final String order_id, final String status) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!isVisible || !isWaiting)
+                            return;
+                        Intent intent = new Intent();
+                        intent.setClass(mainActivity.this, orderMainActivity.class);
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("order_id", order_id);
+                        intent.putExtra("status", status);
+                        intent.putExtra("from", "main");
+                        startActivityForResult(intent, RequestCode.ORDER);
+                        setStatus(false);
+                    }
+                });
+            }
+        };
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isVisible = false;
     }
 
     @Override
@@ -120,6 +150,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         Log.i("--virgil", "mainActivity onResume");
 
         super.onResume();
+        isVisible = true;
         if(checkLoginStatus()){
             Intent intent = getIntent();
             if(!intent.hasExtra(CustomConstants.INTENT_FROM))
@@ -166,9 +197,10 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         Log.i("virgil", "on destroy main activity");
-        GPSLocation.getInst().stop();
+        //GPSLocation.getInst().stop();
 
         //XGPushManager.registerPush(getApplicationContext(), "*");
+        getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
         XGPushManager.unregisterPush(this);
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
@@ -290,7 +322,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         @Override
                         protected Object doInBackground(Object[] objects) {
                             String user_id = UtilHelper.getSharedUserId();
-                            Location location = GPSLocation.getInst().getCurrentLocation();
+                            MyLocation location = GPSLocation.getInst().getCurrentLocation();
                             String status = "0";
                             if (isWaiting) {
                                 status = "1";
@@ -406,7 +438,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-                        runOnUiThread(new Runnable() {
+                       /* runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent();
@@ -417,9 +449,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 startActivityForResult(intent, RequestCode.ORDER);
                                 setStatus(false);
                             }
-                        });
+                        });*/
 
-/*                        if(response.getCode().equals("1000")){
+                        if(response.getCode().equals("1000")){
                             JSONObject result = (JSONObject)response.getData();
                             try {
                                 final String order_id = result.getString("order_id");
@@ -433,6 +465,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                         intent.putExtra("user_id", user_id);
                                         intent.putExtra("order_id", order_id);
                                         intent.putExtra("status", status);
+                                        intent.putExtra("from", "main");
                                         startActivityForResult(intent, RequestCode.ORDER);
                                         setStatus(false);
                                     }
@@ -441,7 +474,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
-                        }*/
+                        }
                     }
         });
     }
@@ -472,7 +505,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Bundle bundle = data.getExtras();
                         String remuneration = bundle.getString("data");
                         orderDoneFragment.Remuneration = remuneration;
-                        mViewPager.setCurrentItem(4);
+                        mViewPager.setCurrentItem(3);
                         setBackgroudDark();
                         break;
                     case ResultCode.ORDER_CANCELED:

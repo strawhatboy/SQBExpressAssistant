@@ -157,7 +157,7 @@
                                 android:id="@+id/tv_order_distance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1.24km"
+                                android:text="0km"
                                 android:textSize="15dp"
                                 android:textColor="@color/font_orange"/>
                         </LinearLayout>

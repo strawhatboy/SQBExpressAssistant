@@ -1,6 +1,8 @@
 package com.sqbnet.expressassistant;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -95,6 +97,20 @@ public class orderConfirmFragment extends OrderBaseFragment {
                             mJSONData = result;
                             try {
 
+                                String id = result.getString("d_id");
+                                if(!id.equals(UtilHelper.getSharedUserId())) {
+                                    new AlertDialog.Builder(getActivity()).setTitle(getActivity().getResources().getString(R.string.dialog_title_info))
+                                            .setMessage("接单超时，该单已指派给他人")
+                                            .setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    getActivity().finish();
+                                                }
+                                            })
+                                            .show();
+
+                                    return;
+                                }
                                 JSONObject company = result.getJSONObject("company");
                                 String company_name = company.getString("name");
                                 String company_addr = company.getString("addr");

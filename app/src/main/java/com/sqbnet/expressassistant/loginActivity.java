@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.sqbnet.expressassistant.Location.BaiDuLocationService;
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.MyLocation;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
@@ -96,23 +97,28 @@ public class loginActivity extends BaseActivity {
                 final ProgressDialog locationDialog = UtilHelper.getProgressDialog("定位中，可能需要几分钟，请稍候...", loginActivity.this);
                 locationDialog.show();
 
-                AsyncTask<String, String, Location> task = new AsyncTask<String, String, Location>() {
+                AsyncTask<String, String, MyLocation> task = new AsyncTask<String, String, MyLocation>() {
                     @Override
-                    protected Location doInBackground(String... strings) {
-                        Location location = GPSLocation.getInst().getCurrentLocation();
+                    protected MyLocation doInBackground(String... strings) {
+                        MyLocation location = GPSLocation.getInst().getCurrentLocation();
+                        int count = 0;
                         while (location == null) {
+                            if (count >= 10) {
+                                return null;
+                            }
                             try {
                                 Thread.sleep(3000);
                                 location = GPSLocation.getInst().getCurrentLocation();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            count += 1;
                         }
                         return location;
                     }
 
                     @Override
-                    protected void onPostExecute(Location location) {
+                    protected void onPostExecute(MyLocation location) {
                         super.onPostExecute(location);
 
                         locationDialog.dismiss();
@@ -133,13 +139,22 @@ public class loginActivity extends BaseActivity {
 
                         password = UtilHelper.MD5(password);
 
+                        String latitude = "0";
+                        String longitude = "0";
+
+                        if (location != null) {
+                            latitude = String.valueOf(location.getLatitude());
+                            longitude = String.valueOf(location.getLongitude());
+                        } else {
+                            UtilHelper.showToast("定位不成功，请登录后再试");
+                        }
                         final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
                         progressDialog.show();
 
                         String token = XGPushConfig.getToken(getApplicationContext());
                         Log.i("virgil", "XG token:" + token);
 
-                        SQBProvider.getInst().login(username, password, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), token, new SQBResponseListener() {
+                        SQBProvider.getInst().login(username, password, latitude, longitude, token, new SQBResponseListener() {
                             @Override
                             public void onResponse(final SQBResponse response) {
                                 runOnUiThread(new Runnable() {
@@ -158,17 +173,19 @@ public class loginActivity extends BaseActivity {
                                                     setResult(ResultCode.LOGIN_SUCCESS);
                                                     if (chkbox_remember.isChecked()) {
                                                         sharedPreferences.edit()
-                                                                         .putBoolean("isRemember", true)
-                                                                         .apply();
+                                                                .putBoolean("isRemember", true)
+                                                                .apply();
                                                         sharedPreferences.edit()
-                                                                         .putString("username", et_usr.getText().toString())
-                                                                         .apply();
+                                                                .putString("username", et_usr.getText().toString())
+                                                                .apply();
                                                     }
 
                                                     finish();
                                                 } catch (JSONException e) {
                                                     loginFall();
                                                 }
+                                            } else if (response.getCode().equals("1003")) {
+                                                UtilHelper.showToast(response.getMsg());
                                             } else {
                                                 loginFall();
                                             }

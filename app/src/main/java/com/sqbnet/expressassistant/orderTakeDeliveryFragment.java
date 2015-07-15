@@ -2,6 +2,7 @@ package com.sqbnet.expressassistant;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +16,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
+import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.controls.CircleImageView;
+import com.sqbnet.expressassistant.mode.MyLocation;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
@@ -93,8 +97,8 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                 String company_name = company.getString("name");
                                 String company_addr = company.getString("addr");
                                 String company_phone = company.getString("phone");
-                                String company_latitude = company.getString("latitude");
-                                String company_longitude = company.getString("longitude");
+                                double company_latitude = company.getDouble("latitude");
+                                double company_longitude = company.getDouble("longitude");
                                 String company_pic = company.has("pic") ? company.getString("pic") : "";
 
                                 String remuneration = result.getString("remuneration");
@@ -118,6 +122,12 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
 
                                 tv_renueration.setText(remuneration + "元");
                                 tv_good_count.setText(String.valueOf(goods.length()));
+
+                                MyLocation location = GPSLocation.getInst().getCurrentLocation();
+                                if(location != null) {
+                                    double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(company_latitude, company_longitude, location.getLatitude(), location.getLongitude());
+                                    tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
+                                }
 
                                 if (company_pic.startsWith("http")) {
                                     AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
