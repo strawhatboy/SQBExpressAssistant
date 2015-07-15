@@ -329,6 +329,7 @@ public class registrationActivity extends BaseActivity {
                                     try {
                                         phoneCode = ((JSONObject) response.getData()).getString("phone_code");
                                         Log.i("virgil", phoneCode);
+                                        timeCount.start();
                                     } catch (JSONException e) {
                                         Toast.makeText(getApplicationContext(), "发送验证码失败，请稍后再试", Toast.LENGTH_SHORT).show();
                                     }
@@ -339,7 +340,6 @@ public class registrationActivity extends BaseActivity {
                         });
                     }
                 });
-                timeCount.start();
             }
         });
     }
