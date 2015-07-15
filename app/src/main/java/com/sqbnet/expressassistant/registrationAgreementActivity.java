@@ -26,7 +26,7 @@ public class registrationAgreementActivity extends BaseActivity {
         wv_agreement = (WebView) findViewById(R.id.wv_registration_agreement);
         ibtn_back = (ImageButton) findViewById(R.id.ibtn_registration_agreement_back);
 
-        wv_agreement.getSettings().setDefaultTextEncodingName("gbk");
+        wv_agreement.getSettings().setDefaultTextEncodingName("utf-8");
         wv_agreement.loadUrl("file:///android_asset/agreement.html");
 
         ibtn_back.setOnClickListener(new View.OnClickListener() {

@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'sqb'
+            keyPassword 'User@123'
+            storeFile file('../sqb_keystore.jks')
+            storePassword 'User@123'
+        }
+    }
     compileSdkVersion 15
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "com.sqbnet.expressassistant"
         minSdkVersion 15
