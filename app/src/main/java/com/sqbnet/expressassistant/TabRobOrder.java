@@ -2,6 +2,7 @@ package com.sqbnet.expressassistant;
 
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.controls.CircleImageView;
@@ -21,6 +24,9 @@ import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,7 +45,12 @@ public class TabRobOrder extends Fragment {
     private TextView tv_timer;
 
     private ImageView iv_radar;
+    private ImageView iv_white_circle;
     private Animation animation;
+    private Animation anim_white_circle;
+    private Animation anim_dot;
+    private List<ImageView> orange_dots;
+    private AsyncTask<Integer, Integer, Integer> startDotAnimationTask;
 
     private Timer timer;
 
@@ -66,11 +77,18 @@ public class TabRobOrder extends Fragment {
         tv_hint_content = (TextView) view.findViewById(R.id.tv_searching_hint_content);
         iv_radar = (ImageView) view.findViewById(R.id.iv_searching_radar);
         tv_timer = (TextView) view.findViewById(R.id.tv_searching_timer);
-
+        iv_white_circle = (ImageView) view.findViewById(R.id.iv_white_circle);
+        orange_dots = new ArrayList<ImageView>();
+        orange_dots.add((ImageView) view.findViewById(R.id.iv_searching_dot_1));
+        orange_dots.add((ImageView) view.findViewById(R.id.iv_searching_dot_2));
+        orange_dots.add((ImageView) view.findViewById(R.id.iv_searching_dot_3));
 
         animation = AnimationUtils.loadAnimation(this.getActivity(), R.anim.razor_rolling);
         LinearInterpolator lin = new LinearInterpolator();
         animation.setInterpolator(lin);
+
+        anim_white_circle = AnimationUtils.loadAnimation(this.getActivity(), R.anim.radar_circle_expand);
+        anim_dot = AnimationUtils.loadAnimation(getActivity(), R.anim.radar_circle_blink);
     }
 
     public boolean getIsWaiting() {
@@ -88,10 +106,14 @@ public class TabRobOrder extends Fragment {
             tv_hint.setVisibility(View.INVISIBLE);
             tv_hint_content.setVisibility(View.INVISIBLE);
             iv_radar.setVisibility(View.VISIBLE);
+            iv_white_circle.setVisibility(View.VISIBLE);
             tv_timer.setVisibility(View.VISIBLE);
             civ_map.setVisibility(View.VISIBLE);
             iv_radar.clearAnimation();
             iv_radar.setAnimation(animation);
+            iv_white_circle.clearAnimation();
+            iv_white_circle.setAnimation(anim_white_circle);
+            startDotAnimation();
             if (needRefreshTimer) startTimer();
         } else {
             civ_avatar.setVisibility(View.INVISIBLE);
@@ -99,9 +121,15 @@ public class TabRobOrder extends Fragment {
             tv_hint.setVisibility(View.VISIBLE);
             tv_hint_content.setVisibility(View.VISIBLE);
             iv_radar.setVisibility(View.INVISIBLE);
+            iv_white_circle.setVisibility(View.INVISIBLE);
             tv_timer.setVisibility(View.INVISIBLE);
             civ_map.setVisibility(View.INVISIBLE);
             iv_radar.clearAnimation();
+            iv_white_circle.clearAnimation();
+            for (int i = 0; i < orange_dots.size(); i++) {
+                orange_dots.get(i).setVisibility(View.INVISIBLE);
+                orange_dots.get(i).clearAnimation();
+            }
             if (needRefreshTimer) stopTimer();
         }
     }
@@ -134,6 +162,31 @@ public class TabRobOrder extends Fragment {
         int minutes = seconds / 60;
         int seconds_left = seconds % 60;
         tv_timer.setText((minutes < 10 ? "0" : "") + minutes + ":" + (seconds_left < 10 ? "0" : "") + seconds_left);
+    }
+
+    private void startDotAnimation() {
+        startDotAnimationTask = new AsyncTask<Integer, Integer, Integer>() {
+            @Override
+            protected Integer doInBackground(Integer... integers) {
+                for (int i = 0; i < orange_dots.size(); i++) {
+                    final int index = i;
+                    try {
+                        Thread.sleep(MyApplication.getInst().getRandom().nextInt(5000));
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                orange_dots.get(index).setVisibility(View.VISIBLE);
+                                orange_dots.get(index).setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.radar_circle_blink));
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+        };
+        startDotAnimationTask.execute();
     }
 
     public void setAvatar(String url) {

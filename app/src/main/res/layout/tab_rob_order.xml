@@ -35,12 +35,49 @@
             android:src="@drawable/map"/>
         <ImageView
             android:visibility="invisible"
+            android:id="@+id/iv_searching_dot_1"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:src="@drawable/orange_circle"
+            android:layout_toRightOf="@+id/iv_white_circle"
+            android:layout_below="@+id/iv_white_circle"
+            android:layout_marginLeft="20dp"/>
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/iv_searching_dot_2"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:src="@drawable/orange_circle"
+            android:layout_toLeftOf="@+id/iv_white_circle"
+            android:layout_below="@+id/iv_white_circle"
+            android:layout_marginTop="20dp"/>
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/iv_searching_dot_3"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:src="@drawable/orange_circle"
+            android:layout_above="@+id/iv_white_circle"
+            android:layout_toRightOf="@+id/iv_white_circle"
+            android:layout_marginBottom="60dp"
+            android:layout_marginRight="50dp"/>
+        <ImageView
+            android:visibility="invisible"
             android:id="@+id/iv_searching_radar"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scaleType="fitCenter"
             android:layout_centerInParent="true"
             android:src="@drawable/radar"/>
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/iv_white_circle"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="fitCenter"
+            android:layout_centerInParent="true"
+            android:src="@drawable/white_circle"
+            />
         <com.sqbnet.expressassistant.controls.CircleImageView
             android:visibility="invisible"
             android:id="@+id/civ_searching_avatar"

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
 
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -17,12 +18,14 @@ public class MyApplication extends Application {
 
     private static Stack<Activity> activityStack;
     private static MyApplication sInst;
+    private Random random;
 
     @Override
     public void onCreate() {
         Log.i("virgil", "my application create");
         super.onCreate();
         sInst = this;
+        random = new Random();
         CrashHandler.getInstance().init(getApplicationContext());
         SDKInitializer.initialize(this);
     }
@@ -83,5 +86,9 @@ public class MyApplication extends Application {
             System.exit(1);
         } catch (Exception e) {
         }
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }
