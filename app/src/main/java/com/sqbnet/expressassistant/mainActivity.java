@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
@@ -328,17 +329,19 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 status = "1";
                             }
                             Log.i("virgil", "status:" + status);
-                            SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLongitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
-                                @Override
-                                public void onResponse(SQBResponse response) {
-                                    if (response == null)
-                                        return;
-                                    Log.i("virgil", "updateUserStatus");
-                                    Log.i("virgil", response.getCode());
-                                    Log.i("virgil", response.getMsg());
-                                    Log.i("virgil", response.getData().toString());
-                                }
-                            });
+                            if (location != null) {
+                                SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLongitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                                    @Override
+                                    public void onResponse(SQBResponse response) {
+                                        if (response == null)
+                                            return;
+                                        Log.i("virgil", "updateUserStatus");
+                                        Log.i("virgil", response.getCode());
+                                        Log.i("virgil", response.getMsg());
+                                        Log.i("virgil", response.getData().toString());
+                                    }
+                                });
+                            }
                             return null;
                         }
                     };
@@ -438,7 +441,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-                        runOnUiThread(new Runnable() {
+/*                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Intent intent = new Intent();
@@ -446,12 +449,13 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 intent.putExtra("user_id", user_id);
                                 intent.putExtra("order_id", "921");
                                 intent.putExtra("status", "0");
+                                intent.putExtra("from", "main");
                                 startActivityForResult(intent, RequestCode.ORDER);
                                 setStatus(false);
                             }
-                        });
+                        });*/
 
-                        /*if(response.getCode().equals("1000")){
+                        if(response.getCode().equals("1000")){
                             JSONObject result = (JSONObject)response.getData();
                             try {
                                 final String order_id = result.getString("order_id");
@@ -474,7 +478,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
-                        }*/
+                        }
                     }
         });
     }
