@@ -42,7 +42,7 @@
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="400dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -253,7 +253,7 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="6.4"
+                        android:layout_weight="4.4"
                         android:background="@drawable/form_section"
                         android:orientation="vertical">
 
@@ -341,29 +341,75 @@
                             android:layout_marginRight="10dp"
                             android:layout_weight="1"
                             android:orientation="horizontal">
-
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="@string/registration_district_selection"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp"/>
-
-                            <Spinner
-                                android:layout_gravity="center"
-                                android:layout_width="150dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/sp_registration_province"
-                                android:animationCache="true"
-                                android:drawSelectorOnTop="true"
-                                >
-
-                            </Spinner>
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1">
+                                <Button
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/sp_registration_province"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/button_grey"
+                                    android:drawableRight="@drawable/dropdown_button"
+                                    android:paddingRight="5dp"/>
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:text="@string/registration_district_province"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1">
+                                <Button
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/sp_registration_city"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/button_grey"
+                                    android:drawableRight="@drawable/dropdown_button"
+                                    android:paddingRight="5dp"/>
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:text="@string/registration_district_city"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1">
+                                <Button
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:id="@+id/sp_registration_district"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/button_grey"
+                                    android:drawableRight="@drawable/dropdown_button"
+                                    android:paddingRight="5dp"/>
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:text="@string/registration_district_district"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp"/>
+                            </LinearLayout>
                         </LinearLayout>
 
-                        <LinearLayout
+                        <!--<LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="0dp"
                             android:layout_marginLeft="10dp"
@@ -386,9 +432,9 @@
                                 android:id="@+id/sp_registration_city">
 
                             </Spinner>
-                        </LinearLayout>
+                        </LinearLayout>-->
 
-                        <LinearLayout
+                        <!--<LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="0dp"
                             android:layout_marginLeft="10dp"
@@ -411,7 +457,7 @@
                                 android:id="@+id/sp_registration_district">
 
                             </Spinner>
-                        </LinearLayout>
+                        </LinearLayout>-->
 
                         <LinearLayout
                             android:layout_width="fill_parent"

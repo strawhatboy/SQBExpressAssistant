@@ -111,4 +111,7 @@
     <string name="dialog_open_map">Open Map</string>
     <string name="dialog_map_no_map">Cannot detect one of these application installed: [ Baidu Map | Gaode Map ]. Please install them at first.</string>
     <string name="dialog_hint">Oke Hint</string>
+    <string name="registration_district_province">Province</string>
+    <string name="registration_district_city">City</string>
+    <string name="registration_district_district">District</string>
 </resources>

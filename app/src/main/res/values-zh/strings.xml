@@ -106,4 +106,7 @@
     <string name="dialog_open_map">打开地图</string>
     <string name="dialog_map_no_map">未能检测到百度地图或高德地图的安装</string>
     <string name="dialog_hint">O客提示</string>
+    <string name="registration_district_province">省</string>
+    <string name="registration_district_city">市</string>
+    <string name="registration_district_district">区/县</string>
 </resources>

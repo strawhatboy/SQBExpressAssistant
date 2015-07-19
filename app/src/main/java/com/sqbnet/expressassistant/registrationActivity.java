@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.controls.CustomSelectionPopUp;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.UtilHelper;
@@ -75,9 +76,9 @@ public class registrationActivity extends BaseActivity {
     private EditText et_passcode;
     private EditText et_addr;
 
-    private Spinner sp_province;
-    private Spinner sp_city;
-    private Spinner sp_district;
+    private Button sp_province;
+    private Button sp_city;
+    private Button sp_district;
 
     private Bitmap photo;
     private String photoPath;
@@ -88,8 +89,16 @@ public class registrationActivity extends BaseActivity {
     private List<Map<String, Object>> mProvinces;
     private List<Map<String, Object>> mCities;
     private List<Map<String, Object>> mDistricts;
+    private Map<String, Object> mSelectedProvince;
+    private Map<String, Object> mSelectedCity;
+    private Map<String, Object> mSelectedDistrict;
     private Map<Integer, List<Integer>> mDistrictCache;
     private Map<Integer, String> mDistrictMapCache;
+
+    private CustomSelectionPopUp mProvincePopup;
+    private CustomSelectionPopUp mCityPopup;
+    private CustomSelectionPopUp mDistrictPopup;
+
 
     private SimpleAdapter provinceAdapter;
     private SimpleAdapter cityAdapter;
@@ -165,15 +174,15 @@ public class registrationActivity extends BaseActivity {
                     showToast("地址不能为空");
                     return;
                 }
-                if (sp_province.getCount() > 1 && sp_province.getSelectedItemPosition() == 0) {
+                if (mProvinces.size() > 1 && mSelectedProvince == null) {
                     showToast("省份不能为空");
                     return;
                 }
-                if (sp_city.getCount() > 1 && sp_city.getSelectedItemPosition() == 0) {
+                if (mCities.size() > 1 && mSelectedCity == null) {
                     showToast("城市不能为空");
                     return;
                 }
-                if (sp_district.getCount() > 1 && sp_district.getSelectedItemPosition() == 0) {
+                if (mDistricts.size() > 1 && mSelectedDistrict == null) {
                     showToast("地区不能为空");
                     return;
                 }
@@ -207,9 +216,9 @@ public class registrationActivity extends BaseActivity {
                                         String idCard = et_id.getText().toString();
                                         String phone = et_mobile.getText().toString();
                                         String addr = et_addr.getText().toString();
-                                        String province = ((Map<String, Object>)sp_province.getSelectedItem()).get("id").toString();
-                                        String city = ((Map<String, Object>)sp_city.getSelectedItem()).get("id").toString();
-                                        String district = ((Map<String, Object>)sp_district.getSelectedItem()).get("id").toString();
+                                        String province = mSelectedProvince != null ? mSelectedProvince.get("id").toString() : "";
+                                        String city = mSelectedCity != null ? mSelectedCity.get("id").toString() : "";
+                                        String district = mSelectedDistrict != null ? mSelectedDistrict.get("id").toString() : "";
 
                                         Log.i("virgil", "province:" + province);
                                         Log.i("virgil", "city:" + city);
@@ -399,28 +408,28 @@ public class registrationActivity extends BaseActivity {
         mProvinces = new ArrayList<Map<String, Object>>();
         mCities = new ArrayList<Map<String, Object>>();
         mDistricts = new ArrayList<Map<String, Object>>();
-        sp_province = (Spinner) findViewById(R.id.sp_registration_province);
-        sp_city = (Spinner) findViewById(R.id.sp_registration_city);
-        sp_district = (Spinner) findViewById(R.id.sp_registration_district);
+        sp_province = (Button) findViewById(R.id.sp_registration_province);
+        sp_city = (Button) findViewById(R.id.sp_registration_city);
+        sp_district = (Button) findViewById(R.id.sp_registration_district);
 
-        sp_province.setPromptId(R.string.registration_province);
+        /*sp_province.setPromptId(R.string.registration_province);
         sp_city.setPromptId(R.string.registration_city);
-        sp_district.setPromptId(R.string.registration_district);
+        sp_district.setPromptId(R.string.registration_district);*/
 
         mEmptyItem = new HashMap<String, Object>();
         mEmptyItem.put("id", -1);
         mEmptyItem.put("name", "");
 
-        provinceAdapter = new SimpleAdapter(this, mProvinces, android.R.layout.simple_spinner_item,
+        /*provinceAdapter = new SimpleAdapter(this, mProvinces, android.R.layout.simple_spinner_item,
                 new String[] {
                        "name"
                 },
                 new int[] {
                         android.R.id.text1
                 });
-        sp_province.setAdapter(provinceAdapter);
+        sp_province.setAdapter(provinceAdapter);*/
 
-        cityAdapter = new SimpleAdapter(this, mCities, android.R.layout.simple_spinner_item,
+       /* cityAdapter = new SimpleAdapter(this, mCities, android.R.layout.simple_spinner_item,
                 new String[] {
                         "name"
                 },
@@ -436,7 +445,7 @@ public class registrationActivity extends BaseActivity {
                 new int[] {
                         android.R.id.text1
                 });
-        sp_district.setAdapter(districtAdapter);
+        sp_district.setAdapter(districtAdapter);*/
 
         mProvinces.add(mEmptyItem);
         SQBProvider.getInst().getArea("1", new SQBResponseListener() {
@@ -464,8 +473,9 @@ public class registrationActivity extends BaseActivity {
 
                                 mDistrictCache.put(1, leaves);
                                 provinceAdapter.notifyDataSetChanged();
-                                sp_province.setSelection(0);
-                                sp_city.setSelection(0);
+                                sp_province.setText("");
+                                sp_city.setText("");
+                                sp_district.setText("");
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -475,12 +485,21 @@ public class registrationActivity extends BaseActivity {
             }
         });
 
-        sp_province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mProvincePopup = new CustomSelectionPopUp(registrationActivity.this, getResources().getString(R.string.registration_province), mProvinces, new CustomSelectionPopUp.ICustomSelectionPopUpSelected() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, Object> map = (Map<String, Object>) provinceAdapter.getItem(i);
+            public void selected(Map<String, Object> map) {
+                if (map == null) {
+                    mSelectedProvince = null;
+                    sp_province.setText("");
+                    return;
+                }
                 final Integer id = (Integer) map.get("id");
+                sp_province.setText((String) map.get("name"));
+                mSelectedProvince = map;
+                mSelectedDistrict = null;
+                mSelectedCity = null;
                 if (id == -1) {
+                    mSelectedProvince = null;
                     return;
                 }
 
@@ -495,11 +514,12 @@ public class registrationActivity extends BaseActivity {
                         data.put("name", mDistrictMapCache.get(leaves.get(index)));
                         mCities.add(data);
                     }
-                    cityAdapter.notifyDataSetChanged();
+                    //cityAdapter.notifyDataSetChanged();
                     mDistricts.clear();
-                    districtAdapter.notifyDataSetChanged();
-                    sp_district.setSelection(0);
-                    sp_city.setSelection(0);
+                    //districtAdapter.notifyDataSetChanged();
+                    mDistrictPopup.update();
+                    sp_district.setText("");
+                    sp_city.setText("");
                 } else {
                     SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
                         @Override
@@ -528,30 +548,43 @@ public class registrationActivity extends BaseActivity {
                                             e.printStackTrace();
                                         }
                                     }
-                                    cityAdapter.notifyDataSetChanged();
+                                    //cityAdapter.notifyDataSetChanged();
+                                    mCityPopup.update();
                                     mDistricts.clear();
-                                    districtAdapter.notifyDataSetChanged();
-                                    sp_district.setSelection(0);
-                                    sp_city.setSelection(0);
+                                    //districtAdapter.notifyDataSetChanged();
+                                    mDistrictPopup.update();
+                                    sp_district.setText("");
+                                    sp_city.setText("");
                                 }
                             });
                         }
                     });
                 }
             }
+        });
+
+        sp_province.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onClick(View view) {
+                mProvincePopup.show();
             }
         });
 
-        sp_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mCityPopup = new CustomSelectionPopUp(registrationActivity.this, getResources().getString(R.string.registration_city), mCities, new CustomSelectionPopUp.ICustomSelectionPopUpSelected() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, Object> map = (Map<String, Object>) cityAdapter.getItem(i);
+            public void selected(Map<String, Object> map) {
+                if (map == null) {
+                    mSelectedCity = null;
+                    sp_city.setText("");
+                    return;
+                }
+                mSelectedCity = map;
+                mSelectedDistrict = null;
                 final Integer id = (Integer) map.get("id");
+                sp_city.setText((String) map.get("name"));
                 if (id == -1) {
+                    mSelectedCity = null;
                     return;
                 }
 
@@ -566,8 +599,9 @@ public class registrationActivity extends BaseActivity {
                         data.put("name", mDistrictMapCache.get(leaves.get(index)));
                         mDistricts.add(data);
                     }
-                    districtAdapter.notifyDataSetChanged();
-                    sp_district.setSelection(0);
+                    //districtAdapter.notifyDataSetChanged();
+                    mDistrictPopup.update();
+                    sp_district.setText("");
                 } else {
                     SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
                         @Override
@@ -597,20 +631,45 @@ public class registrationActivity extends BaseActivity {
                                             e.printStackTrace();
                                         }
                                     }
-                                    districtAdapter.notifyDataSetChanged();
-                                    sp_district.setSelection(0);
+                                    //districtAdapter.notifyDataSetChanged();
+                                    mDistrictPopup.update();
+                                    sp_district.setText("");
                                 }
                             });
                         }
                     });
                 }
             }
+        });
 
+        sp_city.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onClick(View view) {
+                mCityPopup.show();
             }
         });
+
+        mDistrictPopup = new CustomSelectionPopUp(registrationActivity.this, getResources().getString(R.string.registration_district), mDistricts, new CustomSelectionPopUp.ICustomSelectionPopUpSelected() {
+            @Override
+            public void selected(Map<String, Object> map) {
+                if (map == null) {
+                    mSelectedDistrict = null;
+                    sp_district.setText("");
+                    return;
+                }
+
+                mSelectedDistrict = map;
+                sp_district.setText((String) map.get("name"));
+            }
+        });
+
+        sp_district.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDistrictPopup.show();
+            }
+        });
+
     }
 
     @Override
