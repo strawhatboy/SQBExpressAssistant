@@ -1,6 +1,7 @@
 package com.sqbnet.expressassistant;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,9 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.controls.CircleImageView;
 import com.sqbnet.expressassistant.controls.CustomListView;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
@@ -45,6 +48,7 @@ public class TabMyWallet extends BaseFragment {
     private TextView tv_reg_date;
     private TextView tv_balance;
     private TextView tv_un_reward;
+    private CircleImageView civ_wallet_avatar;
 
     public TabMyWallet() {
         // Required empty public constructor
@@ -98,6 +102,7 @@ public class TabMyWallet extends BaseFragment {
 
         listView = (CustomListView) view.findViewById(R.id.lv_wallet);
         tv_count = (TextView) view.findViewById(R.id.tv_wallet_count);
+        civ_wallet_avatar = (CircleImageView) view.findViewById(R.id.civ_wallet_avatar);
 
         mData = new ArrayList<Map<String, Object>>();
         /*
@@ -264,6 +269,7 @@ public class TabMyWallet extends BaseFragment {
                             String regDate = UtilHelper.getDateString(userInfo.getInt("add_time"), "yyyy-MM-dd");
                             String balance = userInfo.getString("balance");
                             String un_reward = userInfo.getString("s_proceeds");
+                            String avatar = userInfo.getString("cardphoto");
                             if(un_reward == "null"){
                                 un_reward = "0";
                             }
@@ -273,6 +279,19 @@ public class TabMyWallet extends BaseFragment {
                             tv_reg_date.setText(regDate);
                             tv_balance.setText(balance);
                             tv_un_reward.setText(un_reward);
+                            if (avatar != null && avatar.length() > 0) {
+                                AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
+                                    @Override
+                                    public void onImageLoadResult(final Bitmap bitmap) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                civ_wallet_avatar.setImageBitmap(bitmap);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
 
                             listView.onRefreshComplete();
                         } catch (Exception e) {

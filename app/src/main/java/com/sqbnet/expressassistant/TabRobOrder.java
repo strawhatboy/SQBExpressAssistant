@@ -18,14 +18,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.controls.CircleImageView;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -89,6 +96,52 @@ public class TabRobOrder extends Fragment {
 
         anim_white_circle = AnimationUtils.loadAnimation(this.getActivity(), R.anim.radar_circle_expand);
         anim_dot = AnimationUtils.loadAnimation(getActivity(), R.anim.radar_circle_blink);
+
+        String userId = UtilHelper.getSharedUserId();
+        if (userId != null && userId.length() > 0) {
+            SQBProvider.getInst().getDispatchPerson(userId, new SQBResponseListener() {
+                @Override
+                public void onResponse(final SQBResponse response) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
+                            if (response == null) {
+                                Toast.makeText(getActivity().getApplicationContext(), "≥ˆ¥Ì¿≤£¨«Î÷ÿ ‘", Toast.LENGTH_SHORT);
+                                return;
+                            }
+
+                            if (!response.getCode().equals("1000")) {
+                                Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                                return;
+                            }
+
+                            try {
+                                JSONObject userInfo = (JSONObject) response.getData();
+                                String avatar = userInfo.getString("cardphoto");
+                                if (avatar != null && avatar.length() > 0) {
+                                    AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
+                                        @Override
+                                        public void onImageLoadResult(final Bitmap bitmap) {
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    civ_avatar.setImageBitmap(bitmap);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity().getApplicationContext(), "≥ˆ¥Ì¿≤£¨«Î÷ÿ ‘", Toast.LENGTH_SHORT);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
     }
 
     public boolean getIsWaiting() {

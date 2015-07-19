@@ -333,7 +333,7 @@ public class UtilHelper {
 
     public static ProgressDialog getProgressDialog(String message, Context context){
         ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("商圈宝提示");
+        progressDialog.setTitle(MyApplication.getInst().getResources().getString(R.string.dialog_hint));
         progressDialog.setMessage(message);
         progressDialog.setProgress(ProgressDialog.STYLE_SPINNER);
         return progressDialog;

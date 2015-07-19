@@ -79,9 +79,10 @@ public class loginActivity extends BaseActivity {
         btn_login = (Button) findViewById(R.id.btn_login);
         tv_register = (TextView) findViewById(R.id.tv_register);
         chkbox_remember = (CheckBox) findViewById(R.id.chkbox_login_remember_username);
-        sharedPreferences = getSharedPreferences("userInfo", Context.MODE_WORLD_WRITEABLE);
+        sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean("isRemember", false)) {
             et_usr.setText(sharedPreferences.getString("username", ""));
+            et_pwd.setText(sharedPreferences.getString("password", ""));
             chkbox_remember.setChecked(true);
         }
 
@@ -103,11 +104,11 @@ public class loginActivity extends BaseActivity {
                         MyLocation location = GPSLocation.getInst().getCurrentLocation();
                         int count = 0;
                         while (location == null) {
-                            if (count >= 10) {
+                            if (count >= 60) {
                                 return null;
                             }
                             try {
-                                Thread.sleep(3000);
+                                Thread.sleep(500);
                                 location = GPSLocation.getInst().getCurrentLocation();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -177,6 +178,9 @@ public class loginActivity extends BaseActivity {
                                                                 .apply();
                                                         sharedPreferences.edit()
                                                                 .putString("username", et_usr.getText().toString())
+                                                                .apply();
+                                                        sharedPreferences.edit()
+                                                                .putString("password", et_pwd.getText().toString())
                                                                 .apply();
                                                     }
 
