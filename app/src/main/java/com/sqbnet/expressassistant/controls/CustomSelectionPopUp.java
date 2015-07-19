@@ -72,8 +72,4 @@ public class CustomSelectionPopUp {
             }
         });
     }
-
-    public void update() {
-        adapter.notifyDataSetChanged();
-    }
 }

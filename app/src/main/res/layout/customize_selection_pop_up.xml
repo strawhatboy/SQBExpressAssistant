@@ -30,9 +30,8 @@
             android:id="@+id/lv_customize_selection_pop_up"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:divider="@color/font_grey"
+            android:divider="@drawable/custom_selection_pop_up_divider"
+            android:dividerHeight="1dp"
             >
         </ListView>
     </LinearLayout>

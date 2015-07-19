@@ -353,7 +353,8 @@
                                     android:layout_gravity="center"
                                     android:background="@drawable/button_grey"
                                     android:drawableRight="@drawable/dropdown_button"
-                                    android:paddingRight="5dp"/>
+                                    android:paddingRight="5dp"
+                                    android:textColor="@color/font_black"/>
                                 <TextView
                                     android:layout_width="20dp"
                                     android:layout_height="wrap_content"
@@ -375,7 +376,8 @@
                                     android:layout_gravity="center"
                                     android:background="@drawable/button_grey"
                                     android:drawableRight="@drawable/dropdown_button"
-                                    android:paddingRight="5dp"/>
+                                    android:paddingRight="5dp"
+                                    android:textColor="@color/font_black"/>
                                 <TextView
                                     android:layout_width="20dp"
                                     android:layout_height="wrap_content"
@@ -397,7 +399,8 @@
                                     android:layout_gravity="center"
                                     android:background="@drawable/button_grey"
                                     android:drawableRight="@drawable/dropdown_button"
-                                    android:paddingRight="5dp"/>
+                                    android:paddingRight="5dp"
+                                    android:textColor="@color/font_black"/>
                                 <TextView
                                     android:layout_width="20dp"
                                     android:layout_height="wrap_content"

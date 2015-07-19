@@ -447,7 +447,7 @@ public class registrationActivity extends BaseActivity {
                 });
         sp_district.setAdapter(districtAdapter);*/
 
-        mProvinces.add(mEmptyItem);
+        //mProvinces.add(mEmptyItem);
         SQBProvider.getInst().getArea("1", new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
@@ -472,7 +472,7 @@ public class registrationActivity extends BaseActivity {
                                 }
 
                                 mDistrictCache.put(1, leaves);
-                                provinceAdapter.notifyDataSetChanged();
+                                //provinceAdapter.notifyDataSetChanged();
                                 sp_province.setText("");
                                 sp_city.setText("");
                                 sp_district.setText("");
@@ -504,7 +504,10 @@ public class registrationActivity extends BaseActivity {
                 }
 
                 mCities.clear();
-                mCities.add(mEmptyItem);
+                //mCities.add(mEmptyItem);
+
+                sp_district.setText("");
+                sp_city.setText("");
                 if (mDistrictCache.containsKey(id)) {
                     List<Integer> leaves = mDistrictCache.get(id);
                     int length = leaves.size();
@@ -517,9 +520,6 @@ public class registrationActivity extends BaseActivity {
                     //cityAdapter.notifyDataSetChanged();
                     mDistricts.clear();
                     //districtAdapter.notifyDataSetChanged();
-                    mDistrictPopup.update();
-                    sp_district.setText("");
-                    sp_city.setText("");
                 } else {
                     SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
                         @Override
@@ -549,12 +549,10 @@ public class registrationActivity extends BaseActivity {
                                         }
                                     }
                                     //cityAdapter.notifyDataSetChanged();
-                                    mCityPopup.update();
+                                    //mCityPopup.update();
                                     mDistricts.clear();
                                     //districtAdapter.notifyDataSetChanged();
-                                    mDistrictPopup.update();
-                                    sp_district.setText("");
-                                    sp_city.setText("");
+                                    //mDistrictPopup.update();
                                 }
                             });
                         }
@@ -589,7 +587,8 @@ public class registrationActivity extends BaseActivity {
                 }
 
                 mDistricts.clear();
-                mDistricts.add(mEmptyItem);
+                //mDistricts.add(mEmptyItem);
+                sp_district.setText("");
                 if (mDistrictCache.containsKey(id)) {
                     List<Integer> leaves = mDistrictCache.get(id);
                     int length = leaves.size();
@@ -600,8 +599,7 @@ public class registrationActivity extends BaseActivity {
                         mDistricts.add(data);
                     }
                     //districtAdapter.notifyDataSetChanged();
-                    mDistrictPopup.update();
-                    sp_district.setText("");
+                    //mDistrictPopup.update();
                 } else {
                     SQBProvider.getInst().getArea(id.toString(), new SQBResponseListener() {
                         @Override
@@ -632,8 +630,7 @@ public class registrationActivity extends BaseActivity {
                                         }
                                     }
                                     //districtAdapter.notifyDataSetChanged();
-                                    mDistrictPopup.update();
-                                    sp_district.setText("");
+                                    //mDistrictPopup.update();
                                 }
                             });
                         }
