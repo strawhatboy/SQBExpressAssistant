@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -41,6 +42,10 @@ import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.tencent.android.tpush.XGPushConfig;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class loginActivity extends BaseActivity {
@@ -225,6 +230,50 @@ public class loginActivity extends BaseActivity {
                         .apply();
             }
         });*/
+
+        UtilHelper.checkNewVersion(new SQBResponseListener() {
+            @Override
+            public void onResponse(SQBResponse response) {
+                String result = (String) response.getData();
+                if (result == null) {
+                    return;
+                }
+
+                List<String> versionMatches = UtilHelper.getMatchedText(result, "<version>(.*)</version>");
+                String version = versionMatches.size() > 0 ? versionMatches.get(0) : "";
+                String localVersion = UtilHelper.getApplicationVersion();
+                Log.i("loginActivity", "comparing version: remote: " + version + ", local: " + localVersion);
+                if (version.length() > 0 && version.compareTo(localVersion) > 0) {
+                    Log.i("loginActivity", "Got new version!!!");
+
+                    List<String> urlMatches = UtilHelper.getMatchedText(result, "<url>(.*)</url>");
+                    final String url = urlMatches.size() > 0 ? urlMatches.get(0) : "";
+                    if (url.length() > 0 && url.startsWith("http:")) {
+                        List<String> infoMatches = UtilHelper.getMatchedText(result, "<description>(.*)</description>");
+                        final String info = infoMatches.size() > 0 ? infoMatches.get(0) : "";
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new AlertDialog.Builder(loginActivity.this).setTitle("提示")
+                                        .setMessage(info)
+                                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Uri uri = Uri.parse(url);
+                                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton("否", null)
+                                        .show();
+                            }
+                        });
+                    }
+                }
+
+            }
+        });
     }
 
     @Override

@@ -22,6 +22,9 @@ import com.sqbnet.expressassistant.MyApplication;
 import com.sqbnet.expressassistant.R;
 import com.sqbnet.expressassistant.external.map.IMapProvider;
 import com.sqbnet.expressassistant.external.map.MapProviderFactory;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.net.NetEnginee;
 import com.sqbnet.expressassistant.service.LocalService;
 
 import java.io.File;
@@ -519,5 +522,37 @@ public class UtilHelper {
                 }
             }
         };
+    }
+
+    public static void checkNewVersion(final SQBResponseListener listener) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String xmlContent = NetEnginee.getInst().HttpGet("http://wap.sqbnet.com/appservion.xml");
+                if (listener != null) {
+                    listener.onResponse(new SQBResponse(null, null, xmlContent));
+                }
+            }
+        }).start();
+    }
+
+    public static List<String> getMatchedText(String source, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(source);
+        ArrayList<String> result = new ArrayList<String>();
+        while (m.find()) {
+            result.add(m.group(1));
+        }
+        return result;
+    }
+
+    public static String getApplicationVersion() {
+        try {
+            return MyApplication.getInst().getPackageManager().getPackageInfo(MyApplication.getInst().getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }

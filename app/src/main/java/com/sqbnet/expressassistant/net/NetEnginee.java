@@ -124,4 +124,33 @@ public class NetEnginee {
             return null;
         }
     }
+
+    public String HttpGet(String url_string) {
+        try {
+            Log.i("NetEngine", url_string);
+            URL url = new URL(url_string);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            InputStream in;
+            int code = conn.getResponseCode();
+            Log.d("NetEngine", "get response code:" + code);
+            if (code == 200) {
+                in = conn.getInputStream();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = in.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, len);
+                }
+
+                byte[] returnData = outputStream.toByteArray();
+                String returnText = new String(returnData);
+                Log.d("NetEngine", "get returned text:" + returnText);
+                return returnText;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("NetEngine", "get error:" + e);
+        }
+        return null;
+    }
 }
