@@ -107,7 +107,7 @@ public class TabRobOrder extends Fragment {
                         public void run() {
                             Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
                             if (response == null) {
-                                Toast.makeText(getActivity().getApplicationContext(), "³ö´íÀ²£¬ÇëÖØÊÔ", Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity().getApplicationContext(), "æ²¡æœ‰æ‰¾åˆ°ç”¨æˆ·", Toast.LENGTH_SHORT);
                                 return;
                             }
 
@@ -134,7 +134,7 @@ public class TabRobOrder extends Fragment {
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(getActivity().getApplicationContext(), "³ö´íÀ²£¬ÇëÖØÊÔ", Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity().getApplicationContext(), "å‡ºé”™äº†", Toast.LENGTH_SHORT);
                             }
                         }
                     });

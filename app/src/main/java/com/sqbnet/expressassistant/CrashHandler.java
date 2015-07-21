@@ -73,6 +73,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        Log.i("virgil","get exception");
         if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
@@ -81,7 +82,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                Log.e(TAG, "Error : ", e);
+                Log.e(TAG, "virgil : ", e);
             }
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(10);

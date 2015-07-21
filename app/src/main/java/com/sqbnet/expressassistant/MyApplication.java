@@ -82,8 +82,8 @@ public class MyApplication extends Application {
         Log.i("virgil", "app exit");
         try {
             finishAllActivity();
-            Process.killProcess(Process.myPid());
-            System.exit(1);
+            //Process.killProcess(Process.myPid());
+            //System.exit(1);
         } catch (Exception e) {
         }
     }

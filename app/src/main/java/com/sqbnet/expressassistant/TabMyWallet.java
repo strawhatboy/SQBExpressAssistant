@@ -151,13 +151,14 @@ public class TabMyWallet extends BaseFragment {
         listView.setonRefreshListener(new CustomListView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.i("virgil", "listview onRefresh");
-                refreshData();
+                Log.i("virgil", "TabMyWallet listview onRefresh");
+                refreshData(true);
             }
         });
 
         if(mData.size() == 0){
-            refreshData();
+            Log.i("virgil", "TabMyWallet listview init data");
+            refreshData(false);
         }
     }
 
@@ -165,7 +166,7 @@ public class TabMyWallet extends BaseFragment {
         tv_count.setText(Integer.toString(count));
     }
 
-    public void refreshData() {
+    public void refreshData(boolean isRefresh) {
         mData.clear();
         final String user_id = UtilHelper.getSharedUserId();
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
@@ -244,7 +245,7 @@ public class TabMyWallet extends BaseFragment {
                     }
                 });
             }
-        });
+        }, isRefresh);
 
         SQBProvider.getInst().getDispatchPerson(user_id, new SQBResponseListener() {
             @Override

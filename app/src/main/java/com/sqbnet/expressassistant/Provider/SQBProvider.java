@@ -1,5 +1,6 @@
 package com.sqbnet.expressassistant.Provider;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.sqbnet.expressassistant.mode.SQBResponse;
@@ -7,9 +8,15 @@ import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.net.BaseHttpResultListener;
 import com.sqbnet.expressassistant.net.BaseHttpThread;
 import com.sqbnet.expressassistant.utils.UtilHelper;
+import com.tencent.android.tpush.logging.TLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by virgil on 6/24/15.
@@ -17,6 +24,7 @@ import org.json.JSONObject;
 public class SQBProvider {
 
     private static volatile SQBProvider sInst;
+    private static Map<String, SQBResponse> sCache = new HashMap<String, SQBResponse>();
 
     public static String BASE_URL = "http://wap.sqbnet.com/index.php/APP/DistributionAppAction/";
     public static String URL_APPREV = "phoneCaptcha";
@@ -56,7 +64,7 @@ public class SQBProvider {
             jsonObject.put("longitude", longitude);
             jsonObject.put("token", token);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -68,7 +76,7 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("phone", mobile);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -90,7 +98,7 @@ public class SQBProvider {
             jsonObject.put("city", city);
             jsonObject.put("district", district);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -104,19 +112,19 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("cardphoto", imageData);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void getHistoryOrder(String userId, final SQBResponseListener listener) {
+    public void getHistoryOrder(String userId, final SQBResponseListener listener, boolean isRefreh) {
         try{
             String url = BASE_URL + URL_HISTORY_ORDERS;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("d_id", userId);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, isRefreh);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -128,7 +136,7 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("d_id", userId);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,7 +150,7 @@ public class SQBProvider {
             jsonObject.put("latitude", latitude);
             jsonObject.put("longitude", longitude);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -154,7 +162,7 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("d_id", userId);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -166,7 +174,7 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("order_id", order_id);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -179,7 +187,7 @@ public class SQBProvider {
             jsonObject.put("order_id", order_id);
             jsonObject.put("status", status);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -192,7 +200,7 @@ public class SQBProvider {
             jsonObject.put("order_id", order_id);
             jsonObject.put("code", code);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -207,7 +215,7 @@ public class SQBProvider {
             jsonObject.put("latitude", latitude);
             jsonObject.put("longitude", longitude);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -219,7 +227,7 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("d_id", user_id);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -232,7 +240,7 @@ public class SQBProvider {
             jsonObject.put("d_id", user_id);
             jsonObject.put("order_id", order_id);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -244,20 +252,42 @@ public class SQBProvider {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("parent_id", parent_id);
 
-            doPost(url, jsonObject, listener);
+            doPost(url, jsonObject, listener, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void doPost(String url, JSONObject jsonObject, final SQBResponseListener listener){
+    private boolean refreshMap(String url){
+        if(url.equals(BASE_URL + URL_HISTORY_ORDERS)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private void doPost(final String url, JSONObject jsonObject, final SQBResponseListener listener, final boolean isRefresh){
         try{
+            TLog.i("virgil", "doPost");
+            if(!isRefresh){
+                if(sCache.containsKey(url)){
+                    if(listener!=null){
+                        TLog.i("virgil", "get data from cache");
+                        listener.onResponse(sCache.get(url));
+                        return;
+                    }
+                }
+            }
+            TLog.i("virgil", "goto http request");
             BaseHttpThread httpThread = new BaseHttpThread(url, jsonObject, new BaseHttpResultListener() {
                 @Override
                 public void onHttpChanged(JSONObject jsonObject){
                     if(listener != null) {
                         try {
                             SQBResponse response = new SQBResponse(jsonObject.getString("code"), jsonObject.getString("msg"), jsonObject.get("data"));
+                            if(jsonObject.getString("code").equals("1000") && refreshMap(url)){
+                                sCache.put(url, response);
+                            }
                             listener.onResponse(response);
                         } catch (Exception e) {
                             e.printStackTrace();

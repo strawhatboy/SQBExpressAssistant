@@ -151,17 +151,18 @@ public class TabHistoryOrder extends BaseFragment {
         listView.setonRefreshListener(new CustomListView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.i("virgil", "CustomListView onRefresh");
-                refreshData();
+                Log.i("virgil", "TabHistoryOrder CustomListView onRefresh");
+                refreshData(true);
             }
         });
 
         if(mData.size() == 0){
-            refreshData();
+            Log.i("virgil", "TabHistoryOrder listview init data");
+            refreshData(false);
         }
     }
 
-    private void refreshData(){
+    private void refreshData(boolean isRefresh){
         mData.clear();
         String user_id = UtilHelper.getSharedUserId();
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
@@ -236,7 +237,7 @@ public class TabHistoryOrder extends BaseFragment {
                     }
                 });
             }
-        });
+        }, isRefresh);
     }
 
     public interface IGotoDetails {

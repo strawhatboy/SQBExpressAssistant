@@ -130,6 +130,7 @@ public class registrationActivity extends BaseActivity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (et_username.length() == 0) {
                     showToast("账号不能为空");
                     return;
@@ -245,6 +246,7 @@ public class registrationActivity extends BaseActivity {
                                                         public void run() {
                                                             progressDialog.dismiss();
                                                             Intent intent = new Intent(registrationActivity.this, registrationSuccessActivity.class);
+                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                             startActivity(intent);
                                                         }
                                                     });

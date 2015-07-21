@@ -68,6 +68,7 @@ public class BaiDuLocationService {
                 if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
                     Log.w("BaiduLocation", "not found in onGetGeoCodeResult");
                     callback.handleLocationGot(-1, -1);
+                    return;
                 }
                 callback.handleLocationGot(result.getLocation().latitude, result.getLocation().longitude);
             }
@@ -76,6 +77,7 @@ public class BaiDuLocationService {
                 if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
                     Log.w("BaiduLocation", "not found in onGetReverseGeoCodeResult");
                     callback.handleAddressGot("");
+                    return;
                 }
                 callback.handleAddressGot(result.getAddress());
             }
@@ -85,7 +87,11 @@ public class BaiDuLocationService {
     }
 
     public double getDistanceBetweenLocations(double latitude1, double longitude1, double latitude2, double longitude2) {
-        return DistanceUtil.getDistance(new LatLng(latitude1, longitude1), new LatLng(latitude2, longitude2));
+        try {
+            return DistanceUtil.getDistance(new LatLng(latitude1, longitude1), new LatLng(latitude2, longitude2));
+        }catch (Exception e){
+            return 0;
+        }
     }
 
     public interface IGeoEncoderCallback {

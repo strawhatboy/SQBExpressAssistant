@@ -252,7 +252,8 @@ public class loginActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         setResult(ResultCode.QUIT);
-                        MyApplication.getInst().AppExit();
+                        finish();
+                        //MyApplication.getInst().AppExit();
                     }
                 })
                 .setNegativeButton("否", null)

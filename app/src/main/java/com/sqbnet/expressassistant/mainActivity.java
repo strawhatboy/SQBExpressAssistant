@@ -102,10 +102,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
         XGPushConfig.enableDebug(this, true);
 
-        Context context = getApplicationContext();
-        Intent service = new Intent(context, XGPushService.class);
-        context.startService(service);
-
         XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
             @Override
             public void onSuccess(Object o, int i) {
@@ -138,6 +134,10 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 });
             }
         };
+
+        Context context = getApplicationContext();
+        Intent service = new Intent(context, XGPushService.class);
+        context.startService(service);
     }
 
     @Override
@@ -152,6 +152,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
         super.onResume();
         isVisible = true;
+
+
+
         if(checkLoginStatus()){
             Intent intent = getIntent();
             if(!intent.hasExtra(CustomConstants.INTENT_FROM))
@@ -311,6 +314,13 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 if(!isWaiting) {
                     mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
                     tv_rob_order.setTextColor(getResources().getColorStateList(R.color.font_white));
+                    //getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
+                    GPSLocation.isSendingLocation = false;
+                }else{
+                  /*  Context context = getApplicationContext();
+                    Intent service = new Intent(context, XGPushService.class);
+                    context.startService(service);*/
+                    GPSLocation.isSendingLocation = true;
                 }
                 mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
                 tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_black));

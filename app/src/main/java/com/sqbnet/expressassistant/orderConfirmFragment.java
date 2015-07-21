@@ -182,16 +182,22 @@ public class orderConfirmFragment extends OrderBaseFragment {
                                 // calculate distance
                                 BaiDuLocationService.getInst().getLocationByAddress(customer_address, new BaiDuLocationService.IGeoEncoderCallback() {
                                     @Override
-                                    public void handleLocationGot(double latitude, double longitude) {
-                                        if (latitude != -1) {
-                                            double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(
-                                                    company_latitude,
-                                                    company_longitude,
-                                                    latitude,
-                                                    longitude);
-                                            Log.d("orderConfirmFragment", "got distance: " + distance);
-                                            tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
-                                        }
+                                    public void handleLocationGot(final double latitude, final double longitude) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (latitude != -1) {
+                                                    double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(
+                                                            company_latitude,
+                                                            company_longitude,
+                                                            latitude,
+                                                            longitude);
+                                                    Log.d("orderConfirmFragment", "got distance: " + distance);
+                                                    tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
+                                                }
+                                            }
+                                        });
+
                                     }
 
                                     @Override

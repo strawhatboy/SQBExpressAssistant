@@ -258,9 +258,9 @@ public class historyDetailsActivity extends BaseActivity {
                 }
             }
 
-            long startTimestamp = data.getLong("starttime");
-            long endTimestamp = data.getLong("endtime");
-            long recieveTimestamp = data.getLong("receivetime");
+            long startTimestamp = data.optLong("starttime", 0);
+            long endTimestamp = data.optLong("endtime", 0);
+            long recieveTimestamp = data.optLong("receivetime", 0);
             mStartTime.setText(UtilHelper.getDateString(startTimestamp).split("\\s+")[1]);
             mPickTime.setText(UtilHelper.getDateString(recieveTimestamp).split("\\s+")[1]);
             mEndTime.setText(UtilHelper.getDateString(endTimestamp).split("\\s+")[1]);
@@ -280,6 +280,10 @@ public class historyDetailsActivity extends BaseActivity {
             mConsigneeName.setText(orderInfo.getString("consignee"));
             mConsigneeAddress.setText(orderInfo.getString("address"));
             mConsigneePhone.setText(orderInfo.getString("mobile"));
+            int status = orderInfo.optInt("status", 0);
+            if(status == 0){
+                tv_done.setVisibility(View.GONE);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

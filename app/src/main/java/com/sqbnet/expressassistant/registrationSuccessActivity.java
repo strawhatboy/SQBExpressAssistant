@@ -35,8 +35,8 @@ public class registrationSuccessActivity extends BaseActivity {
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GPSLocation.getInst().stop();
                 XGPushManager.unregisterPush(getApplicationContext());
+                finish();
                 MyApplication.getInst().AppExit();
             }
         });

@@ -50,13 +50,14 @@ public class NetEnginee {
 
     public JSONObject HttpPost(String url_string, JSONObject jsonObject) {
         try{
+            Log.i("virgil", url_string);
             URL url = new URL(url_string);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setUseCaches(false);
-            conn.setConnectTimeout(5000);
+            conn.setUseCaches(true);
+            conn.setConnectTimeout(1000);
             conn.setRequestMethod("POST");
 
             conn.setRequestProperty("Accept", "*/*");
@@ -72,6 +73,7 @@ public class NetEnginee {
             }
 
             int code = conn.getResponseCode();
+            Log.i("virgil", "get response code:" + code);
             if(code == 200){
                 in = conn.getInputStream();
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -93,6 +95,7 @@ public class NetEnginee {
             }
         }catch (Exception e){
             Log.e("NetEngiee", "virgil", e);
+            Log.i("virgil", e.getMessage());
             e.printStackTrace();
             return null;
         }
