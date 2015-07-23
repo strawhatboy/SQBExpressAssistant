@@ -367,61 +367,57 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void setUserStatus(final boolean b_status){
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                String user_id = UtilHelper.getSharedUserId();
-                MyLocation location = GPSLocation.getInst().getCurrentLocation();
-                String status = "0";
-                if (b_status) {
-                    status = "1";
+        String user_id = UtilHelper.getSharedUserId();
+        MyLocation location = GPSLocation.getInst().getCurrentLocation();
+        String status = "0";
+        if (b_status) {
+            status = "1";
+        }
+        Log.i("virgil", "status:" + status);
+        if (location != null) {
+            SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                @Override
+                public void onResponse(SQBResponse response) {
+                    if (response == null)
+                        return;
+                    Log.i("virgil", "updateUserStatus");
+                    Log.i("virgil", response.getCode());
+                    Log.i("virgil", response.getMsg());
+                    Log.i("virgil", response.getData().toString());
                 }
-                Log.i("virgil", "status:" + status);
-                if (location != null) {
-                    SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
-                        @Override
-                        public void onResponse(SQBResponse response) {
-                            if (response == null)
-                                return;
-                            Log.i("virgil", "updateUserStatus");
-                            Log.i("virgil", response.getCode());
-                            Log.i("virgil", response.getMsg());
-                            Log.i("virgil", response.getData().toString());
-                        }
-                    });
-                }
-                return null;
-            }
-        };
-        task.execute();
+            });
+        }
     }
 
     /**
      * switch the status between waiting & rest
      */
     private void setStatus(boolean status) {
-        isWaiting = status;
-        setUserStatus(status);
-        Log.d("Status Change :", Boolean.toString(isWaiting));
-        if (isWaiting) {
-            mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_green));
-            tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
-            setBackgroudLight();
-            //TODO: start to wait for order from server
-            getAssignOrder();
-
-            //Got Order !! for debug
-            //Intent intent = new Intent();
-            //intent.setClass(mainActivity.this, orderMainActivity.class);
-
-            //startActivityForResult(intent, RequestCode.ORDER);
-
-        } else {
-            mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_blue));
-            tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
-            setBackgroudDark();
-            //TODO: stop the listening
+        if(isWaiting != status) {
+            setUserStatus(status);
         }
+            isWaiting = status;
+            Log.d("Status Change :", Boolean.toString(isWaiting));
+            if (isWaiting) {
+                mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_green));
+                tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
+                setBackgroudLight();
+                //TODO: start to wait for order from server
+                getAssignOrder();
+
+                //Got Order !! for debug
+                //Intent intent = new Intent();
+                //intent.setClass(mainActivity.this, orderMainActivity.class);
+
+                //startActivityForResult(intent, RequestCode.ORDER);
+
+            } else {
+                mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_blue));
+                tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
+                setBackgroudDark();
+                //TODO: stop the listening
+            }
+
         tabRobOrder.setIsWaiting(isWaiting);
     }
 

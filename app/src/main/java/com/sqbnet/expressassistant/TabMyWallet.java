@@ -158,6 +158,7 @@ public class TabMyWallet extends BaseFragment {
 
         if(mData.size() == 0){
             Log.i("virgil", "TabMyWallet listview init data");
+            listView.startRefresh();
             refreshData(false);
         }
     }

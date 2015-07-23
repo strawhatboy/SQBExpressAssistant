@@ -129,6 +129,11 @@ public class CustomListView extends ListView implements OnScrollListener {
         }
     }
 
+    public void startRefresh(){
+        mState = REFRESHING;
+        changeHeaderViewByState();
+    }
+
     public void onRefreshComplete() {
         mState = DONE;
         mLastUpdatedTextView.setText("已加载完成：" + new Date().toLocaleString());
