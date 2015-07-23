@@ -109,11 +109,11 @@ public class loginActivity extends BaseActivity {
                         MyLocation location = GPSLocation.getInst().getCurrentLocation();
                         int count = 0;
                         while (location == null) {
-                            if (count >= 60) {
+                            if (count >= 10) {
                                 return null;
                             }
                             try {
-                                Thread.sleep(500);
+                                Thread.sleep(2000);
                                 location = GPSLocation.getInst().getCurrentLocation();
                             } catch (Exception e) {
                                 e.printStackTrace();

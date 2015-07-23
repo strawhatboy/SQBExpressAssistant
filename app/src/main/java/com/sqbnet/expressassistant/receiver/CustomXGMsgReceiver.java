@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -102,6 +103,7 @@ public class CustomXGMsgReceiver extends XGPushBaseReceiver {
                         .setContentText("请在5分钟内确认")
                         .setContentIntent(pendingIntent)
                         .getNotification();
+                notification.defaults |= Notification.DEFAULT_VIBRATE;
                 notification.flags |= Notification.FLAG_AUTO_CANCEL|Notification.DEFAULT_SOUND;
                 NotificationManager notificationManager = (NotificationManager) MyApplication.getInst().getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(1, notification);

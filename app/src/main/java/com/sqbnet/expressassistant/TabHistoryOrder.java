@@ -118,7 +118,7 @@ public class TabHistoryOrder extends BaseFragment {
 
                 //TODO: set visibility for 'done' according to the real status from server
                 // rotate 'Done'
-                if ((Integer) mData.get(position).get("status") == 1) {
+                if (mData.get(position).get("status").equals("1")) {
                     TextView tv_done = (TextView) view.findViewById(R.id.tv_history_list_done);
                     tv_done.setVisibility(View.VISIBLE);
                     tv_done.setAnimation(textRotateAnimation);
@@ -171,6 +171,7 @@ public class TabHistoryOrder extends BaseFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        listView.onRefreshComplete();
                         if (response != null) {
                             Log.i("virgil", "TabHsitoryOrder getHisotryOrder");
                             Log.i("virgil", response.getCode());
@@ -185,7 +186,7 @@ public class TabHistoryOrder extends BaseFragment {
                                         JSONObject orderInfo = item.getJSONObject("orderInfo");
                                         int startTimestamp = item.getInt("starttime");
                                         String date = UtilHelper.getDateString(startTimestamp);
-                                        int status = item.getInt("status");
+                                        String status = item.getString("status");
                                         String remuneration = item.getString("remuneration");
                                         String consignee = orderInfo.getString("consignee");
                                         JSONObject company = orderInfo.getJSONObject("company");
@@ -223,7 +224,7 @@ public class TabHistoryOrder extends BaseFragment {
                                     });*/
 
                                     adapter.notifyDataSetChanged();
-                                    listView.onRefreshComplete();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);

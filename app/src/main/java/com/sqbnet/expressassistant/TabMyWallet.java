@@ -175,6 +175,7 @@ public class TabMyWallet extends BaseFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        listView.onRefreshComplete();
                         if (response != null) {
                             Log.i("virgil", "TabMyWallet get History order");
                             Log.i("virgil", response.getCode());
@@ -231,7 +232,6 @@ public class TabMyWallet extends BaseFragment {
 
                                     setCount(mData.size());
                                     adapter.notifyDataSetChanged();
-                                    listView.onRefreshComplete();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);

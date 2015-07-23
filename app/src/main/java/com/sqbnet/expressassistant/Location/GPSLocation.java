@@ -78,7 +78,7 @@ public class GPSLocation {
         Log.i("virgil", "GPS update start");
         getCurrentLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, networkLocationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 70 * 1000, 0, networkLocationListener);
         locationManager.addGpsStatusListener(new GpsStatus.Listener() {
             @Override
             public void onGpsStatusChanged(int i) {
@@ -103,7 +103,7 @@ public class GPSLocation {
         option.setOpenGps(true);
         option.setCoorType("bd0911");
         option.setAddrType("all");
-        option.setScanSpan(70 * 1000);
+        option.setScanSpan(80 * 1000);
         BaiDuLocationService.getInst().getLocationClient().setLocOption(option);
         BaiDuLocationService.getInst().getLocationClient().registerLocationListener(bdLocationListener);
         BaiDuLocationService.getInst().getLocationClient().start();
@@ -113,10 +113,10 @@ public class GPSLocation {
         if(openGEPSettings()) {
             Log.i("virgil", "get GPS location");
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            /*if(location == null){
+            if(location == null){
                 Log.i("virgil", "get network location");
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }*/
+            }
             if(location != null) {
                 return new MyLocation(location.getLatitude(), location.getLongitude());
             }else {
@@ -170,6 +170,7 @@ public class GPSLocation {
                 }
             });
         }catch (Exception e){
+            Log.i("virgil", "-----sendLocationToServer Error------");
             Log.e("GPSLocation", "virgil", e);
             e.printStackTrace();
         }

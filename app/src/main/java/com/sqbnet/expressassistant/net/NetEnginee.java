@@ -1,6 +1,12 @@
 package com.sqbnet.expressassistant.net;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.sqbnet.expressassistant.MyApplication;
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -48,16 +54,31 @@ public class NetEnginee {
         return sInst;
     }
 
+    public boolean isNetworkConnected(){
+        ConnectivityManager cm = (ConnectivityManager) MyApplication.getInst().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        return ni != null && ni.isConnectedOrConnecting();
+    }
+
     public JSONObject HttpPost(String url_string, JSONObject jsonObject) {
         try{
             Log.i("virgil", url_string);
+            if(!isNetworkConnected()){
+                MyApplication.getInst().currentActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UtilHelper.showToast("网络未连接，请重试");
+                    }
+                });
+                return null;
+            }
             URL url = new URL(url_string);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setUseCaches(true);
-            conn.setConnectTimeout(1000);
+            conn.setUseCaches(false);
+            //conn.setConnectTimeout(1000);
             conn.setRequestMethod("POST");
 
             conn.setRequestProperty("Accept", "*/*");
@@ -95,6 +116,7 @@ public class NetEnginee {
             }
         }catch (Exception e){
             Log.e("NetEngiee", "virgil", e);
+            Log.i("virgil","------NetEnginee error-------");
             Log.i("virgil", e.getMessage());
             e.printStackTrace();
             return null;

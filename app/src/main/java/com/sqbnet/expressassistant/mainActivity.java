@@ -62,7 +62,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     //private boolean isHistoryDetailsVisible = false;
     private boolean isWaiting = false;
-    private boolean isChanged = false;
     private boolean isVisible = false;
 
     private Resources resources;
@@ -209,7 +208,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
             public void onResponse(SQBResponse response) {
-                if(response == null)
+                if (response == null)
                     return;
                 Log.i("virgil", "logout");
                 Log.i("virgil", response.getCode());
@@ -326,37 +325,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 tv_history_order.setTextColor(getResources().getColorStateList(R.color.font_black));
                 mTabBtnMyWallet.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
                 tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
-
-                if(isWaiting != isChanged) {
-                    isChanged = isWaiting;
-                    AsyncTask task = new AsyncTask() {
-                        @Override
-                        protected Object doInBackground(Object[] objects) {
-                            String user_id = UtilHelper.getSharedUserId();
-                            MyLocation location = GPSLocation.getInst().getCurrentLocation();
-                            String status = "0";
-                            if (isWaiting) {
-                                status = "1";
-                            }
-                            Log.i("virgil", "status:" + status);
-                            if (location != null) {
-                                SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLongitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
-                                    @Override
-                                    public void onResponse(SQBResponse response) {
-                                        if (response == null)
-                                            return;
-                                        Log.i("virgil", "updateUserStatus");
-                                        Log.i("virgil", response.getCode());
-                                        Log.i("virgil", response.getMsg());
-                                        Log.i("virgil", response.getData().toString());
-                                    }
-                                });
-                            }
-                            return null;
-                        }
-                    };
-                    task.execute();
-                }
                 break;
             case R.id.id_tab_btn_history_order:
 
@@ -398,11 +366,42 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         }
     }
 
+    private void setUserStatus(final boolean b_status){
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                String user_id = UtilHelper.getSharedUserId();
+                MyLocation location = GPSLocation.getInst().getCurrentLocation();
+                String status = "0";
+                if (b_status) {
+                    status = "1";
+                }
+                Log.i("virgil", "status:" + status);
+                if (location != null) {
+                    SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
+                        @Override
+                        public void onResponse(SQBResponse response) {
+                            if (response == null)
+                                return;
+                            Log.i("virgil", "updateUserStatus");
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
+                        }
+                    });
+                }
+                return null;
+            }
+        };
+        task.execute();
+    }
+
     /**
      * switch the status between waiting & rest
      */
     private void setStatus(boolean status) {
         isWaiting = status;
+        setUserStatus(status);
         Log.d("Status Change :", Boolean.toString(isWaiting));
         if (isWaiting) {
             mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_green));
@@ -412,7 +411,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             getAssignOrder();
 
             //Got Order !! for debug
-           // Intent intent = new Intent();
+            //Intent intent = new Intent();
             //intent.setClass(mainActivity.this, orderMainActivity.class);
 
             //startActivityForResult(intent, RequestCode.ORDER);

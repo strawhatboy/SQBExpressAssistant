@@ -555,4 +555,10 @@ public class UtilHelper {
 
         return "";
     }
+
+    public static void LogException(String methodName, Exception e){
+        Log.i("virgil", "--------Error--------");
+        Log.i("virgil", "method:" + methodName);
+        Log.i("virgil", e.getMessage());
+    }
 }

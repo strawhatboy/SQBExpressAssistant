@@ -1,8 +1,12 @@
 package com.sqbnet.expressassistant;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -13,6 +17,7 @@ import java.util.Properties;
 import java.util.TreeSet;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -22,6 +27,10 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import com.sqbnet.expressassistant.Provider.SQBProvider;
+import com.sqbnet.expressassistant.mode.SQBResponse;
+import com.sqbnet.expressassistant.mode.SQBResponseListener;
 
 public class CrashHandler implements UncaughtExceptionHandler {
 
@@ -63,9 +72,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @param ctx
      */
     public void init(Context ctx) {
-/*        mContext = ctx;
+        mContext = ctx;
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(this);*/
+        Thread.setDefaultUncaughtExceptionHandler(this);
+        sendPreviousReportsToServer();
     }
 
     /**
@@ -73,7 +83,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        Log.i("virgil","get exception");
+        Log.i("virgil", "-------get  uncaught exception-----------");
         if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
@@ -121,9 +131,13 @@ public class CrashHandler implements UncaughtExceptionHandler {
         //收集设备信息
         collectCrashDeviceInfo(mContext);
         //保存错误报告文件
-        saveCrashInfoToFile(ex);
+        String fileName = saveCrashInfoToFile(ex);
+        /*if(fileName != null){
+            SharedPreferences sharedPreferences = MyApplication.getInst().getSharedPreferences("CrashFile", Context.MODE_PRIVATE);
+            sharedPreferences.edit().putString("FileName", fileName);
+        }*/
         //发送错误报告到服务器
-        //sendCrashReportsToServer(mContext);
+        sendCrashReportsToServer(mContext);
         return true;
     }
 
@@ -151,6 +165,35 @@ public class CrashHandler implements UncaughtExceptionHandler {
     }
     private void postReport(File file) {
         // TODO 发送错误报告到服务器
+        try{
+            InputStream fileInputStream = new FileInputStream(file);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line = bufferedReader.readLine();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("\n\n------------Crash Report Start------------\n");
+            while (line != null){
+                stringBuilder.append(line).append("\n");
+                line = bufferedReader.readLine();
+            }
+            stringBuilder.append("------------Crash Report End------------\n");
+            String info = stringBuilder.toString();
+            SQBProvider.getInst().updateCrashReport(info, new SQBResponseListener() {
+                @Override
+                public void onResponse(SQBResponse response) {
+                    if (response != null) {
+                        Log.i("virgil", "CrashHandler psotReport");
+                        Log.i("virgil", response.getCode());
+                        Log.i("virgil", response.getMsg());
+                        Log.i("virgil", response.getData().toString());
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("CrashHandler", "virgil", e);
+            Log.i("virgil", e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -186,6 +229,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
         printWriter.close();
         mDeviceCrashInfo.put("EXEPTION", ex.getLocalizedMessage());
         mDeviceCrashInfo.put(STACK_TRACE, result);
+        Log.i("virgil", ex.getLocalizedMessage());
+        Log.i("virgil", result);
         try {
             //long timestamp = System.currentTimeMillis();
             Time t = new Time("GMT+8");
@@ -225,7 +270,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
         //使用反射来收集设备信息.在Build类中包含各种设备信息,
         //例如: 系统版本号,设备生产商 等帮助调试程序的有用信息
-        //具体信息请参考后面的截图
         Field[] fields = Build.class.getDeclaredFields();
         for (Field field : fields) {
             try {
@@ -238,6 +282,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 Log.e(TAG, "virgil", e);
             }
         }
+        mDeviceCrashInfo.put("VERSION.SDK", Build.VERSION.SDK_INT);
+        mDeviceCrashInfo.put("VERSION.RELEASE", Build.VERSION.RELEASE);
     }
 
 }

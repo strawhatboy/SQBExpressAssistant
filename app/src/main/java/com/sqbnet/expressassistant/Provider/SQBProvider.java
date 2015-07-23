@@ -42,6 +42,7 @@ public class SQBProvider {
     public static String URL_UPDATE_USER_STATUS = "updateUserStatus";
     public static String URL_USER_LOGOUT = "userLogout";
     public static String URL_GET_AREA = "getArea";
+    public static String URL_WRITE_INFO = "writeInfo";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -66,6 +67,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("login", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -78,6 +83,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("sendSMS", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -100,6 +109,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("userRegister", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
 
@@ -114,6 +127,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("uploadPhoto", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -126,6 +143,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, isRefreh);
         }catch (Exception e){
+            UtilHelper.LogException("getHistoryOrder", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -138,6 +159,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         } catch (Exception e) {
+            UtilHelper.LogException("getDispatchPerson", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -152,6 +177,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("updatePostition", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -164,6 +193,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("getAssignOrder", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -176,6 +209,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("getOrderInfo", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -189,6 +226,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("updateOrderStatus", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -202,6 +243,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("verifyCode", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -217,6 +262,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("updateUserStatus", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -229,6 +278,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("logout", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -242,6 +295,10 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
+            UtilHelper.LogException("giveupOrder", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -254,6 +311,26 @@ public class SQBProvider {
 
             doPost(url, jsonObject, listener, true);
         } catch (Exception e) {
+            UtilHelper.LogException("getArea", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCrashReport(String info, final SQBResponseListener listener){
+        try {
+            String url = BASE_URL + URL_WRITE_INFO;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("info", info);
+
+            doPost(url, jsonObject, listener, true);
+        } catch (Exception e) {
+            UtilHelper.LogException("updateCrashReport", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
             e.printStackTrace();
         }
     }
@@ -300,7 +377,11 @@ public class SQBProvider {
 
             httpThread.start();
         }catch (Exception e){
+            UtilHelper.LogException("doPost", e);
             e.printStackTrace();
+            if(listener != null){
+                listener.onResponse(null);
+            }
         }
     }
 }
