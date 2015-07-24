@@ -161,6 +161,64 @@ public class TabMyWallet extends BaseFragment {
             listView.startRefresh();
             refreshData(false);
         }
+
+        final String user_id = UtilHelper.getSharedUserId();
+        SQBProvider.getInst().getDispatchPerson(user_id, new SQBResponseListener() {
+            @Override
+            public void onResponse(final SQBResponse response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
+                        if (response == null) {
+                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                            return;
+                        }
+
+                        if (!response.getCode().equals("1000")) {
+                            Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                            return;
+                        }
+
+                        try {
+                            JSONObject userInfo = (JSONObject) response.getData();
+                            String realName = userInfo.getString("name");
+                            String regDate = UtilHelper.getDateString(userInfo.getInt("add_time"), "yyyy-MM-dd");
+                            String balance = userInfo.getString("balance");
+                            String un_reward = userInfo.getString("s_proceeds");
+                            String avatar = userInfo.getString("cardphoto");
+                            if(un_reward == "null"){
+                                un_reward = "0";
+                            }
+
+                            //tv_id.setText(user_id);
+                            tv_real_name.setText(realName);
+                            tv_reg_date.setText(regDate);
+                            tv_balance.setText(balance);
+                            tv_un_reward.setText(un_reward);
+                            if (avatar != null && avatar.length() > 0) {
+                                AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
+                                    @Override
+                                    public void onImageLoadResult(final Bitmap bitmap) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                civ_wallet_avatar.setImageBitmap(bitmap);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
+                            listView.onRefreshComplete();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void setCount(int count) {
@@ -169,6 +227,7 @@ public class TabMyWallet extends BaseFragment {
 
     public void refreshData(boolean isRefresh) {
         mData.clear();
+        setCount(mData.size());
         final String user_id = UtilHelper.getSharedUserId();
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
             @Override
@@ -184,8 +243,8 @@ public class TabMyWallet extends BaseFragment {
                             Log.i("virgil", response.getData().toString());
                             if (response.getCode().equals("1000")) {
                                 try {
-                                    JSONArray orders = (JSONArray)response.getData();
-                                    for(int i=orders.length() -1; i >= 0; i--){
+                                    JSONArray orders = (JSONArray) response.getData();
+                                    for (int i = orders.length() - 1; i >= 0; i--) {
                                         JSONObject item = orders.getJSONObject(i);
                                         Log.i("virgil", item.toString());
                                         JSONObject orderInfo = item.getJSONObject("orderInfo");
@@ -247,62 +306,5 @@ public class TabMyWallet extends BaseFragment {
                 });
             }
         }, isRefresh);
-
-        SQBProvider.getInst().getDispatchPerson(user_id, new SQBResponseListener() {
-            @Override
-            public void onResponse(final SQBResponse response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
-                        if (response == null) {
-                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
-                            return;
-                        }
-
-                        if (!response.getCode().equals("1000")) {
-                            Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
-                            return;
-                        }
-
-                        try {
-                            JSONObject userInfo = (JSONObject) response.getData();
-                            String realName = userInfo.getString("name");
-                            String regDate = UtilHelper.getDateString(userInfo.getInt("add_time"), "yyyy-MM-dd");
-                            String balance = userInfo.getString("balance");
-                            String un_reward = userInfo.getString("s_proceeds");
-                            String avatar = userInfo.getString("cardphoto");
-                            if(un_reward == "null"){
-                                un_reward = "0";
-                            }
-
-                            //tv_id.setText(user_id);
-                            tv_real_name.setText(realName);
-                            tv_reg_date.setText(regDate);
-                            tv_balance.setText(balance);
-                            tv_un_reward.setText(un_reward);
-                            if (avatar != null && avatar.length() > 0) {
-                                AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
-                                    @Override
-                                    public void onImageLoadResult(final Bitmap bitmap) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                civ_wallet_avatar.setImageBitmap(bitmap);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-
-                            listView.onRefreshComplete();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
-                        }
-                    }
-                });
-            }
-        });
     }
 }

@@ -255,4 +255,10 @@ public class CircleImageView extends ImageView {
     public void setExampleDrawable(Drawable exampleDrawable) {
         mExampleDrawable = exampleDrawable;
     }
+
+    @Override
+    public void setImageBitmap(Bitmap bitmap) {
+        super.setImageBitmap(bitmap);
+        postInvalidate();
+    }
 }
