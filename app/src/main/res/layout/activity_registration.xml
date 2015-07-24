@@ -153,24 +153,57 @@
                             android:layout_weight="1"
                             android:background="@drawable/underline"
                             android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
 
-                            <TextView
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@string/registration_name"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp"/>
+
+                                <EditText
+                                    android:id="@+id/et_registration_real_name"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:background="@null"
+                                    android:inputType="textPersonName"
+                                    android:textSize="12sp"
+                                    />
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="@string/registration_name"
-                                android:textColor="@color/font_black"
-                                android:textSize="14sp"/>
+                                android:layout_height="fill_parent"
+                                android:layout_marginLeft="10dp"
+                                android:orientation="horizontal">
 
-                            <EditText
-                                android:id="@+id/et_registration_real_name"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:background="@null"
-                                android:inputType="textPersonName"
-                                android:textSize="12sp"
-                                />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="@string/registration_gender"
+                                    android:textColor="@color/font_black"
+                                    android:textSize="14sp"/>
+
+
+                                <Button
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_width="60dp"
+                                    android:id="@+id/sp_registration_gender"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/button_grey"
+                                    android:drawableRight="@drawable/dropdown_button"
+                                    android:paddingRight="5dp"
+                                    android:textColor="@color/font_white"/>
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout

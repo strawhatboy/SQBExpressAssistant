@@ -114,4 +114,8 @@
     <string name="registration_district_province">Province</string>
     <string name="registration_district_city">City</string>
     <string name="registration_district_district">District</string>
+    <string name="registration_gender">Gender:</string>
+    <string name="registration_select_gender">Select Gender</string>
+    <string name="gender_male">male</string>
+    <string name="gender_female">Female</string>
 </resources>

@@ -114,7 +114,7 @@ public class TabHistoryOrder extends BaseFragment {
                 }) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
+                View view = convertView == null ? super.getView(position, convertView, parent) : convertView;
 
                 //TODO: set visibility for 'done' according to the real status from server
                 // rotate 'Done'

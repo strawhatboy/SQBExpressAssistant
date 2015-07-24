@@ -100,7 +100,7 @@ public class CustomXGMsgReceiver extends XGPushBaseReceiver {
                         .setSmallIcon(R.drawable.logo_icon)
                         .setTicker("您有新的配送单，请尽快确认")
                         .setContentTitle("您有新的配送单号" + order_id)
-                        .setContentText("请在5分钟内确认")
+                        .setContentText("请在2分钟内确认")
                         .setContentIntent(pendingIntent)
                         .getNotification();
                 notification.defaults |= Notification.DEFAULT_VIBRATE;

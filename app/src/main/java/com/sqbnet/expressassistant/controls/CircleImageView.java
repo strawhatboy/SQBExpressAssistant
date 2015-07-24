@@ -31,6 +31,10 @@ public class CircleImageView extends ImageView {
     private float mTextWidth;
     private float mTextHeight;
     Paint paint = new Paint();
+    private Bitmap sourceBitmap;
+    private Bitmap targetBitmap;
+    private Rect mRectSrc;
+    private Rect mRectDest;
 
     public CircleImageView(Context context) {
         super(context);
@@ -115,24 +119,33 @@ public class CircleImageView extends ImageView {
         Drawable drawable = getDrawable();
         if (null != drawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            Bitmap b = getCircleBitmap(bitmap, 14);
-            final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight());
+            if (bitmap != sourceBitmap) {
+                sourceBitmap = bitmap;
+                Bitmap b = getCircleBitmap(bitmap, 14);
+                targetBitmap = b;
+                final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight());
 
-            double ratio = (double)b.getWidth() / (double)b.getHeight();
-            double ratioDest = (double)getWidth() / (double)getHeight();
-            final Rect rectDest;
-            if (ratio > ratioDest) {
-                int height = new Double(getWidth() / ratio).intValue();
-                int fixValue = (getHeight() - height) / 2;
-                rectDest = new Rect(0, fixValue, getWidth(), height + fixValue);
+                double ratio = (double) b.getWidth() / (double) b.getHeight();
+                double ratioDest = (double) getWidth() / (double) getHeight();
+                final Rect rectDest;
+                if (ratio > ratioDest) {
+                    int height = new Double(getWidth() / ratio).intValue();
+                    int fixValue = (getHeight() - height) / 2;
+                    rectDest = new Rect(0, fixValue, getWidth(), height + fixValue);
+                } else {
+                    int width = new Double(getHeight() * ratio).intValue();
+                    int fixValue = (getWidth() - width) / 2;
+                    rectDest = new Rect(fixValue, 0, width + fixValue, getHeight());
+                }
+
+                mRectSrc = rectSrc;
+                mRectDest = rectDest;
+
+                paint.reset();
+                canvas.drawBitmap(b, rectSrc, rectDest, paint);
             } else {
-                int width = new Double(getHeight() * ratio).intValue();
-                int fixValue = (getWidth() - width) / 2;
-                rectDest = new Rect(fixValue, 0, width + fixValue, getHeight());
+                canvas.drawBitmap(targetBitmap, mRectSrc, mRectDest, paint);
             }
-
-            paint.reset();
-            canvas.drawBitmap(b, rectSrc, rectDest, paint);
 
         } else {
             super.onDraw(canvas);

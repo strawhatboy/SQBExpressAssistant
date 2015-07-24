@@ -79,6 +79,7 @@ public class registrationActivity extends BaseActivity {
     private Button sp_province;
     private Button sp_city;
     private Button sp_district;
+    private Button sp_gender;
 
     private Bitmap photo;
     private String photoPath;
@@ -89,15 +90,18 @@ public class registrationActivity extends BaseActivity {
     private List<Map<String, Object>> mProvinces;
     private List<Map<String, Object>> mCities;
     private List<Map<String, Object>> mDistricts;
+    private List<Map<String, Object>> mGenders;
     private Map<String, Object> mSelectedProvince;
     private Map<String, Object> mSelectedCity;
     private Map<String, Object> mSelectedDistrict;
+    private Map<String, Object> mSelectedGender;
     private Map<Integer, List<Integer>> mDistrictCache;
     private Map<Integer, String> mDistrictMapCache;
 
     private CustomSelectionPopUp mProvincePopup;
     private CustomSelectionPopUp mCityPopup;
     private CustomSelectionPopUp mDistrictPopup;
+    private CustomSelectionPopUp mGenderPopup;
 
 
     private SimpleAdapter provinceAdapter;
@@ -141,6 +145,10 @@ public class registrationActivity extends BaseActivity {
                 }
                 if (et_real_name.length() == 0) {
                     showToast("真实姓名不能为空");
+                    return;
+                }
+                if (mSelectedGender == null) {
+                    showToast("性别不能为空");
                     return;
                 }
                 if (et_id.length() == 0) {
@@ -413,6 +421,17 @@ public class registrationActivity extends BaseActivity {
         sp_province = (Button) findViewById(R.id.sp_registration_province);
         sp_city = (Button) findViewById(R.id.sp_registration_city);
         sp_district = (Button) findViewById(R.id.sp_registration_district);
+        sp_gender = (Button) findViewById(R.id.sp_registration_gender);
+
+        mGenders = new ArrayList<Map<String, Object>>();
+        Map<String, Object> gender_male = new HashMap<String, Object>();
+        gender_male.put("id", 1);
+        gender_male.put("name", getResources().getString(R.string.gender_male));
+        Map<String, Object> gender_female = new HashMap<String, Object>();
+        gender_female.put("id", 2);
+        gender_female.put("name", getResources().getString(R.string.gender_female));
+        mGenders.add(gender_male);
+        mGenders.add(gender_female);
 
         /*sp_province.setPromptId(R.string.registration_province);
         sp_city.setPromptId(R.string.registration_city);
@@ -669,6 +688,26 @@ public class registrationActivity extends BaseActivity {
             }
         });
 
+        mGenderPopup = new CustomSelectionPopUp(registrationActivity.this, getResources().getString(R.string.registration_select_gender), mGenders, new CustomSelectionPopUp.ICustomSelectionPopUpSelected() {
+            @Override
+            public void selected(Map<String, Object> data) {
+                if (data == null) {
+                    mSelectedGender = null;
+                    sp_gender.setText("");
+                    return;
+                }
+
+                mSelectedGender = data;
+                sp_gender.setText((String) data.get("name"));
+            }
+        });
+
+        sp_gender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGenderPopup.show();
+            }
+        });
     }
 
     @Override
