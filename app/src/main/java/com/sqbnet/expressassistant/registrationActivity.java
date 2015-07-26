@@ -228,11 +228,12 @@ public class registrationActivity extends BaseActivity {
                                         String province = mSelectedProvince != null ? mSelectedProvince.get("id").toString() : "";
                                         String city = mSelectedCity != null ? mSelectedCity.get("id").toString() : "";
                                         String district = mSelectedDistrict != null ? mSelectedDistrict.get("id").toString() : "";
+                                        String gender = mSelectedGender != null ? mSelectedGender.get("id").toString() : "";
 
                                         Log.i("virgil", "province:" + province);
                                         Log.i("virgil", "city:" + city);
                                         Log.i("virgil", "district:" + district);
-                                        SQBProvider.getInst().userRegister(userName, password, realName, idCard, photoID, phone, addr, phoneCode, province, city, district, new SQBResponseListener() {
+                                        SQBProvider.getInst().userRegister(userName, password, realName, idCard, photoID, phone, addr, phoneCode, province, city, district, gender, new SQBResponseListener() {
                                             @Override
                                             public void onResponse(final SQBResponse response) {
                                                 if(response == null){

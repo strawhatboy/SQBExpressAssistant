@@ -137,7 +137,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             sharedPreferences.edit().putString("FileName", fileName);
         }*/
         //发送错误报告到服务器
-        sendCrashReportsToServer(mContext);
+        //sendCrashReportsToServer(mContext);
         return true;
     }
 
@@ -171,7 +171,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line = bufferedReader.readLine();
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("\n\n------------Crash Report Start------------\n");
+            stringBuilder.append("\n------------Crash Report Start------------\n");
+            stringBuilder.append("crash receive date:" + getDate());
             while (line != null){
                 stringBuilder.append(line).append("\n");
                 line = bufferedReader.readLine();
@@ -232,12 +233,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         Log.i("virgil", ex.getLocalizedMessage());
         Log.i("virgil", result);
         try {
-            //long timestamp = System.currentTimeMillis();
-            Time t = new Time("GMT+8");
-            t.setToNow(); // 取得系统时间
-            int date = t.year * 10000 + t.month * 100 + t.monthDay;
-            int time = t.hour * 10000 + t.minute * 100 + t.second;
-            String fileName = "crash-" + date + "-" + time + CRASH_REPORTER_EXTENSION;
+            String fileName = "crash-" + getDate() + CRASH_REPORTER_EXTENSION;
             FileOutputStream trace = mContext.openFileOutput(fileName,
                     Context.MODE_PRIVATE);
             mDeviceCrashInfo.store(trace, "");
@@ -248,6 +244,14 @@ public class CrashHandler implements UncaughtExceptionHandler {
             Log.e(TAG, "virgil", e);
         }
         return null;
+    }
+
+    private String getDate(){
+        Time t = new Time("GMT+8");
+        t.setToNow(); // 取得系统时间
+        int date = t.year * 10000 + t.month * 100 + t.monthDay;
+        int time = t.hour * 10000 + t.minute * 100 + t.second;
+        return date + "-" + time;
     }
 
     /**

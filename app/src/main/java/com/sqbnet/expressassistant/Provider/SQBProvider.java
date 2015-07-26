@@ -91,7 +91,7 @@ public class SQBProvider {
         }
     }
 
-    public void userRegister(String username, String password, String name, String card, String cardphoto, String phone, String address, String salt, String province, String city, String district,  final SQBResponseListener listener){
+    public void userRegister(String username, String password, String name, String card, String cardphoto, String phone, String address, String salt, String province, String city, String district, String sex,  final SQBResponseListener listener){
         try{
             String url = BASE_URL + URL_REGISTER;
             JSONObject jsonObject = new JSONObject();
@@ -106,6 +106,7 @@ public class SQBProvider {
             jsonObject.put("province", province);
             jsonObject.put("city", city);
             jsonObject.put("district", district);
+            jsonObject.put("sex", sex);
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){
