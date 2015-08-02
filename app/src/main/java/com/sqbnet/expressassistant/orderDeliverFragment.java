@@ -26,6 +26,7 @@ import com.sqbnet.expressassistant.utils.UtilHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class orderDeliverFragment extends OrderBaseFragment {
     private TextView tv_customer_name;
     private TextView tv_customer_address;
     private TextView tv_customer_phone;
+    private TextView tv_order_id;
 
     private LinearLayout ly_goto;
 
@@ -80,6 +82,7 @@ public class orderDeliverFragment extends OrderBaseFragment {
         tv_customer_phone = (TextView) view.findViewById(R.id.tv_order_customer_phone);
         tv_distance = (TextView) view.findViewById(R.id.tv_order_distance);
         civ_customer_image = (CircleImageView) view.findViewById(R.id.civ_order_customer_image);
+        tv_order_id = (TextView) view.findViewById(R.id.tv_order_id);
 
         listView = (ListView) view.findViewById(R.id.lv_order_deliver_details);
 
@@ -176,6 +179,8 @@ public class orderDeliverFragment extends OrderBaseFragment {
 
                                 tv_good_count.setText(String.valueOf(goods.length()));
 
+                                tv_order_id.setText(mOrderId);
+
                                 if(customer_pic.startsWith("http")) {
                                     AsyncImageLoader.getInst().loadBitmap(customer_pic, new AsyncImageLoader.ImageLoadResultLister() {
                                         @Override
@@ -212,8 +217,6 @@ public class orderDeliverFragment extends OrderBaseFragment {
                                         }
                                     });
                                 }
-
-
                             } catch (Exception e) {
                                 Log.e("orderDeliverFragment", "virgil", e);
                                 e.printStackTrace();

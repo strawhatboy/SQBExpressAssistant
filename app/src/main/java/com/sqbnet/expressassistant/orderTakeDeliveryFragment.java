@@ -49,6 +49,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
     private TextView tv_company_address;
     private TextView tv_company_phone;
     private CircleImageView civ_company_image;
+    private TextView tv_order_id;
 
     private LinearLayout ly_goto;
 
@@ -142,6 +143,8 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                         }
                                     });
                                 }
+
+                                tv_order_id.setText(mOrderId);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -200,6 +203,8 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
         tv_company_phone = (TextView) view.findViewById(R.id.tv_order_company_phone);
         civ_company_image = (CircleImageView) view.findViewById(R.id.civ_order_company_image);
         ly_goto = (LinearLayout) view.findViewById(R.id.ly_order_take_deliver_goto);
+
+        tv_order_id = (TextView) view.findViewById(R.id.tv_order_id);
 
         listView = (ListView) view.findViewById(R.id.lv_order_take_details);
         mData = new ArrayList<Map<String, Object>>();
