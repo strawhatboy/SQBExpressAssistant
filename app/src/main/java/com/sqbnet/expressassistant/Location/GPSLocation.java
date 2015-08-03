@@ -77,7 +77,7 @@ public class GPSLocation {
     public void start(){
         Log.i("virgil", "GPS update start");
         getCurrentLocation();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
+        /*locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 70 * 1000, 0, networkLocationListener);
         locationManager.addGpsStatusListener(new GpsStatus.Listener() {
             @Override
@@ -94,7 +94,7 @@ public class GPSLocation {
                         break;
                 }
             }
-        });
+        });*/
        startBaiduLocation();
     }
 
@@ -103,7 +103,7 @@ public class GPSLocation {
         option.setOpenGps(true);
         option.setCoorType("bd0911");
         option.setAddrType("all");
-        option.setScanSpan(80 * 1000);
+        option.setScanSpan(120 * 1000);
         BaiDuLocationService.getInst().getLocationClient().setLocOption(option);
         BaiDuLocationService.getInst().getLocationClient().registerLocationListener(bdLocationListener);
         BaiDuLocationService.getInst().getLocationClient().start();

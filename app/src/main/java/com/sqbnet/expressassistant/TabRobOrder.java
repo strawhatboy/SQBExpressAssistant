@@ -208,7 +208,9 @@ public class TabRobOrder extends Fragment {
     }
 
     private void stopTimer() {
-        timer.cancel();
+        if(timer != null) {
+            timer.cancel();
+        }
     }
 
     private void setTimerSeconds(int seconds) {

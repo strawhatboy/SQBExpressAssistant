@@ -12,7 +12,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Properties;
 import java.util.TreeSet;
 
@@ -165,6 +167,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
         if(SharedPreferenceHelper.getInst().getBooleanKey(HAS_CRASH_REPORT, false)){
             String content = SharedPreferenceHelper.getInst().getStringkey(CRASH_REPORT, "");
             postReport(content);
+            SharedPreferenceHelper.getInst().setKey(HAS_CRASH_REPORT, false);
+            SharedPreferenceHelper.getInst().setKey(CRASH_REPORT, "");
         }
         String[] crFiles = getCrashReportFiles(ctx);
         if (crFiles != null && crFiles.length > 0) {
@@ -276,7 +280,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
     private void saveCrashInfoToPreferenceKey(Thread thread, Throwable e){
         StringBuilder content = new StringBuilder();
-        content.append("Crash Report Date:" + getDate() + "\n");
+        content.append("\n\n" + "--------Crash Report Date:" + getDate() + "\n");
         content.append("Thread Info: Id=" + thread.getId() + ". Name=" + thread.getName() + "\n");
         do{
             content.append(e.toString() + "\n");
@@ -286,18 +290,16 @@ public class CrashHandler implements UncaughtExceptionHandler {
                     content.append(st.toString() + "\n");
                 }
             }
-            content.append("\n");
+            content.append("--------Crash Report End\n");
         }while ((e = e.getCause()) != null);
         SharedPreferenceHelper.getInst().setKey(HAS_CRASH_REPORT, true);
         SharedPreferenceHelper.getInst().setKey(CRASH_REPORT, content.toString());
     }
 
     private String getDate(){
-        Time t = new Time("GMT+8");
-        t.setToNow(); // 取得系统时间
-        int date = t.year * 10000 + t.month * 100 + t.monthDay;
-        int time = t.hour * 10000 + t.minute * 100 + t.second;
-        return date + "-" + time;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String date = sdf.format(new Date(System.currentTimeMillis()));
+        return date;
     }
 
     /**

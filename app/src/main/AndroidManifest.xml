@@ -123,6 +123,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receiver.NetCheckReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".mainActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
