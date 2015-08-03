@@ -58,7 +58,6 @@ public class orderConfirmFragment extends OrderBaseFragment {
     private LinearLayout ly_from_goto;
     private LinearLayout ly_to_goto;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,11 +73,11 @@ public class orderConfirmFragment extends OrderBaseFragment {
 
     @Override
     void loadData() {
-        if(mOrderId == null){
+        if(mOrderContext.getOrderId() == null){
             return;
         }
 
-        SQBProvider.getInst().getOrderInfo(mOrderId, new SQBResponseListener() {
+        SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -193,7 +192,8 @@ public class orderConfirmFragment extends OrderBaseFragment {
                                                             latitude,
                                                             longitude);
                                                     Log.d("orderConfirmFragment", "got distance: " + distance);
-                                                    tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
+                                                    tv_distance.setText(String.format("%.2f", distance / 1000.0) + getResources().getString(R.string.history_list_km));
+                                                    mOrderContext.setDistance(distance);
                                                 }
                                             }
                                         });
@@ -262,7 +262,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
             public void onClick(View view) {
                 if (delegate != null) {
                     // add rest to server to confirm the order
-                    SQBProvider.getInst().updateOrderStatus(mOrderId, CustomConstants.ORDER_ACCEPT, new SQBResponseListener() {
+                    SQBProvider.getInst().updateOrderStatus(mOrderContext.getOrderId(), CustomConstants.ORDER_ACCEPT, (int)mOrderContext.getDistance(), new SQBResponseListener() {
                         @Override
                         public void onResponse(final SQBResponse response) {
                             if (response == null) {
@@ -290,7 +290,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 if (delegate != null) {
-                    SQBProvider.getInst().giveupOrder(mUserId, mOrderId, new SQBResponseListener() {
+                    SQBProvider.getInst().giveupOrder(mOrderContext.getUserId(), mOrderContext.getOrderId(), new SQBResponseListener() {
                         @Override
                         public void onResponse(SQBResponse response) {
                             if(response == null)

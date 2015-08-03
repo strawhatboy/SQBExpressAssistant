@@ -127,11 +127,11 @@ public class orderDeliverFragment extends OrderBaseFragment {
 
     @Override
     void loadData() {
-        if(mOrderId == null){
+        if(mOrderContext.getOrderId() == null){
             return;
         }
 
-        SQBProvider.getInst().getOrderInfo(mOrderId, new SQBResponseListener() {
+        SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -179,7 +179,7 @@ public class orderDeliverFragment extends OrderBaseFragment {
 
                                 tv_good_count.setText(String.valueOf(goods.length()));
 
-                                tv_order_id.setText(mOrderId);
+                                tv_order_id.setText(mOrderContext.getOrderId());
 
                                 if(customer_pic.startsWith("http")) {
                                     AsyncImageLoader.getInst().loadBitmap(customer_pic, new AsyncImageLoader.ImageLoadResultLister() {

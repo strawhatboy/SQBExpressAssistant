@@ -72,11 +72,11 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
 
     @Override
     void loadData() {
-        if(mOrderId == null){
+        if(mOrderContext.getOrderId() == null){
             return;
         }
 
-        SQBProvider.getInst().getOrderInfo(mOrderId, new SQBResponseListener() {
+        SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -144,7 +144,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                     });
                                 }
 
-                                tv_order_id.setText(mOrderId);
+                                tv_order_id.setText(mOrderContext.getOrderId());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -169,7 +169,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 if (delegate != null) {
-                    SQBProvider.getInst().updateOrderStatus(mOrderId, CustomConstants.ORDER_SHIPPING, new SQBResponseListener() {
+                    SQBProvider.getInst().updateOrderStatus(mOrderContext.getOrderId(), CustomConstants.ORDER_SHIPPING, (int) mOrderContext.getDistance(), new SQBResponseListener() {
                         @Override
                         public void onResponse(final SQBResponse response) {
                             getActivity().runOnUiThread(new Runnable() {

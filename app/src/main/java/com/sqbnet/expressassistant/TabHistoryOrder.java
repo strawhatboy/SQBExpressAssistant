@@ -193,12 +193,21 @@ public class TabHistoryOrder extends BaseFragment {
                                         JSONObject company = orderInfo.getJSONObject("company");
                                         String company_name = company.getString("name");
                                         String company_pic = company.has("pic") ? company.getString("pic") : "";
+                                        Object o_distance = item.get("distance");
+                                        Double distance = -1d;
+                                        if (o_distance != null) {
+                                            try {
+                                                distance = item.getDouble("distance");
+                                            } catch (Exception e) {
+                                                distance = -1d;
+                                            }
+                                        }
 
                                         Map<String, Object> data = new HashMap<String, Object>();
                                         data.put("from_avatar", company_pic);
                                         data.put("from_name", company_name);
                                         data.put("time", date);
-                                        data.put("distance", "1.36");
+                                        data.put("distance", distance > 0 ? String.format("%.2f", distance / 1000.0) : "- - -");
                                         data.put("reward", remuneration);
                                         data.put("to_name", consignee);
                                         data.put("to_avatar", orderInfo.has("headimgurl") ? orderInfo.getString("headimgurl") : "");
@@ -206,6 +215,12 @@ public class TabHistoryOrder extends BaseFragment {
                                         data.put("jsonObject", item);
 
                                         mData.add(data);
+                                    }
+
+                                    if (mData.size() != orders.length()) {
+                                        Log.e("TabHistoryOrder", "Data count is not right!!! proceed: " + mData.size() + ", get: " + orders.length());
+                                    } else {
+                                        Log.d("TabHistoryOrder", "Data count is right!!! proceed: " + mData.size() + ", get: " + orders.length());
                                     }
 
                                   /*  Collections.sort(mData, new Comparator<Map<String, Object>>() {

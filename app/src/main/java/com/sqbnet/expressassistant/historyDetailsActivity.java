@@ -284,6 +284,18 @@ public class historyDetailsActivity extends BaseActivity {
             if(status == 0){
                 tv_done.setVisibility(View.GONE);
             }
+
+            Object o_distance = data.get("distance");
+            Double distance = -1d;
+            if (o_distance != null) {
+                try {
+                    distance = data.getDouble("distance");
+                } catch (Exception e) {
+                    distance = -1d;
+                }
+            }
+
+            mDistance.setText((distance > 0 ? String.format("%.2f", distance / 1000.0) : "- - -") + getResources().getString(R.string.history_list_km));
         }catch (Exception e){
             e.printStackTrace();
         }

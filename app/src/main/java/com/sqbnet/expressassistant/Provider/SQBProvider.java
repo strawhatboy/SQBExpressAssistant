@@ -218,12 +218,13 @@ public class SQBProvider {
         }
     }
 
-    public void updateOrderStatus(String order_id, String status, final SQBResponseListener listener){
+    public void updateOrderStatus(String order_id, String status, int distance, final SQBResponseListener listener){
         try{
             String url = BASE_URL + URL_UPDATE_STATUS;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("order_id", order_id);
             jsonObject.put("status", status);
+            jsonObject.put("distance", Integer.toString(distance));
 
             doPost(url, jsonObject, listener, true);
         }catch (Exception e){

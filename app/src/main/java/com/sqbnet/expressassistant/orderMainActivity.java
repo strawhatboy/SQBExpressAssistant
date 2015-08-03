@@ -56,9 +56,12 @@ public class orderMainActivity extends FragmentActivity {
 
     private List<List<View>> processbarElements = new ArrayList<List<View>>();
 
-    private String mOrderId;
-    private String mStatus;
-    private String mUserId;
+    private OrderContext mOrderContext;
+
+    // private String mOrderId;
+    // private String mStatus;
+    // private String mUserId;
+    // private Double mDistance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,7 @@ public class orderMainActivity extends FragmentActivity {
                 if (currentPage < fragments.size() - 1) {
                     int index = currentPage + 1;
                     viewPager.setCurrentItem(index);
-                    ((IWizardPage)fragments.get(index)).setParameters(mUserId, mOrderId, mStatus);
+                    ((IWizardPage)fragments.get(index)).setOrderContext(mOrderContext);
                     ((OrderBaseFragment)fragments.get(index)).loadData();
                 }
 
@@ -141,15 +144,16 @@ public class orderMainActivity extends FragmentActivity {
         };
         viewPager.setAdapter(fragmentPagerAdapter);
 
+        mOrderContext = new OrderContext();
         Intent intent = getIntent();
-        mUserId = intent.getStringExtra("user_id");
-        mOrderId = intent.getStringExtra("order_id");
-        mStatus = intent.getStringExtra("status");
+        mOrderContext.setUserId(intent.getStringExtra("user_id"));
+        mOrderContext.setOrderId(intent.getStringExtra("order_id"));
+        mOrderContext.setStatus(intent.getStringExtra("status"));
         final String from = intent.getStringExtra("from");
 
 
         if(from.equals("XG")) {
-            SQBProvider.getInst().getOrderInfo(mOrderId, new SQBResponseListener() {
+            SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
                 @Override
                 public void onResponse(SQBResponse response) {
                     Log.i("virgil", "order confirm");
@@ -182,7 +186,7 @@ public class orderMainActivity extends FragmentActivity {
                             }
 
 
-                            SQBProvider.getInst().getAssignOrder(mUserId, new SQBResponseListener() {
+                            SQBProvider.getInst().getAssignOrder(mOrderContext.getUserId(), new SQBResponseListener() {
                                 @Override
                                 public void onResponse(SQBResponse response) {
                                     Log.i("virgil", "getAssignOrder");
@@ -193,21 +197,21 @@ public class orderMainActivity extends FragmentActivity {
                                     if (response.getCode().equals("1000")) {
                                         JSONObject result = (JSONObject) response.getData();
                                         try{
-                                            mStatus = result.getString("d_status");
+                                            mOrderContext.setStatus(result.getString("d_status"));
                                             runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    if (mStatus.equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
-                                                        _orderGotFragment.setParameters(mUserId, mOrderId, mStatus);
-                                                        _orderConfirmFragment.setParameters(mUserId, mOrderId, mStatus);
-                                                    } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
-                                                        _orderTakeDeliveryFragment.setParameters(mUserId, mOrderId, mStatus);
+                                                    if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
+                                                        _orderGotFragment.setOrderContext(mOrderContext);
+                                                        _orderConfirmFragment.setOrderContext(mOrderContext);
+                                                    } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
+                                                        _orderTakeDeliveryFragment.setOrderContext(mOrderContext);
                                                         viewPager.setCurrentItem(2);
                                                         _orderTakeDeliveryFragment.loadData();
                                                         setProgressBarIndex(0, true);
                                                         setProgressBarIndex(1, true);
-                                                    } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mStatus.equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
-                                                        _orderDeliverFragment.setParameters(mUserId, mOrderId, mStatus);
+                                                    } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
+                                                        _orderDeliverFragment.setOrderContext(mOrderContext);
                                                         viewPager.setCurrentItem(3);
                                                         _orderDeliverFragment.loadData();
                                                         setProgressBarIndex(0, true);
@@ -247,17 +251,17 @@ public class orderMainActivity extends FragmentActivity {
                 }
             });
         }else{
-            if (mStatus.equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
-                _orderGotFragment.setParameters(mUserId, mOrderId, mStatus);
-                _orderConfirmFragment.setParameters(mUserId, mOrderId, mStatus);
-            } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
-                _orderTakeDeliveryFragment.setParameters(mUserId, mOrderId, mStatus);
+            if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
+                _orderGotFragment.setOrderContext(mOrderContext);
+                _orderConfirmFragment.setOrderContext(mOrderContext);
+            } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
+                _orderTakeDeliveryFragment.setOrderContext(mOrderContext);
                 viewPager.setCurrentItem(2);
                 _orderTakeDeliveryFragment.loadData();
                 setProgressBarIndex(0, true);
                 setProgressBarIndex(1, true);
-            } else if (mStatus.equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mStatus.equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
-                _orderDeliverFragment.setParameters(mUserId, mOrderId, mStatus);
+            } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
+                _orderDeliverFragment.setOrderContext(mOrderContext);
                 viewPager.setCurrentItem(3);
                 _orderDeliverFragment.loadData();
                 setProgressBarIndex(0, true);
@@ -327,7 +331,7 @@ public class orderMainActivity extends FragmentActivity {
 
     public interface IWizardPage {
         void setNextDelegate(IWizardPageDelegate delegate);
-        void setParameters(String user_id, String order_id, String status);
+        void setOrderContext(OrderContext orderContext);
     }
 
     private void setBackgroudLight() {

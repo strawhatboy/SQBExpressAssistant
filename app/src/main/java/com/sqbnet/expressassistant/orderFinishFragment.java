@@ -76,7 +76,7 @@ public class orderFinishFragment extends OrderBaseFragment {
             public void onClick(View view) {
                 if (delegate != null) {
                     String code = et_delivery_code.getText().toString();
-                    SQBProvider.getInst().verifyCode(mOrderId, code, new SQBResponseListener() {
+                    SQBProvider.getInst().verifyCode(mOrderContext.getOrderId(), code, new SQBResponseListener() {
                         @Override
                         public void onResponse(SQBResponse response) {
                             if (response == null) {
@@ -91,7 +91,7 @@ public class orderFinishFragment extends OrderBaseFragment {
 
                             if (response.getCode().equals("1000")) {
                                 // add rest to server to confirm the order
-                                SQBProvider.getInst().updateOrderStatus(mOrderId, CustomConstants.ORDER_ARRIVED, new SQBResponseListener() {
+                                SQBProvider.getInst().updateOrderStatus(mOrderContext.getOrderId(), CustomConstants.ORDER_ARRIVED, (int) mOrderContext.getDistance(), new SQBResponseListener() {
                                     @Override
                                     public void onResponse(final SQBResponse response) {
                                         if (response == null) {

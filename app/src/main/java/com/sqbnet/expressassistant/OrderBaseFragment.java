@@ -8,9 +8,7 @@ import org.json.JSONObject;
 public abstract class OrderBaseFragment extends android.support.v4.app.Fragment implements orderMainActivity.IWizardPage {
 
     protected orderMainActivity.IWizardPageDelegate delegate;
-    protected String mUserId;
-    protected String mOrderId;
-    protected String mStatus;
+    protected OrderContext mOrderContext;
 
     protected JSONObject mJSONData;
 
@@ -20,10 +18,8 @@ public abstract class OrderBaseFragment extends android.support.v4.app.Fragment 
     }
 
     @Override
-    public void setParameters(String user_id, String order_id, String status) {
-        mUserId = user_id;
-        mOrderId = order_id;
-        mStatus = status;
+    public void setOrderContext(OrderContext orderContext) {
+        mOrderContext = orderContext;
     }
 
     abstract void loadData();
