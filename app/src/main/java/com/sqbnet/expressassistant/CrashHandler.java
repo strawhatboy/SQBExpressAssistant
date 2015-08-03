@@ -21,7 +21,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Looper;
 import android.text.format.Time;
 import android.util.Log;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
+import com.sqbnet.expressassistant.utils.SharedPreferenceHelper;
 
 public class CrashHandler implements UncaughtExceptionHandler {
 
@@ -40,6 +43,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * 在Release状态下关闭以提示程序性能
      * */
     public static final boolean DEBUG = false;
+    public static final String HAS_CRASH_REPORT = "has_crash_report";
+    public static final String CRASH_REPORT = "crash_report";
     /** 系统默认的UncaughtException处理类 */
     private Thread.UncaughtExceptionHandler mDefaultHandler;
     /** CrashHandler实例 */
@@ -84,7 +89,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         Log.i("virgil", "-------get  uncaught exception-----------");
-        if (!handleException(ex) && mDefaultHandler != null) {
+        handleException(thread, ex);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "virgil : ", e);
+        }
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(10);
+/*      if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
@@ -96,7 +109,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             }
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(10);
-        }
+        }*/
     }
 
     /**
@@ -106,7 +119,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @param ex
      * @return true:如果处理了该异常信息;否则返回false
      */
-    private boolean handleException(Throwable ex) {
+    private boolean handleException(Thread thread, Throwable ex) {
         if (ex == null) {
             Log.i("virgil", "handleException --- ex==null");
             return true;
@@ -115,6 +128,13 @@ public class CrashHandler implements UncaughtExceptionHandler {
         if(msg == null) {
             return false;
         }
+        //收集设备信息
+        collectCrashDeviceInfo(mContext);
+        //保存错误报告文件
+
+        saveCrashInfoToPreferenceKey(thread, ex);
+        saveCrashInfoToFile(ex);
+
         //使用Toast来显示异常信息
         new Thread() {
             @Override
@@ -124,20 +144,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
                         Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
-//				MsgPrompt.showMsg(mContext, "程序出错啦", msg+"\n点确认退出");
                 Looper.loop();
             }
         }.start();
-        //收集设备信息
-        collectCrashDeviceInfo(mContext);
-        //保存错误报告文件
-        String fileName = saveCrashInfoToFile(ex);
-        /*if(fileName != null){
-            SharedPreferences sharedPreferences = MyApplication.getInst().getSharedPreferences("CrashFile", Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString("FileName", fileName);
-        }*/
-        //发送错误报告到服务器
-        //sendCrashReportsToServer(mContext);
+
         return true;
     }
 
@@ -152,6 +162,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @param ctx
      */
     private void sendCrashReportsToServer(Context ctx) {
+        if(SharedPreferenceHelper.getInst().getBooleanKey(HAS_CRASH_REPORT, false)){
+            String content = SharedPreferenceHelper.getInst().getStringkey(CRASH_REPORT, "");
+            postReport(content);
+        }
         String[] crFiles = getCrashReportFiles(ctx);
         if (crFiles != null && crFiles.length > 0) {
             TreeSet<String> sortedFiles = new TreeSet<String>();
@@ -163,6 +177,25 @@ public class CrashHandler implements UncaughtExceptionHandler {
             }
         }
     }
+
+    private void postReport(String content){
+        try{
+            SQBProvider.getInst().updateCrashReport(content, new SQBResponseListener() {
+                @Override
+                public void onResponse(SQBResponse response) {
+                    if (response != null) {
+                        Log.i("virgil", "CrashHandler psotReport");
+                        Log.i("virgil", response.getCode());
+                        Log.i("virgil", response.getMsg());
+                        Log.i("virgil", response.getData().toString());
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void postReport(File file) {
         // TODO 发送错误报告到服务器
         try{
@@ -179,17 +212,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             }
             stringBuilder.append("------------Crash Report End------------\n");
             String info = stringBuilder.toString();
-            SQBProvider.getInst().updateCrashReport(info, new SQBResponseListener() {
-                @Override
-                public void onResponse(SQBResponse response) {
-                    if (response != null) {
-                        Log.i("virgil", "CrashHandler psotReport");
-                        Log.i("virgil", response.getCode());
-                        Log.i("virgil", response.getMsg());
-                        Log.i("virgil", response.getData().toString());
-                    }
-                }
-            });
+            postReport(info);
         }catch (Exception e){
             e.printStackTrace();
             Log.e("CrashHandler", "virgil", e);
@@ -217,7 +240,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @param ex
      * @return
      */
-    private String saveCrashInfoToFile(Throwable ex) {
+    private boolean saveCrashInfoToFile(Throwable ex) {
         Writer info = new StringWriter();
         PrintWriter printWriter = new PrintWriter(info);
         ex.printStackTrace(printWriter);
@@ -232,18 +255,41 @@ public class CrashHandler implements UncaughtExceptionHandler {
         mDeviceCrashInfo.put(STACK_TRACE, result);
         Log.i("virgil", ex.getLocalizedMessage());
         Log.i("virgil", result);
-        try {
-            String fileName = "crash-" + getDate() + CRASH_REPORTER_EXTENSION;
-            FileOutputStream trace = mContext.openFileOutput(fileName,
-                    Context.MODE_PRIVATE);
-            mDeviceCrashInfo.store(trace, "");
-            trace.flush();
-            trace.close();
-            return fileName;
-        } catch (Exception e) {
-            Log.e(TAG, "virgil", e);
+        String storageState = Environment.getExternalStorageState();
+        if(storageState.equals("mounted")) {
+            try {
+                File storageDirectory = Environment.getExternalStorageDirectory();
+                String fileName = "crash-" + getDate() + CRASH_REPORTER_EXTENSION;
+                File crashFile = new File(storageDirectory, fileName);
+                FileOutputStream trace = new FileOutputStream(crashFile);
+                mDeviceCrashInfo.store(trace, "");
+                trace.flush();
+                trace.close();
+            } catch (Exception e) {
+                Log.e(TAG, "virgil", e);
+            }
+            return  true;
+        }else {
+            return false;
         }
-        return null;
+    }
+
+    private void saveCrashInfoToPreferenceKey(Thread thread, Throwable e){
+        StringBuilder content = new StringBuilder();
+        content.append("Crash Report Date:" + getDate() + "\n");
+        content.append("Thread Info: Id=" + thread.getId() + ". Name=" + thread.getName() + "\n");
+        do{
+            content.append(e.toString() + "\n");
+            StackTraceElement stackTraceElement[] = e.getStackTrace();
+            for(StackTraceElement st : stackTraceElement){
+                if(st != null){
+                    content.append(st.toString() + "\n");
+                }
+            }
+            content.append("\n");
+        }while ((e = e.getCause()) != null);
+        SharedPreferenceHelper.getInst().setKey(HAS_CRASH_REPORT, true);
+        SharedPreferenceHelper.getInst().setKey(CRASH_REPORT, content.toString());
     }
 
     private String getDate(){
