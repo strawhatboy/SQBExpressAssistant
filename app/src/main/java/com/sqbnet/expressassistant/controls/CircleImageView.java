@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -161,21 +162,29 @@ public class CircleImageView extends ImageView {
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap, int pixels) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
-        final Rect rect = new Rect(0,0,bitmap.getWidth(), bitmap.getHeight());
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        int x = bitmap.getWidth();
-        int y = bitmap.getHeight();
-        int r = Math.min(x, y);
-        canvas.drawCircle(x/2, y/2, r/2, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        return output;
+        try {
+            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                    bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(output);
+            final int color = 0xff424242;
+            final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            int x = bitmap.getWidth();
+            int y = bitmap.getHeight();
+            int r = Math.min(x, y);
+            canvas.drawCircle(x / 2, y / 2, r / 2, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+            return output;
+        } catch (Exception e) {
+            // OutOfMemory
+            Log.e("CircleImageView", "Error when creating a circular image");
+            e.printStackTrace();
+        }
+
+        return null;
     }
     /**
      * Gets the example string attribute value.

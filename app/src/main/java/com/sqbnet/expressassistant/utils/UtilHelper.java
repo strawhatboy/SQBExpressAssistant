@@ -27,6 +27,7 @@ import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.net.NetEnginee;
 import com.sqbnet.expressassistant.service.LocalService;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -137,15 +138,10 @@ public class UtilHelper {
 
 
     public static String ImagePathToB64(String imagePath){
-        File file = new File(imagePath);
-        InputStream in;
         byte[] data = null;
         try{
-            in = new FileInputStream(file);
-            data = new byte[in.available()];
-            in.read(data);
-            in.close();
-        }catch (IOException e){
+            data = ImageCompresser.getInst().getCompressedBitmapBytes(imagePath, 460, 800);
+        }catch (Exception e){
             e.printStackTrace();
         }
         if( data != null) {
@@ -347,17 +343,17 @@ public class UtilHelper {
     }
 
     public static Bitmap getBitmapFromUrl(String httpUrl) {
-        Bitmap bitmap = null;
         try {
             URL url = new URL(httpUrl);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             InputStream inputStream = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(inputStream);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            return ImageCompresser.getInst().getCompressedBitmapWithMinBorder(bitmap, 300);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return bitmap;
+        return null;
     }
 
 
