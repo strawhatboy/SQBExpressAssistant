@@ -121,7 +121,14 @@ public class TabHistoryOrder extends BaseFragment {
                 if (mData.get(position).get("status").equals("1")) {
                     TextView tv_done = (TextView) view.findViewById(R.id.tv_history_list_done);
                     tv_done.setVisibility(View.VISIBLE);
+                    tv_done.clearAnimation();
                     tv_done.setAnimation(textRotateAnimation);
+                    Log.d("TabHistoryOrder", "set status to visible, status: " + mData.get(position).get("status"));
+                } else {
+                    TextView tv_done = (TextView) view.findViewById(R.id.tv_history_list_done);
+                    tv_done.clearAnimation();
+                    tv_done.setVisibility(View.INVISIBLE);
+                    Log.d("TabHistoryOrder", "set status to invisible, status: " + mData.get(position).get("status"));
                 }
 
                 if (position % 2 == 0) {

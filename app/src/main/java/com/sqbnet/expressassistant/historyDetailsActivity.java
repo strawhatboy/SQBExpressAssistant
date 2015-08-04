@@ -113,7 +113,6 @@ public class historyDetailsActivity extends BaseActivity {
         textRotateAnimation.setFillAfter(true);
 
         tv_done = (TextView) findViewById(R.id.tv_history_details_done);
-        tv_done.setAnimation(textRotateAnimation);
 
         listView = (ListView) findViewById(R.id.lv_history_details);
 
@@ -252,10 +251,6 @@ public class historyDetailsActivity extends BaseActivity {
                         }
                     }
                 });
-
-                if (data.getString("status").equals("0")) {
-                    tv_done.setVisibility(View.INVISIBLE);
-                }
             }
 
             long startTimestamp = data.optLong("starttime", 0);
@@ -280,9 +275,16 @@ public class historyDetailsActivity extends BaseActivity {
             mConsigneeName.setText(orderInfo.getString("consignee"));
             mConsigneeAddress.setText(orderInfo.getString("address"));
             mConsigneePhone.setText(orderInfo.getString("mobile"));
-            int status = orderInfo.optInt("status", 0);
-            if(status == 0){
-                tv_done.setVisibility(View.GONE);
+            int status = data.optInt("status", 0);
+            if (status == 0) {
+                Log.d("historyDetailsActivity", "set status to invisible, status: " + data.getString("status"));
+                tv_done.setVisibility(View.INVISIBLE);
+                tv_done.clearAnimation();
+            } else {
+                Log.d("historyDetailsActivity", "set status to visible, status: " + data.getString("status"));
+                tv_done.setVisibility(View.VISIBLE);
+                tv_done.clearAnimation();
+                tv_done.setAnimation(textRotateAnimation);
             }
 
             Object o_distance = data.get("distance");
