@@ -32,4 +32,5 @@ dependencies {
     compile fileTree(dir: 'src/main/jniLibs', include: ['*.jar'])
     compile 'com.android.support:support-v4:21.0.3'
     compile files('src/main/jniLibs/Xg_sdk_v2.38_20150616_1057.jar')
+    compile files('src/main/jniLibs/bugly_1.2.3.6__release.jar')
 }

@@ -36,6 +36,7 @@ import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.SharedPreferenceHelper;
+import com.sqbnet.expressassistant.utils.UtilHelper;
 
 public class CrashHandler implements UncaughtExceptionHandler {
 
@@ -149,6 +150,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 Looper.loop();
             }
         }.start();
+        SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), null);
 
         return true;
     }

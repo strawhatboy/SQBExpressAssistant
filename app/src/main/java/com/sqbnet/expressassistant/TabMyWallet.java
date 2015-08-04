@@ -20,6 +20,7 @@ import com.sqbnet.expressassistant.mode.SQBResponse;
 import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.sqbnet.expressassistant.utils.AsyncImageLoader;
 import com.sqbnet.expressassistant.utils.UtilHelper;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

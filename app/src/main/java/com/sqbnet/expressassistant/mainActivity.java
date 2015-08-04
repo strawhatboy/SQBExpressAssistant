@@ -96,7 +96,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             }
         };
 
-        XGPushConfig.enableDebug(this, true);
+        XGPushConfig.enableDebug(this, false);
 
         XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
             @Override

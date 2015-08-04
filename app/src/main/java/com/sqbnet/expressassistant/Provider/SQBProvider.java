@@ -43,6 +43,7 @@ public class SQBProvider {
     public static String URL_USER_LOGOUT = "userLogout";
     public static String URL_GET_AREA = "getArea";
     public static String URL_WRITE_INFO = "writeInfo";
+    public static String URL_RECEIVE_MSG = "receiveMsg";
 
     public static SQBProvider getInst(){
         if(sInst == null){
@@ -330,6 +331,24 @@ public class SQBProvider {
             doPost(url, jsonObject, listener, true);
         } catch (Exception e) {
             UtilHelper.LogException("updateCrashReport", e);
+            if(listener != null){
+                listener.onResponse(null);
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void receiveMsg(String msgId, String sendTime, String id, final SQBResponseListener listener){
+        try{
+            String url = BASE_URL + URL_RECEIVE_MSG;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("message_id", msgId);
+            jsonObject.put("sendtime", sendTime);
+            jsonObject.put("d_id", id);
+
+            doPost(url, jsonObject, listener, true);
+        }catch (Exception e){
+            UtilHelper.LogException("receiveMsg", e);
             if(listener != null){
                 listener.onResponse(null);
             }

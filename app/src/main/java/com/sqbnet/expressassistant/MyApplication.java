@@ -7,6 +7,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.Random;
 import java.util.Stack;
@@ -28,6 +29,9 @@ public class MyApplication extends Application {
         random = new Random();
         CrashHandler.getInstance().init(getApplicationContext());
         SDKInitializer.initialize(this);
+        String appId = "900006394";
+        boolean isDebug = false;
+        CrashReport.initCrashReport(getApplicationContext(), appId, isDebug);
     }
 
     public static MyApplication getInst(){
