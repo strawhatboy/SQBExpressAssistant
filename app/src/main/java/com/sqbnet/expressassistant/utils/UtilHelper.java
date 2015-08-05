@@ -348,8 +348,9 @@ public class UtilHelper {
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             InputStream inputStream = conn.getInputStream();
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            return ImageCompresser.getInst().getCompressedBitmapWithMinBorder(bitmap, 300);
+            return ImageCompresser.getInst().getCompressedBitmapWithMinBorder(bitmap, 200);
         } catch (Exception e) {
+            Log.e("UtilHelper", "Failed to get bitmap from url:" + httpUrl);
             e.printStackTrace();
         }
 

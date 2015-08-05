@@ -83,17 +83,24 @@ public class AsyncImageLoader {
                 mIsWait = false;
                 final ImageLoadResultLister callback = mTaskMap.keySet().iterator().next();
                 final String url = mTaskMap.remove(callback);
-                final Bitmap bitmap;
+                Bitmap bitmap = null;
                 if (imageCache.containsKey(url)) {
                     Log.d("AsyncImageLoader", "got bitmap from cache for url: " + url);
                     bitmap = imageCache.get(url).get();
-                } else {
-                    Log.d("AsyncImageLoader", "got bitmap from url: " + url);
+                }
+
+                if (bitmap == null) {
+                    Log.d("AsyncImageLoader", "FAILED to get bitmap from cache for url: " + url);
+                    Log.d("AsyncImageLoader", "start to get bitmap from url: " + url);
                     bitmap = UtilHelper.getBitmapFromUrl(url);
                     imageCache.put(url, new SoftReference<Bitmap>(bitmap));
                 }
 
-                callback.onImageLoadResult(bitmap);
+                if (bitmap != null) {
+                    callback.onImageLoadResult(bitmap);
+                } else {
+                    Log.e("AsyncImageLoader", "FAILED (cache & http) to get bitmap from url: " + url);
+                }
 
                 if (mTaskMap.isEmpty()) {
                     try {
