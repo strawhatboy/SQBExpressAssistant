@@ -127,7 +127,9 @@ public class loginActivity extends BaseActivity {
                     protected void onPostExecute(MyLocation location) {
                         super.onPostExecute(location);
 
-                        locationDialog.dismiss();
+                        if (locationDialog.isShowing()) {
+                            locationDialog.dismiss();
+                        }
                         String username = null;
                         String password = null;
 
@@ -166,7 +168,9 @@ public class loginActivity extends BaseActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        progressDialog.dismiss();
+                                        if (progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
                                         if (response != null) {
                                             Log.i("virgil", response.getCode());
                                             Log.i("virgil", response.getMsg());

@@ -240,7 +240,9 @@ public class registrationActivity extends BaseActivity {
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            progressDialog.dismiss();
+                                                            if (progressDialog.isShowing()) {
+                                                                progressDialog.dismiss();
+                                                            }
                                                             showToast("服务器异常，请稍候再试");
                                                         }
                                                     });
@@ -253,7 +255,9 @@ public class registrationActivity extends BaseActivity {
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            progressDialog.dismiss();
+                                                            if (progressDialog.isShowing()) {
+                                                                progressDialog.dismiss();
+                                                            }
                                                             Intent intent = new Intent(registrationActivity.this, registrationSuccessActivity.class);
                                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                             startActivity(intent);
@@ -263,7 +267,9 @@ public class registrationActivity extends BaseActivity {
                                                     runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            progressDialog.dismiss();
+                                                            if (progressDialog.isShowing()) {
+                                                                progressDialog.dismiss();
+                                                            }
                                                             showToast(response.getMsg());
                                                         }
                                                     });
@@ -271,14 +277,18 @@ public class registrationActivity extends BaseActivity {
                                             }
                                         });
                                     } catch (Exception e) {
-                                        progressDialog.dismiss();
+                                        if (progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
                                         e.printStackTrace();
                                     }
                                 } else {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            progressDialog.dismiss();
+                                            if (progressDialog.isShowing()) {
+                                                progressDialog.dismiss();
+                                            }
                                             showToast(response.getMsg());
                                         }
                                     });

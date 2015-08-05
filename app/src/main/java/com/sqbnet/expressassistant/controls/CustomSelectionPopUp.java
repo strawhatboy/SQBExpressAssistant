@@ -67,7 +67,9 @@ public class CustomSelectionPopUp {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mCallback != null) {
                     mCallback.selected(mData.get(i));
-                    alertDialog.dismiss();
+                    if (alertDialog.isShowing()) {
+                        alertDialog.dismiss();
+                    }
                 }
             }
         });
