@@ -398,11 +398,8 @@ public class UtilHelper {
             return;
         }*/
 
-        //Log.i("virgil", "start GPSLocation");
-        //GPSLocation.getInst().start();
         Intent service = new Intent(MyApplication.getInst().getApplicationContext(), LocalService.class);
         MyApplication.getInst().getApplicationContext().startService(service);
-        //BaiDuLocationService.getInst().getLocationClient().start();
     }
 
     public static void startMapByAddress(final Activity currentActivity, final String address) {

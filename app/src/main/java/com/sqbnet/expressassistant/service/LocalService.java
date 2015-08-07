@@ -35,6 +35,11 @@ public class LocalService extends Service {
     }
 
     @Override
+    public boolean stopService(Intent name) {
+        return super.stopService(name);
+    }
+
+    @Override
     public void onDestroy() {
         TLog.i("virgil", "LocalService onDestroy");
         GPSLocation.getInst().stop();

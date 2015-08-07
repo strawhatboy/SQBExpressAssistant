@@ -302,20 +302,11 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                     setStatus(!isWaiting);
                 }
 
-                /*if (isHistoryDetailsVisible) {
-                    isHistoryDetailsVisible = false;
-                    mFragments.remove(2);
-                    mFragmentPagerAdapter.notifyDataSetChanged();
-                }*/
                 if(!isWaiting) {
                     mTabBtnRobOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_blue));
                     tv_rob_order.setTextColor(getResources().getColorStateList(R.color.font_white));
-                    //getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
                     GPSLocation.isSendingLocation = false;
                 }else{
-                  /*  Context context = getApplicationContext();
-                    Intent service = new Intent(context, XGPushService.class);
-                    context.startService(service);*/
                     GPSLocation.isSendingLocation = true;
                 }
                 mTabBtnHistoryOrder.setBackgroundDrawable(getResources().getDrawable(R.color.bg_gray));
@@ -324,12 +315,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 tv_my_wallet.setTextColor(getResources().getColorStateList(R.color.font_black));
                 break;
             case R.id.id_tab_btn_history_order:
-
-                /*if (isHistoryDetailsVisible) {
-                    isHistoryDetailsVisible = false;
-                    mFragments.remove(2);
-                    mFragmentPagerAdapter.notifyDataSetChanged();
-                }*/
                 mViewPager.setCurrentItem(1);
                 setBackgroudLight();
                 if(!isWaiting) {
@@ -443,20 +428,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         Log.i("virgil", response.getMsg());
                         Log.i("virgil", response.getData().toString());
 
-/*                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent();
-                                intent.setClass(mainActivity.this, orderMainActivity.class);
-                                intent.putExtra("user_id", user_id);
-                                intent.putExtra("order_id", "921");
-                                intent.putExtra("status", "0");
-                                intent.putExtra("from", "main");
-                                startActivityForResult(intent, RequestCode.ORDER);
-                                setStatus(false);
-                            }
-                        });*/
-
                         if(response.getCode().equals("1000")){
                             JSONObject result = (JSONObject)response.getData();
                             try {
@@ -497,7 +468,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             case RequestCode.LOGIN: {
                 switch (resultCode){
                     case ResultCode.LOGIN_SUCCESS:
-                        //startGPSLocation();
                         break;
                     case ResultCode.QUIT:
                         finish();

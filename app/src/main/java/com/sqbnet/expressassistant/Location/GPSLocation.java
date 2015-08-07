@@ -77,7 +77,7 @@ public class GPSLocation {
     public void start(){
         Log.i("virgil", "GPS update start");
         getCurrentLocation();
-        /*locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 70 * 1000, 0, networkLocationListener);
         locationManager.addGpsStatusListener(new GpsStatus.Listener() {
             @Override
@@ -94,7 +94,7 @@ public class GPSLocation {
                         break;
                 }
             }
-        });*/
+        });
        startBaiduLocation();
     }
 
@@ -103,7 +103,7 @@ public class GPSLocation {
         option.setOpenGps(true);
         option.setCoorType("bd0911");
         option.setAddrType("all");
-        option.setScanSpan(120 * 1000);
+        option.setScanSpan(80 * 1000);
         BaiDuLocationService.getInst().getLocationClient().setLocOption(option);
         BaiDuLocationService.getInst().getLocationClient().registerLocationListener(bdLocationListener);
         BaiDuLocationService.getInst().getLocationClient().start();
@@ -140,7 +140,7 @@ public class GPSLocation {
         BaiDuLocationService.getInst().getLocationClient().unRegisterLocationListener(bdLocationListener);
     }
 
-    private void sendLocationToServer(String latitude, String longitude, String from){
+    private void sendLocationToServer(final String latitude, final String longitude, String from){
         try {
             Log.i("virgil", "Lat:" + latitude + ", Lng:" + longitude + ", from:" + from);
             if(!isSendingLocation){
@@ -148,7 +148,7 @@ public class GPSLocation {
                 return;
             }
 
-            String useId = UtilHelper.getSharedUserId();
+            final String useId = UtilHelper.getSharedUserId();
             if(useId == null)
                 return;
             Long now = System.currentTimeMillis();
@@ -158,17 +158,29 @@ public class GPSLocation {
             if(minutes < 1)
                 return;
             lastSendTime = System.currentTimeMillis();
-            SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {
+            Thread thread = new Thread(new Runnable() {
                 @Override
-                public void onResponse(SQBResponse response) {
-                    if(response == null)
-                        return;
-                    Log.i("virgil", "Location update success");
-                    Log.i("virgil", response.getCode());
-                    Log.i("virgil", response.getMsg());
-                    Log.i("virgil", response.getData().toString());
+                public void run() {
+                    try{
+                        SQBProvider.getInst().updatePosition(useId, latitude, longitude, new SQBResponseListener() {
+                            @Override
+                            public void onResponse(SQBResponse response) {
+                                if(response == null)
+                                    return;
+                                Log.i("virgil", "Location update success");
+                                Log.i("virgil", response.getCode());
+                                Log.i("virgil", response.getMsg());
+                                Log.i("virgil", response.getData().toString());
+                            }
+                        });
+                    }catch (Exception e){
+                        Log.i("virgil", "-----sendLocationToServer Error in thread------");
+                        Log.e("GPSLocation", "virgil", e);
+                        e.printStackTrace();
+                    }
                 }
             });
+            thread.start();
         }catch (Exception e){
             Log.i("virgil", "-----sendLocationToServer Error------");
             Log.e("GPSLocation", "virgil", e);
