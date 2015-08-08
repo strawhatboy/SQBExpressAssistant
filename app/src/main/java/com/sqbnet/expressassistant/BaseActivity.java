@@ -8,6 +8,8 @@ import android.os.Bundle;
  */
 public class BaseActivity extends Activity {
 
+    protected boolean mIsDestroyed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +19,7 @@ public class BaseActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        mIsDestroyed = true;
         MyApplication.getInst().finishActivity(this);
         super.onDestroy();
     }

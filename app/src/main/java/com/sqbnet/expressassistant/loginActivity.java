@@ -101,7 +101,9 @@ public class loginActivity extends BaseActivity {
                 mInputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
                 final ProgressDialog locationDialog = UtilHelper.getProgressDialog("定位中，可能需要几分钟，请稍候...", loginActivity.this);
-                locationDialog.show();
+                if (!mIsDestroyed) {
+                    locationDialog.show();
+                }
 
                 AsyncTask<String, String, MyLocation> task = new AsyncTask<String, String, MyLocation>() {
                     @Override
@@ -157,7 +159,9 @@ public class loginActivity extends BaseActivity {
                             UtilHelper.showToast("定位不成功，请登录后再试");
                         }
                         final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
-                        progressDialog.show();
+                        if (!mIsDestroyed) {
+                            progressDialog.show();
+                        }
 
                         String token = XGPushConfig.getToken(getApplicationContext());
                         Log.i("virgil", "XG token:" + token);
