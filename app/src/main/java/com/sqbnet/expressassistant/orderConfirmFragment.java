@@ -80,139 +80,147 @@ public class orderConfirmFragment extends OrderBaseFragment {
         SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (response == null) {
-                            return;
-                        }
-                        Log.i("virgil", "order confirm");
-                        Log.i("virgil", response.getCode());
-                        Log.i("virgil", response.getMsg());
-                        Log.i("virgil", response.getData().toString());
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response == null) {
+                                return;
+                            }
+                            Log.i("virgil", "order confirm");
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
 
-                        if(response.getCode().equals("1000")) {
-                            JSONObject result = (JSONObject) response.getData();
-                            mJSONData = result;
-                            try {
+                            if (response.getCode().equals("1000")) {
+                                JSONObject result = (JSONObject) response.getData();
+                                mJSONData = result;
+                                try {
 
-                                String id = result.getString("d_id");
-                                if(!id.equals(UtilHelper.getSharedUserId())) {
-                                    new AlertDialog.Builder(getActivity()).setTitle(getActivity().getResources().getString(R.string.dialog_title_info))
-                                            .setMessage("接单超时，该单已指派给他人")
-                                            .setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    getActivity().finish();
-                                                }
-                                            })
-                                            .show();
+                                    String id = result.getString("d_id");
+                                    if (!id.equals(UtilHelper.getSharedUserId()) && getActivity() != null) {
+                                        new AlertDialog.Builder(getActivity()).setTitle(getActivity().getResources().getString(R.string.dialog_title_info))
+                                                .setMessage("接单超时，该单已指派给他人")
+                                                .setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        getActivity().finish();
+                                                    }
+                                                })
+                                                .show();
 
-                                    return;
-                                }
-                                JSONObject company = result.getJSONObject("company");
-                                String company_name = company.getString("name");
-                                String company_addr = company.getString("addr");
-                                String company_phone = company.getString("phone");
-                                final double company_latitude = company.getDouble("latitude");
-                                final double company_longitude = company.getDouble("longitude");
-                                String company_pic = company.has("pic") ? company.getString("pic") : "";
+                                        return;
+                                    }
+                                    JSONObject company = result.getJSONObject("company");
+                                    String company_name = company.getString("name");
+                                    String company_addr = company.getString("addr");
+                                    String company_phone = company.getString("phone");
+                                    final double company_latitude = company.getDouble("latitude");
+                                    final double company_longitude = company.getDouble("longitude");
+                                    String company_pic = company.has("pic") ? company.getString("pic") : "";
 
-                                String customer_name = result.getString("consignee");
-                                String customer_province = result.getString("province");
-                                String customer_city = result.getString("city");
-                                String customer_address = result.getString("address");
-                                String customer_phone = result.getString("mobile");
-                                String customer_pic = result.has("headimgurl") ? result.getString("headimgurl") : "";
+                                    String customer_name = result.getString("consignee");
+                                    String customer_province = result.getString("province");
+                                    String customer_city = result.getString("city");
+                                    String customer_address = result.getString("address");
+                                    String customer_phone = result.getString("mobile");
+                                    String customer_pic = result.has("headimgurl") ? result.getString("headimgurl") : "";
 
-                                String remuneration = result.getString("remuneration");
+                                    String remuneration = result.getString("remuneration");
 
-                                JSONArray goods = result.getJSONArray("goods");
-                                for(int i=0; i<goods.length(); i++){
-                                    JSONObject item = goods.getJSONObject(i);
-                                    String number = item.getString("goods_number");
-                                    String name = item.getString("goods_name");
-                                    Map<String, Object> map = new HashMap<String, Object>();
-                                    map.put("good_name", name);
-                                    map.put("good_count", number);
-                                    mData.add(map);
-                                }
+                                    JSONArray goods = result.getJSONArray("goods");
+                                    for (int i = 0; i < goods.length(); i++) {
+                                        JSONObject item = goods.getJSONObject(i);
+                                        String number = item.getString("goods_number");
+                                        String name = item.getString("goods_name");
+                                        Map<String, Object> map = new HashMap<String, Object>();
+                                        map.put("good_name", name);
+                                        map.put("good_count", number);
+                                        mData.add(map);
+                                    }
 
-                                adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
 
-                                tv_company_name.setText(company_name);
-                                tv_company_address.setText(company_addr);
-                                tv_company_phone.setText(company_phone);
+                                    tv_company_name.setText(company_name);
+                                    tv_company_address.setText(company_addr);
+                                    tv_company_phone.setText(company_phone);
 
-                                tv_customer_name.setText(customer_name);
-                                tv_customer_address.setText(customer_address);
-                                tv_customer_phone.setText(customer_phone);
+                                    tv_customer_name.setText(customer_name);
+                                    tv_customer_address.setText(customer_address);
+                                    tv_customer_phone.setText(customer_phone);
 
-                                tv_remuneration.setText(remuneration + "元");
-                                tv_good_count.setText(String.valueOf(goods.length()));
+                                    tv_remuneration.setText(remuneration + "元");
+                                    tv_good_count.setText(String.valueOf(goods.length()));
 
-                                if(company_pic.startsWith("http")) {
-                                    AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
-                                        @Override
-                                        public void onImageLoadResult(final Bitmap bitmap) {
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    civ_company_image.setImageBitmap(bitmap);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                                if(customer_pic.startsWith("http")) {
-                                    AsyncImageLoader.getInst().loadBitmap(customer_pic, new AsyncImageLoader.ImageLoadResultLister() {
-                                        @Override
-                                        public void onImageLoadResult(final Bitmap bitmap) {
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    civ_customer_image.setImageBitmap(bitmap);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-
-                                // calculate distance
-                                BaiDuLocationService.getInst().getLocationByAddress(customer_address, new BaiDuLocationService.IGeoEncoderCallback() {
-                                    @Override
-                                    public void handleLocationGot(final double latitude, final double longitude) {
-                                        getActivity().runOnUiThread(new Runnable() {
+                                    if (company_pic.startsWith("http")) {
+                                        AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
                                             @Override
-                                            public void run() {
-                                                if (latitude != -1) {
-                                                    double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(
-                                                            company_latitude,
-                                                            company_longitude,
-                                                            latitude,
-                                                            longitude);
-                                                    Log.d("orderConfirmFragment", "got distance: " + distance);
-                                                    tv_distance.setText(String.format("%.2f", distance / 1000.0) + getResources().getString(R.string.history_list_km));
-                                                    mOrderContext.setDistance(distance);
+                                            public void onImageLoadResult(final Bitmap bitmap) {
+                                                if (getActivity() != null) {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            civ_company_image.setImageBitmap(bitmap);
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
-
+                                    }
+                                    if (customer_pic.startsWith("http")) {
+                                        AsyncImageLoader.getInst().loadBitmap(customer_pic, new AsyncImageLoader.ImageLoadResultLister() {
+                                            @Override
+                                            public void onImageLoadResult(final Bitmap bitmap) {
+                                                if (getActivity() != null) {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            civ_customer_image.setImageBitmap(bitmap);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
                                     }
 
-                                    @Override
-                                    public void handleAddressGot(String address) {
+                                    // calculate distance
+                                    BaiDuLocationService.getInst().getLocationByAddress(customer_address, new BaiDuLocationService.IGeoEncoderCallback() {
+                                        @Override
+                                        public void handleLocationGot(final double latitude, final double longitude) {
 
-                                    }
-                                });
+                                            if (getActivity() != null) {
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (latitude != -1) {
+                                                            double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(
+                                                                    company_latitude,
+                                                                    company_longitude,
+                                                                    latitude,
+                                                                    longitude);
+                                                            Log.d("orderConfirmFragment", "got distance: " + distance);
+                                                            tv_distance.setText(String.format("%.2f", distance / 1000.0) + getResources().getString(R.string.history_list_km));
+                                                            mOrderContext.setDistance(distance);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
 
-                            }catch (Exception e){
-                                Log.e("orderConfirmFragment", "virgil", e);
-                                e.printStackTrace();
+                                        @Override
+                                        public void handleAddressGot(String address) {
+
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    Log.e("orderConfirmFragment", "virgil", e);
+                                    e.printStackTrace();
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -273,12 +281,14 @@ public class orderConfirmFragment extends OrderBaseFragment {
                             Log.i("virgil", response.getMsg());
                             Log.i("virgil", response.getData().toString());
                             if (response.getCode().equals("1000")) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        delegate.goNext();
-                                    }
-                                });
+                                if (getActivity() != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            delegate.goNext();
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
@@ -314,7 +324,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 try {
-                    if (mJSONData != null) {
+                    if (mJSONData != null && getActivity() != null) {
                         JSONObject company = mJSONData.getJSONObject("company");
                         UtilHelper.startMapByLocation(
                                 getActivity(),
@@ -333,7 +343,7 @@ public class orderConfirmFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 try {
-                    if (mJSONData != null) {
+                    if (mJSONData != null && getActivity() != null) {
                         UtilHelper.startMapByAddress(
                                 getActivity(),
                                 mJSONData.getString("address"));

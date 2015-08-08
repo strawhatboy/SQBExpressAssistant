@@ -72,6 +72,9 @@ public class TabHistoryOrder extends BaseFragment {
     }
 
     private void initView(View view) {
+        if (getActivity() == null) {
+            return;
+        }
         textRotateAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.rotated_text_view);
         textRotateAnimation.setFillAfter(true);
         listView = (CustomListView) view.findViewById(R.id.lv_history);
@@ -176,59 +179,60 @@ public class TabHistoryOrder extends BaseFragment {
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listView.onRefreshComplete();
-                        if (response != null) {
-                            Log.i("virgil", "TabHsitoryOrder getHisotryOrder");
-                            Log.i("virgil", response.getCode());
-                            Log.i("virgil", response.getMsg());
-                            Log.i("virgil", response.getData().toString());
-                            if (response.getCode().equals("1000")) {
-                                try {
-                                    JSONArray orders = (JSONArray) response.getData();
-                                    for (int i = orders.length() -1; i >= 0; i--) {
-                                        JSONObject item = orders.getJSONObject(i);
-                                        Log.i("virgil", item.toString());
-                                        JSONObject orderInfo = item.getJSONObject("orderInfo");
-                                        int startTimestamp = item.getInt("starttime");
-                                        String date = UtilHelper.getDateString(startTimestamp);
-                                        String status = item.getString("status");
-                                        String remuneration = item.getString("remuneration");
-                                        String consignee = orderInfo.getString("consignee");
-                                        JSONObject company = orderInfo.getJSONObject("company");
-                                        String company_name = company.getString("name");
-                                        String company_pic = company.has("pic") ? company.getString("pic") : "";
-                                        Object o_distance = item.get("distance");
-                                        Double distance = -1d;
-                                        if (o_distance != null) {
-                                            try {
-                                                distance = item.getDouble("distance");
-                                            } catch (Exception e) {
-                                                distance = -1d;
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.onRefreshComplete();
+                            if (response != null) {
+                                Log.i("virgil", "TabHsitoryOrder getHisotryOrder");
+                                Log.i("virgil", response.getCode());
+                                Log.i("virgil", response.getMsg());
+                                Log.i("virgil", response.getData().toString());
+                                if (response.getCode().equals("1000")) {
+                                    try {
+                                        JSONArray orders = (JSONArray) response.getData();
+                                        for (int i = orders.length() - 1; i >= 0; i--) {
+                                            JSONObject item = orders.getJSONObject(i);
+                                            Log.i("virgil", item.toString());
+                                            JSONObject orderInfo = item.getJSONObject("orderInfo");
+                                            int startTimestamp = item.getInt("starttime");
+                                            String date = UtilHelper.getDateString(startTimestamp);
+                                            String status = item.getString("status");
+                                            String remuneration = item.getString("remuneration");
+                                            String consignee = orderInfo.getString("consignee");
+                                            JSONObject company = orderInfo.getJSONObject("company");
+                                            String company_name = company.getString("name");
+                                            String company_pic = company.has("pic") ? company.getString("pic") : "";
+                                            Object o_distance = item.get("distance");
+                                            Double distance = -1d;
+                                            if (o_distance != null) {
+                                                try {
+                                                    distance = item.getDouble("distance");
+                                                } catch (Exception e) {
+                                                    distance = -1d;
+                                                }
                                             }
+
+                                            Map<String, Object> data = new HashMap<String, Object>();
+                                            data.put("from_avatar", company_pic);
+                                            data.put("from_name", company_name);
+                                            data.put("time", date);
+                                            data.put("distance", distance > 0 ? String.format("%.2f", distance / 1000.0) : "- - -");
+                                            data.put("reward", remuneration);
+                                            data.put("to_name", consignee);
+                                            data.put("to_avatar", orderInfo.has("headimgurl") ? orderInfo.getString("headimgurl") : "");
+                                            data.put("status", status);
+                                            data.put("jsonObject", item);
+
+                                            mData.add(data);
                                         }
 
-                                        Map<String, Object> data = new HashMap<String, Object>();
-                                        data.put("from_avatar", company_pic);
-                                        data.put("from_name", company_name);
-                                        data.put("time", date);
-                                        data.put("distance", distance > 0 ? String.format("%.2f", distance / 1000.0) : "- - -");
-                                        data.put("reward", remuneration);
-                                        data.put("to_name", consignee);
-                                        data.put("to_avatar", orderInfo.has("headimgurl") ? orderInfo.getString("headimgurl") : "");
-                                        data.put("status", status);
-                                        data.put("jsonObject", item);
-
-                                        mData.add(data);
-                                    }
-
-                                    if (mData.size() != orders.length()) {
-                                        Log.e("TabHistoryOrder", "Data count is not right!!! proceed: " + mData.size() + ", get: " + orders.length());
-                                    } else {
-                                        Log.d("TabHistoryOrder", "Data count is right!!! proceed: " + mData.size() + ", get: " + orders.length());
-                                    }
+                                        if (mData.size() != orders.length()) {
+                                            Log.e("TabHistoryOrder", "Data count is not right!!! proceed: " + mData.size() + ", get: " + orders.length());
+                                        } else {
+                                            Log.d("TabHistoryOrder", "Data count is right!!! proceed: " + mData.size() + ", get: " + orders.length());
+                                        }
 
                                   /*  Collections.sort(mData, new Comparator<Map<String, Object>>() {
                                         @Override
@@ -246,20 +250,21 @@ public class TabHistoryOrder extends BaseFragment {
                                         }
                                     });*/
 
-                                    adapter.notifyDataSetChanged();
+                                        adapter.notifyDataSetChanged();
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                    }
+                                } else {
+                                    Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
                                 }
                             } else {
-                                Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
                             }
-                        } else {
-                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
                         }
-                    }
-                });
+                    });
+                }
             }
         }, isRefresh);
     }

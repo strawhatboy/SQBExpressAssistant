@@ -102,42 +102,46 @@ public class TabRobOrder extends Fragment {
             SQBProvider.getInst().getDispatchPerson(userId, new SQBResponseListener() {
                 @Override
                 public void onResponse(final SQBResponse response) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
-                            if (response == null) {
-                                Toast.makeText(getActivity().getApplicationContext(), "没有找到用户", Toast.LENGTH_SHORT);
-                                return;
-                            }
-
-                            if (!response.getCode().equals("1000")) {
-                                Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
-                                return;
-                            }
-
-                            try {
-                                JSONObject userInfo = (JSONObject) response.getData();
-                                String avatar = userInfo.getString("cardphoto");
-                                if (avatar != null && avatar.length() > 0) {
-                                    AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
-                                        @Override
-                                        public void onImageLoadResult(final Bitmap bitmap) {
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    civ_avatar.setImageBitmap(bitmap);
-                                                }
-                                            });
-                                        }
-                                    });
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
+                                if (response == null) {
+                                    Toast.makeText(getActivity().getApplicationContext(), "没有找到用户", Toast.LENGTH_SHORT);
+                                    return;
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(getActivity().getApplicationContext(), "出错了", Toast.LENGTH_SHORT);
+
+                                if (!response.getCode().equals("1000")) {
+                                    Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                                    return;
+                                }
+
+                                try {
+                                    JSONObject userInfo = (JSONObject) response.getData();
+                                    String avatar = userInfo.getString("cardphoto");
+                                    if (avatar != null && avatar.length() > 0) {
+                                        AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
+                                            @Override
+                                            public void onImageLoadResult(final Bitmap bitmap) {
+                                                if (getActivity() != null) {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            civ_avatar.setImageBitmap(bitmap);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getActivity().getApplicationContext(), "出错了", Toast.LENGTH_SHORT);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }
@@ -227,13 +231,15 @@ public class TabRobOrder extends Fragment {
                     final int index = i;
                     try {
                         Thread.sleep(MyApplication.getInst().getRandom().nextInt(5000));
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                orange_dots.get(index).setVisibility(View.VISIBLE);
-                                orange_dots.get(index).setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.radar_circle_blink));
-                            }
-                        });
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    orange_dots.get(index).setVisibility(View.VISIBLE);
+                                    orange_dots.get(index).setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.radar_circle_blink));
+                                }
+                            });
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -248,12 +254,14 @@ public class TabRobOrder extends Fragment {
         AsyncImageLoader.getInst().loadBitmap(url, new AsyncImageLoader.ImageLoadResultLister() {
             @Override
             public void onImageLoadResult(final Bitmap bitmap) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        civ_avatar.setImageBitmap(bitmap);
-                    }
-                });
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            civ_avatar.setImageBitmap(bitmap);
+                        }
+                    });
+                }
             }
         });
     }

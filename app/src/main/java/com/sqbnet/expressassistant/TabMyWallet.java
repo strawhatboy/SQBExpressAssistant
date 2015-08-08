@@ -167,57 +167,61 @@ public class TabMyWallet extends BaseFragment {
         SQBProvider.getInst().getDispatchPerson(user_id, new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
-                        if (response == null) {
-                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
-                            return;
-                        }
-
-                        if (!response.getCode().equals("1000")) {
-                            Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
-                            return;
-                        }
-
-                        try {
-                            JSONObject userInfo = (JSONObject) response.getData();
-                            String realName = userInfo.getString("name");
-                            String regDate = UtilHelper.getDateString(userInfo.getInt("add_time"), "yyyy-MM-dd");
-                            String balance = userInfo.getString("balance");
-                            String un_reward = userInfo.getString("s_proceeds");
-                            String avatar = userInfo.getString("cardphoto");
-                            if(un_reward == "null"){
-                                un_reward = "0";
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("virgil", "TabHsitoryOrder get DispatchPerson");
+                            if (response == null) {
+                                Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                return;
                             }
 
-                            //tv_id.setText(user_id);
-                            tv_real_name.setText(realName);
-                            tv_reg_date.setText(regDate);
-                            tv_balance.setText(balance);
-                            tv_un_reward.setText(un_reward);
-                            if (avatar != null && avatar.length() > 0) {
-                                AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
-                                    @Override
-                                    public void onImageLoadResult(final Bitmap bitmap) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                civ_wallet_avatar.setImageBitmap(bitmap);
+                            if (!response.getCode().equals("1000")) {
+                                Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                                return;
+                            }
+
+                            try {
+                                JSONObject userInfo = (JSONObject) response.getData();
+                                String realName = userInfo.getString("name");
+                                String regDate = UtilHelper.getDateString(userInfo.getInt("add_time"), "yyyy-MM-dd");
+                                String balance = userInfo.getString("balance");
+                                String un_reward = userInfo.getString("s_proceeds");
+                                String avatar = userInfo.getString("cardphoto");
+                                if (un_reward == "null") {
+                                    un_reward = "0";
+                                }
+
+                                //tv_id.setText(user_id);
+                                tv_real_name.setText(realName);
+                                tv_reg_date.setText(regDate);
+                                tv_balance.setText(balance);
+                                tv_un_reward.setText(un_reward);
+                                if (avatar != null && avatar.length() > 0) {
+                                    AsyncImageLoader.getInst().loadBitmap(avatar, new AsyncImageLoader.ImageLoadResultLister() {
+                                        @Override
+                                        public void onImageLoadResult(final Bitmap bitmap) {
+                                            if (getActivity() != null) {
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        civ_wallet_avatar.setImageBitmap(bitmap);
+                                                    }
+                                                });
                                             }
-                                        });
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
 
-                            listView.onRefreshComplete();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                listView.onRefreshComplete();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -233,47 +237,48 @@ public class TabMyWallet extends BaseFragment {
         SQBProvider.getInst().getHistoryOrder(user_id, new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listView.onRefreshComplete();
-                        if (response != null) {
-                            Log.i("virgil", "TabMyWallet get History order");
-                            Log.i("virgil", response.getCode());
-                            Log.i("virgil", response.getMsg());
-                            Log.i("virgil", response.getData().toString());
-                            if (response.getCode().equals("1000")) {
-                                try {
-                                    JSONArray orders = (JSONArray) response.getData();
-                                    for (int i = orders.length() - 1; i >= 0; i--) {
-                                        JSONObject item = orders.getJSONObject(i);
-                                        Log.i("virgil", item.toString());
-                                        JSONObject orderInfo = item.getJSONObject("orderInfo");
-                                        int startTimestamp = item.getInt("starttime");
-                                        int endTimestamp = item.optInt("endtime", 0);
-                                        int durationTimestamp = endTimestamp - startTimestamp;
-                                        Date durationDate = UtilHelper.getDate(durationTimestamp);
-                                        String date = UtilHelper.getDateString(startTimestamp, "yyyy-MM-dd");
-                                        String startDate = UtilHelper.getDateString(startTimestamp, "HH:mm:ss");
-                                        String endDate = UtilHelper.getDateString(endTimestamp, "HH:mm:ss");
-                                        //int status = item.getInt("status");
-                                        String remuneration = item.getString("remuneration");
-                                        //String consignee = orderInfo.getString("consignee");
-                                        //String company_name = orderInfo.getJSONObject("company").getString("name");
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.onRefreshComplete();
+                            if (response != null) {
+                                Log.i("virgil", "TabMyWallet get History order");
+                                Log.i("virgil", response.getCode());
+                                Log.i("virgil", response.getMsg());
+                                Log.i("virgil", response.getData().toString());
+                                if (response.getCode().equals("1000")) {
+                                    try {
+                                        JSONArray orders = (JSONArray) response.getData();
+                                        for (int i = orders.length() - 1; i >= 0; i--) {
+                                            JSONObject item = orders.getJSONObject(i);
+                                            Log.i("virgil", item.toString());
+                                            JSONObject orderInfo = item.getJSONObject("orderInfo");
+                                            int startTimestamp = item.getInt("starttime");
+                                            int endTimestamp = item.optInt("endtime", 0);
+                                            int durationTimestamp = endTimestamp - startTimestamp;
+                                            Date durationDate = UtilHelper.getDate(durationTimestamp);
+                                            String date = UtilHelper.getDateString(startTimestamp, "yyyy-MM-dd");
+                                            String startDate = UtilHelper.getDateString(startTimestamp, "HH:mm:ss");
+                                            String endDate = UtilHelper.getDateString(endTimestamp, "HH:mm:ss");
+                                            //int status = item.getInt("status");
+                                            String remuneration = item.getString("remuneration");
+                                            //String consignee = orderInfo.getString("consignee");
+                                            //String company_name = orderInfo.getJSONObject("company").getString("name");
 
-                                        Map<String, Object> data = new HashMap<String, Object>();
-                                        data.put("from_avatar", R.drawable.index_avatar);
-                                        data.put("duration", durationDate.getMinutes() + getResources().getString(R.string.unit_minute));
-                                        data.put("time", startDate + " -" + endDate);
-                                        data.put("date", date);
-                                        //data.put("distance", "1.36");
-                                        data.put("reward", remuneration);
-                                        //data.put("to_name", consignee);
-                                        //data.put("to_avatar", R.drawable.index_avatar);
-                                        data.put("jsonObject", item);
+                                            Map<String, Object> data = new HashMap<String, Object>();
+                                            data.put("from_avatar", R.drawable.index_avatar);
+                                            data.put("duration", durationDate.getMinutes() + getResources().getString(R.string.unit_minute));
+                                            data.put("time", startDate + " -" + endDate);
+                                            data.put("date", date);
+                                            //data.put("distance", "1.36");
+                                            data.put("reward", remuneration);
+                                            //data.put("to_name", consignee);
+                                            //data.put("to_avatar", R.drawable.index_avatar);
+                                            data.put("jsonObject", item);
 
-                                        mData.add(data);
-                                    }
+                                            mData.add(data);
+                                        }
 
                                    /* Collections.sort(mData, new Comparator<Map<String, Object>>() {
                                         @Override
@@ -291,20 +296,21 @@ public class TabMyWallet extends BaseFragment {
                                     });*/
 
 
-                                    setCount(mData.size());
-                                    adapter.notifyDataSetChanged();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                        setCount(mData.size());
+                                        adapter.notifyDataSetChanged();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
+                                    }
+                                } else {
+                                    Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
                                 }
                             } else {
-                                Toast.makeText(getActivity().getApplicationContext(), response.getMsg(), Toast.LENGTH_SHORT);
+                                Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
                             }
-                        } else {
-                            Toast.makeText(getActivity().getApplicationContext(), "出错啦，请重试", Toast.LENGTH_SHORT);
                         }
-                    }
-                });
+                    });
+                }
             }
         }, isRefresh);
     }

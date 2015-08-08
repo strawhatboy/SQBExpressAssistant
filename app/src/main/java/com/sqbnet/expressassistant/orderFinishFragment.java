@@ -106,13 +106,15 @@ public class orderFinishFragment extends OrderBaseFragment {
                                     }
                                 });
                             }else {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        valideLayoutAgain.setVisibility(View.VISIBLE);
-                                        valideLayout.setVisibility(View.GONE);
-                                    }
-                                });
+                                if (getActivity() != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            valideLayoutAgain.setVisibility(View.VISIBLE);
+                                            valideLayout.setVisibility(View.GONE);
+                                        }
+                                    });
+                                }
                             }
                         }
                     });

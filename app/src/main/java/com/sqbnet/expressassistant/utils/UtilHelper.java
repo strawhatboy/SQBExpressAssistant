@@ -497,7 +497,7 @@ public class UtilHelper {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view instanceof TextView) {
+                if (view instanceof TextView && activity != null) {
                     final String phoneNumber = ((TextView) view).getText().toString();
 
                     if (phoneNumber.matches("[\\d-]+")) {

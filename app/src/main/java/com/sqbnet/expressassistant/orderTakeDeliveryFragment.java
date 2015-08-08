@@ -79,78 +79,82 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
         SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
             @Override
             public void onResponse(final SQBResponse response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (response == null) {
-                            return;
-                        }
-                        Log.i("virgil", "order take delivery");
-                        Log.i("virgil", response.getCode());
-                        Log.i("virgil", response.getMsg());
-                        Log.i("virgil", response.getData().toString());
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response == null) {
+                                return;
+                            }
+                            Log.i("virgil", "order take delivery");
+                            Log.i("virgil", response.getCode());
+                            Log.i("virgil", response.getMsg());
+                            Log.i("virgil", response.getData().toString());
 
-                        if (response.getCode().equals("1000")) {
-                            JSONObject result = (JSONObject) response.getData();
-                            mJSONData = result;
-                            try {
-                                JSONObject company = result.getJSONObject("company");
-                                String company_name = company.getString("name");
-                                String company_addr = company.getString("addr");
-                                String company_phone = company.getString("phone");
-                                double company_latitude = company.getDouble("latitude");
-                                double company_longitude = company.getDouble("longitude");
-                                String company_pic = company.has("pic") ? company.getString("pic") : "";
+                            if (response.getCode().equals("1000")) {
+                                JSONObject result = (JSONObject) response.getData();
+                                mJSONData = result;
+                                try {
+                                    JSONObject company = result.getJSONObject("company");
+                                    String company_name = company.getString("name");
+                                    String company_addr = company.getString("addr");
+                                    String company_phone = company.getString("phone");
+                                    double company_latitude = company.getDouble("latitude");
+                                    double company_longitude = company.getDouble("longitude");
+                                    String company_pic = company.has("pic") ? company.getString("pic") : "";
 
-                                String remuneration = result.getString("remuneration");
+                                    String remuneration = result.getString("remuneration");
 
-                                JSONArray goods = result.getJSONArray("goods");
-                                for (int i = 0; i < goods.length(); i++) {
-                                    JSONObject item = goods.getJSONObject(i);
-                                    String number = item.getString("goods_number");
-                                    String name = item.getString("goods_name");
-                                    Map<String, Object> map = new HashMap<String, Object>();
-                                    map.put("good_name", name);
-                                    map.put("good_count", number);
-                                    mData.add(map);
-                                }
+                                    JSONArray goods = result.getJSONArray("goods");
+                                    for (int i = 0; i < goods.length(); i++) {
+                                        JSONObject item = goods.getJSONObject(i);
+                                        String number = item.getString("goods_number");
+                                        String name = item.getString("goods_name");
+                                        Map<String, Object> map = new HashMap<String, Object>();
+                                        map.put("good_name", name);
+                                        map.put("good_count", number);
+                                        mData.add(map);
+                                    }
 
-                                adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
 
-                                tv_company_name.setText(company_name);
-                                tv_company_address.setText(company_addr);
-                                tv_company_phone.setText(company_phone);
+                                    tv_company_name.setText(company_name);
+                                    tv_company_address.setText(company_addr);
+                                    tv_company_phone.setText(company_phone);
 
-                                tv_renueration.setText(remuneration + "元");
-                                tv_good_count.setText(String.valueOf(goods.length()));
+                                    tv_renueration.setText(remuneration + "元");
+                                    tv_good_count.setText(String.valueOf(goods.length()));
 
-                                MyLocation location = GPSLocation.getInst().getCurrentLocation();
-                                if(location != null) {
-                                    double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(company_latitude, company_longitude, location.getLatitude(), location.getLongitude());
-                                    tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
-                                }
+                                    MyLocation location = GPSLocation.getInst().getCurrentLocation();
+                                    if (location != null) {
+                                        double distance = BaiDuLocationService.getInst().getDistanceBetweenLocations(company_latitude, company_longitude, location.getLatitude(), location.getLongitude());
+                                        tv_distance.setText(String.format("%.2f", distance / 1000.0) + "km");
+                                    }
 
-                                if (company_pic.startsWith("http")) {
-                                    AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
-                                        @Override
-                                        public void onImageLoadResult(final Bitmap bitmap) {
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    civ_company_image.setImageBitmap(bitmap);
+                                    if (company_pic.startsWith("http")) {
+                                        AsyncImageLoader.getInst().loadBitmap(company_pic, new AsyncImageLoader.ImageLoadResultLister() {
+                                            @Override
+                                            public void onImageLoadResult(final Bitmap bitmap) {
+                                                if (getActivity() != null) {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            civ_company_image.setImageBitmap(bitmap);
+                                                        }
+                                                    });
                                                 }
-                                            });
-                                        }
-                                    });
-                                }
+                                            }
+                                        });
+                                    }
 
-                                tv_order_id.setText(mOrderContext.getOrderId());
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                    tv_order_id.setText(mOrderContext.getOrderId());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -172,21 +176,23 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                     SQBProvider.getInst().updateOrderStatus(mOrderContext.getOrderId(), CustomConstants.ORDER_SHIPPING, (int) mOrderContext.getDistance(), new SQBResponseListener() {
                         @Override
                         public void onResponse(final SQBResponse response) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (response == null) {
-                                        return;
+                            if (getActivity() != null) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (response == null) {
+                                            return;
+                                        }
+                                        Log.i("virgil", "take delivery confirm");
+                                        Log.i("virgil", response.getCode());
+                                        Log.i("virgil", response.getMsg());
+                                        Log.i("virgil", response.getData().toString());
+                                        if (response.getCode().equals("1000")) {
+                                            delegate.goNext();
+                                        }
                                     }
-                                    Log.i("virgil", "take delivery confirm");
-                                    Log.i("virgil", response.getCode());
-                                    Log.i("virgil", response.getMsg());
-                                    Log.i("virgil", response.getData().toString());
-                                    if (response.getCode().equals("1000")) {
-                                        delegate.goNext();
-                                    }
-                                }
-                            });
+                                });
+                            }
                         }
                     });
 
@@ -233,7 +239,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
             @Override
             public void onClick(View view) {
                 try {
-                    if (mJSONData != null) {
+                    if (mJSONData != null && getActivity() != null) {
                         JSONObject company = mJSONData.getJSONObject("company");
                         UtilHelper.startMapByLocation(
                                 getActivity(),
