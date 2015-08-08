@@ -117,7 +117,7 @@ public class NetEnginee {
         }catch (Exception e){
             Log.e("NetEngiee", "virgil", e);
             Log.i("virgil","------NetEnginee error-------");
-            Log.i("virgil", e.getMessage());
+            Log.i("virgil", "Exception Msg: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
