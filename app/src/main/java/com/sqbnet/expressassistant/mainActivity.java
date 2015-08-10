@@ -6,12 +6,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sqbnet.expressassistant.Location.GPSLocation;
@@ -30,7 +35,9 @@ import com.tencent.android.tpush.service.XGPushService;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,14 +59,21 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     private LinearLayout mTabBtnHistoryOrder;
     private LinearLayout mTabBtnMyWallet;
     private LinearLayout mainLayout;
+    private LinearLayout ly_main_locate_failed;
+    private Animation in_from_bottom;
+    private Animation out_from_top;
 
     private TextView tv_rob_order;
     private TextView tv_history_order;
     private TextView tv_my_wallet;
+    private TextView tv_main_hint;
 
     //private boolean isHistoryDetailsVisible = false;
     private boolean isWaiting = false;
     private boolean isVisible = false;
+
+    private Timer timer;
+    private Map<Timer, Boolean> cancelTimerMap;
 
     private Resources resources;
 
@@ -273,6 +287,16 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         mTabBtnHistoryOrder.setOnClickListener(this);
         mTabBtnMyWallet.setOnClickListener(this);
 
+        ly_main_locate_failed = (LinearLayout) findViewById(R.id.ly_main_locate_failed);
+        in_from_bottom = AnimationUtils.loadAnimation(mainActivity.this, R.anim.in_from_bottom);
+        out_from_top = AnimationUtils.loadAnimation(mainActivity.this, R.anim.out_from_top);
+        in_from_bottom.setFillAfter(true);
+        out_from_top.setFillAfter(true);
+
+        tv_main_hint = (TextView) findViewById(R.id.tv_main_hint);
+
+        cancelTimerMap = new HashMap<Timer, Boolean>();
+
         resources = getResources();
     }
 
@@ -299,6 +323,10 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                     setStatus(isWaiting);
                 }
                 else {
+                    if (UtilHelper.getIsLocateSuccess() == false) {
+                        showHint(R.string.searching_locate_failed);
+                        return;
+                    }
                     setStatus(!isWaiting);
                 }
 
@@ -419,40 +447,40 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         final String user_id = UtilHelper.getSharedUserId();
 
         SQBProvider.getInst().getAssignOrder(user_id, new SQBResponseListener() {
-                    @Override
-                    public void onResponse(SQBResponse response) {
-                        if(response == null)
-                            return;
-                        Log.i("virgil", "getAssignOrder");
-                        Log.i("virgil", response.getCode());
-                        Log.i("virgil", response.getMsg());
-                        Log.i("virgil", response.getData().toString());
+            @Override
+            public void onResponse(SQBResponse response) {
+                if (response == null)
+                    return;
+                Log.i("virgil", "getAssignOrder");
+                Log.i("virgil", response.getCode());
+                Log.i("virgil", response.getMsg());
+                Log.i("virgil", response.getData().toString());
 
-                        if(response.getCode().equals("1000")){
-                            JSONObject result = (JSONObject)response.getData();
-                            try {
-                                final String order_id = result.getString("order_id");
-                                final String status = result.getString("d_status");
+                if (response.getCode().equals("1000")) {
+                    JSONObject result = (JSONObject) response.getData();
+                    try {
+                        final String order_id = result.getString("order_id");
+                        final String status = result.getString("d_status");
 
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Intent intent = new Intent();
-                                        intent.setClass(mainActivity.this, orderMainActivity.class);
-                                        intent.putExtra("user_id", user_id);
-                                        intent.putExtra("order_id", order_id);
-                                        intent.putExtra("status", status);
-                                        intent.putExtra("from", "main");
-                                        startActivityForResult(intent, RequestCode.ORDER);
-                                        setStatus(false);
-                                    }
-                                });
-
-                            }catch (Exception e){
-                                e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent();
+                                intent.setClass(mainActivity.this, orderMainActivity.class);
+                                intent.putExtra("user_id", user_id);
+                                intent.putExtra("order_id", order_id);
+                                intent.putExtra("status", status);
+                                intent.putExtra("from", "main");
+                                startActivityForResult(intent, RequestCode.ORDER);
+                                setStatus(false);
                             }
-                        }
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                }
+            }
         });
     }
     /**
@@ -506,5 +534,43 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 })
                 .setNegativeButton(resources.getString(R.string.dialog_no), null)
                 .show();
+    }
+
+    public void showHint(@StringRes int resId) {
+        showHint(resources.getString(resId));
+    }
+
+    public void showHint(@Nullable CharSequence text) {
+        ly_main_locate_failed.setVisibility(View.VISIBLE);
+        tv_main_hint.setText(text);
+        ly_main_locate_failed.clearAnimation();
+        ly_main_locate_failed.startAnimation(in_from_bottom);
+
+        if (timer != null) {
+            timer.cancel();
+            if (cancelTimerMap.containsKey(timer)) {
+                cancelTimerMap.put(timer, true);
+            }
+        }
+
+        timer = new Timer();
+        cancelTimerMap.put(timer, false);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!cancelTimerMap.get(timer)) {
+                            ly_main_locate_failed.setVisibility(View.VISIBLE);
+                            ly_main_locate_failed.clearAnimation();
+                            ly_main_locate_failed.startAnimation(out_from_top);
+                        }
+                        cancelTimerMap.remove(timer);
+                        timer = null;
+                    }
+                });
+            }
+        }, 5000);
     }
 }

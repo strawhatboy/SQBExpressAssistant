@@ -44,6 +44,8 @@ import com.sqbnet.expressassistant.mode.SQBResponseListener;
 import com.tencent.android.tpush.XGPushConfig;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +58,7 @@ public class loginActivity extends BaseActivity {
     private TextView tv_register;
     private CheckBox chkbox_remember;
     private SharedPreferences sharedPreferences;
+    private boolean isForceLocateFailed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,22 +108,31 @@ public class loginActivity extends BaseActivity {
                     locationDialog.show();
                 }
 
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        isForceLocateFailed = true;
+                    }
+                };
+                Timer timer = new Timer();
+                timer.schedule(timerTask, 90000);
+
                 AsyncTask<String, String, MyLocation> task = new AsyncTask<String, String, MyLocation>() {
                     @Override
                     protected MyLocation doInBackground(String... strings) {
                         MyLocation location = GPSLocation.getInst().getCurrentLocation();
-                        int count = 0;
-                        while (location == null) {
-                            if (count >= 10) {
+                        // int count = 0;
+                        while (location == null && isForceLocateFailed == false) {
+                           /* if (count >= 10) {
                                 return null;
-                            }
+                            }*/
                             try {
-                                Thread.sleep(2000);
+                                //Thread.sleep(2000);
                                 location = GPSLocation.getInst().getCurrentLocation();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            count += 1;
+                            // count += 1;
                         }
                         return location;
                     }
@@ -155,8 +167,10 @@ public class loginActivity extends BaseActivity {
                         if (location != null) {
                             latitude = String.valueOf(location.getLatitude());
                             longitude = String.valueOf(location.getLongitude());
+                            UtilHelper.setIsLocateSuccess(true);
                         } else {
                             UtilHelper.showToast("定位不成功，请登录后再试");
+                            UtilHelper.setIsLocateSuccess(false);
                         }
                         final ProgressDialog progressDialog = UtilHelper.getProgressDialog("登录中...", loginActivity.this);
                         if (!mIsDestroyed) {

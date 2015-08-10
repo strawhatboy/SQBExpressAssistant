@@ -67,15 +67,15 @@ public class GPSLocation {
     public boolean openGEPSettings(){
         locationManager = (LocationManager) MyApplication.getInst().getSystemService(Context.LOCATION_SERVICE);
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Log.i("virgil", "GPS is on");
+            Log.v("virgil", "GPS is on");
            return true;
         }
-        Log.i("virgil", "GPS is off");
+        Log.v("virgil", "GPS is off");
         return false;
     }
 
     public void start(){
-        Log.i("virgil", "GPS update start");
+        Log.v("virgil", "GPS update start");
         getCurrentLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 70 * 1000, 0, networkLocationListener);
@@ -111,10 +111,10 @@ public class GPSLocation {
 
     public MyLocation getCurrentLocation(){
         if(openGEPSettings()) {
-            Log.i("virgil", "get GPS location");
+            Log.v("virgil", "get GPS location");
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if(location == null){
-                Log.i("virgil", "get network location");
+                Log.v("virgil", "get network location");
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
             if(location != null) {

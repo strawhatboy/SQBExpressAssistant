@@ -59,6 +59,7 @@ public class UtilHelper {
 
     public static String userId;
     public static String token;
+    public static boolean isLocateSuccess;
     public static int intentId = 0;
 
     public interface IHandleXGMessage{
@@ -84,6 +85,14 @@ public class UtilHelper {
 
     public static void setSharedUserId(String userId){
         UtilHelper.userId = userId;
+    }
+
+    public static boolean getIsLocateSuccess() {
+        return UtilHelper.isLocateSuccess;
+    }
+
+    public static void setIsLocateSuccess(boolean isLocateSuccess) {
+        UtilHelper.isLocateSuccess = isLocateSuccess;
     }
 
     public static void setXGToken(String token){

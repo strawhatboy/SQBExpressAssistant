@@ -113,4 +113,5 @@
     <string name="registration_select_gender">选择性别</string>
     <string name="gender_male">男</string>
     <string name="gender_female">女</string>
+    <string name="searching_locate_failed">定位没有成功，您暂时不能接单！</string>
 </resources>

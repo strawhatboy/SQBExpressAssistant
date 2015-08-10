@@ -7,12 +7,44 @@
     android:background="@drawable/bg2">
 
 
-    <com.sqbnet.expressassistant.controls.UnScrollableViewPager
-        android:id="@+id/id_viewpager"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
-    </com.sqbnet.expressassistant.controls.UnScrollableViewPager>
+        android:layout_weight="1">
+        <com.sqbnet.expressassistant.controls.UnScrollableViewPager
+            android:id="@+id/id_viewpager"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+        </com.sqbnet.expressassistant.controls.UnScrollableViewPager>
+        <LinearLayout
+            android:visibility="invisible"
+            android:id="@+id/ly_main_locate_failed"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_white"
+            android:layout_height="40dp">
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/hint"/>
+            <TextView
+                android:id="@+id/tv_main_hint"
+                android:layout_marginLeft="20dp"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:textColor="@color/font_black"
+                android:text="@string/searching_locate_failed"/>
+        </LinearLayout>
+    </RelativeLayout>
 
-    <include layout="@layout/main_bottom"/>
+
+
+    <include android:id="@+id/ly_main_include" layout="@layout/main_bottom" android:layout_height="wrap_content" android:layout_width="fill_parent" />
 </LinearLayout>
