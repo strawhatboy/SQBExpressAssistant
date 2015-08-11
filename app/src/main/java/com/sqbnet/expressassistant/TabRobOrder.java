@@ -184,8 +184,8 @@ public class TabRobOrder extends Fragment {
             iv_radar.clearAnimation();
             iv_white_circle.clearAnimation();
             for (int i = 0; i < orange_dots.size(); i++) {
-                orange_dots.get(i).setVisibility(View.INVISIBLE);
                 orange_dots.get(i).clearAnimation();
+                orange_dots.get(i).setVisibility(View.INVISIBLE);
             }
             if (needRefreshTimer) stopTimer();
         }
@@ -231,7 +231,7 @@ public class TabRobOrder extends Fragment {
                     final int index = i;
                     try {
                         Thread.sleep(MyApplication.getInst().getRandom().nextInt(5000));
-                        if (getActivity() != null) {
+                        if (getActivity() != null && isWaiting) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
