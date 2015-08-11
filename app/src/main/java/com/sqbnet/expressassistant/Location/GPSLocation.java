@@ -138,6 +138,7 @@ public class GPSLocation {
             locationManager.removeUpdates(networkLocationListener);
         }
         BaiDuLocationService.getInst().getLocationClient().unRegisterLocationListener(bdLocationListener);
+        BaiDuLocationService.getInst().getLocationClient().stop();
     }
 
     private void sendLocationToServer(final String latitude, final String longitude, String from){
@@ -214,9 +215,11 @@ public class GPSLocation {
     private final BDLocationListener bdLocationListener = new BDLocationListener() {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
-            Log.i("BDLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
+            Log.i("GPSLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
                     bdLocation.getLongitude() + ", time: " + bdLocation.getTime() + ", type: " + bdLocation.getLocType());
-            sendLocationToServer(String.valueOf(bdLocation.getLatitude()), String.valueOf(bdLocation.getLongitude()), FROM_BAIDU);
+            if (bdLocation.getLocType() == BDLocation.TypeGpsLocation || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
+                sendLocationToServer(String.valueOf(bdLocation.getLatitude()), String.valueOf(bdLocation.getLongitude()), FROM_BAIDU);
+            }
         }
     };
 

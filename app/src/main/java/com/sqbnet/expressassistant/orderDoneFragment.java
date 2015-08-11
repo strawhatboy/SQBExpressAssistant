@@ -1,11 +1,14 @@
 package com.sqbnet.expressassistant;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.sqbnet.expressassistant.service.LocalService;
 
 /**
  * Created by Andy on 6/30/2015.
@@ -35,6 +38,11 @@ public class orderDoneFragment extends OrderBaseFragment {
     void initView(View view) {
         tv_done_balance = (TextView) view.findViewById(R.id.tv_order_done_balance);
         btn_go = (Button) view.findViewById(R.id.btn_order_done);
+
+        // stop gps
+        if (getActivity() != null) {
+            getActivity().getApplicationContext().stopService(new Intent(getActivity().getApplicationContext(), LocalService.class));
+        }
         if(Remuneration != null){
             tv_done_balance.setText(Remuneration);
         }

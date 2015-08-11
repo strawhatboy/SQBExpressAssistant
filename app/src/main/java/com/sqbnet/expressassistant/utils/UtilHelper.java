@@ -406,9 +406,6 @@ public class UtilHelper {
                     .show();
             return;
         }*/
-
-        Intent service = new Intent(MyApplication.getInst().getApplicationContext(), LocalService.class);
-        MyApplication.getInst().getApplicationContext().startService(service);
     }
 
     public static void startMapByAddress(final Activity currentActivity, final String address) {

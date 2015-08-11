@@ -214,7 +214,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         //GPSLocation.getInst().stop();
 
         //XGPushManager.registerPush(getApplicationContext(), "*");
-        getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
         XGPushManager.unregisterPush(this);
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
@@ -409,6 +408,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             isWaiting = status;
             Log.d("Status Change :", Boolean.toString(isWaiting));
             if (isWaiting) {
+                Log.d("mainActivity", "start location service");
+                Intent service = new Intent(MyApplication.getInst().getApplicationContext(), LocalService.class);
+                MyApplication.getInst().getApplicationContext().startService(service);
                 mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_green));
                 tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
                 setBackgroudLight();
@@ -422,6 +424,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 //startActivityForResult(intent, RequestCode.ORDER);
 
             } else {
+                Log.d("mainActivity", "stop location service");
+                getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
                 mTabBtnRobOrder.setBackgroundDrawable(resources.getDrawable(R.color.button_blue));
                 tv_rob_order.setText(resources.getString(R.string.tab_btn_rob_order));
                 setBackgroudDark();

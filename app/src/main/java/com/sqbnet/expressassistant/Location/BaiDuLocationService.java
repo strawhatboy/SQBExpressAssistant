@@ -17,6 +17,7 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.sqbnet.expressassistant.MyApplication;
+import com.sqbnet.expressassistant.mode.MyLocation;
 
 /**
  * Created by Andy on 7/6/2015.
@@ -27,6 +28,7 @@ public class BaiDuLocationService {
     private LocationClient mLocationClient;
     private GeofenceClient mGeofenceClient;
     private GeoCoder mSearch;
+    private MyLocation locationGotFromBaidu;
 
     public static BaiDuLocationService getInst(){
         if(sInst == null){
@@ -42,13 +44,16 @@ public class BaiDuLocationService {
     private BaiDuLocationService() {
         Context context = MyApplication.getInst().getApplicationContext();
         mLocationClient = new LocationClient(context);
-       /* mLocationClient.registerLocationListener(new BDLocationListener() {
+        mLocationClient.registerLocationListener(new BDLocationListener() {
             @Override
             public void onReceiveLocation(BDLocation bdLocation) {
-                Log.i("BDLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
-                bdLocation.getLongitude() + ", time: " + bdLocation.getTime() + ", type: " + bdLocation.getLocType());
+                if (bdLocation.getLocType() == BDLocation.TypeGpsLocation || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
+                    Log.i("BDLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
+                            bdLocation.getLongitude() + ", time: " + bdLocation.getTime() + ", type: " + bdLocation.getLocType());
+                    locationGotFromBaidu = new MyLocation(bdLocation.getLatitude(), bdLocation.getLongitude());
+                }
             }
-        });*/
+        });
         mGeofenceClient = new GeofenceClient(context);
     }
 
@@ -97,5 +102,8 @@ public class BaiDuLocationService {
     public interface IGeoEncoderCallback {
         void handleLocationGot(double latitude, double longitude);
         void handleAddressGot(String address);
+    }
+    public MyLocation getLocationGotFromBaidu() {
+        return locationGotFromBaidu;
     }
 }

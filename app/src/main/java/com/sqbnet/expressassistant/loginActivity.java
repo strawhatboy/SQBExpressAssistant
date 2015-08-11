@@ -77,7 +77,7 @@ public class loginActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        BaiDuLocationService.getInst().getLocationClient().start();
         UtilHelper.checkGPSLocation(loginActivity.this);
     }
 
@@ -131,6 +131,11 @@ public class loginActivity extends BaseActivity {
                                 location = GPSLocation.getInst().getCurrentLocation();
                             } catch (Exception e) {
                                 e.printStackTrace();
+                            }
+
+                            if (location == null && BaiDuLocationService.getInst().getLocationGotFromBaidu() != null) {
+                                location = BaiDuLocationService.getInst().getLocationGotFromBaidu();
+                                Log.d("loginActivity", "Use BAIDU sdk instead !!!!");
                             }
                             // count += 1;
                         }
