@@ -77,7 +77,6 @@ public class loginActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        BaiDuLocationService.getInst().getLocationClient().start();
         UtilHelper.checkGPSLocation(loginActivity.this);
     }
 
@@ -116,6 +115,9 @@ public class loginActivity extends BaseActivity {
                 };
                 Timer timer = new Timer();
                 timer.schedule(timerTask, 90000);
+
+                // start baidu location when 'login' clicked.
+                BaiDuLocationService.getInst().getLocationClient().start();
 
                 AsyncTask<String, String, MyLocation> task = new AsyncTask<String, String, MyLocation>() {
                     @Override
