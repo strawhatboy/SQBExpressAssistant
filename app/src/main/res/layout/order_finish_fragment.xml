@@ -72,10 +72,20 @@
             android:src="@drawable/login_failed_circle"/>
             <TextView
                 android:layout_centerHorizontal="true"
-                android:layout_above="@+id/tv_order_finish_inputbox"
+                android:layout_above="@+id/tv_order_finish_sn"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="@string/order_finish_title"
+                android:textSize="15sp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/font_black"/>
+            <TextView
+                android:id="@+id/tv_order_finish_sn"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/tv_order_finish_inputbox"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/order_finish_sn"
                 android:textSize="15sp"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/font_black"/>

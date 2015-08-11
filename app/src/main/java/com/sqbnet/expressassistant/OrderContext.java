@@ -6,6 +6,7 @@ package com.sqbnet.expressassistant;
 public class OrderContext {
     private String userId;
     private String orderId;
+    private String orderSn;
     private String status;
     private double distance = -1d;
 
@@ -39,5 +40,13 @@ public class OrderContext {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public String getOrderSn() {
+        return orderSn;
+    }
+
+    public void setOrderSn(String orderSn) {
+        this.orderSn = orderSn;
     }
 }

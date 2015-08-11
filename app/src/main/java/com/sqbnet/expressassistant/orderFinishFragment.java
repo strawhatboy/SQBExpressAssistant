@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.SQBResponse;
@@ -29,6 +30,7 @@ public class orderFinishFragment extends OrderBaseFragment {
     Button btn_revalid;
     RelativeLayout valideLayout;
     RelativeLayout valideLayoutAgain;
+    TextView tv_sn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +46,9 @@ public class orderFinishFragment extends OrderBaseFragment {
         valideLayout = (RelativeLayout) view.findViewById(R.id.rl_order_input_valid);
         valideLayoutAgain = (RelativeLayout) view.findViewById(R.id.rl_order_input_valid_again);
         et_delivery_code = (EditText) view.findViewById(R.id.et_order_finish_delivery_code);
+        tv_sn = (TextView) view.findViewById(R.id.tv_order_finish_sn);
+
+        tv_sn.setText(mOrderContext.getOrderSn());
 
         et_delivery_code.addTextChangedListener(new TextWatcher() {
             @Override

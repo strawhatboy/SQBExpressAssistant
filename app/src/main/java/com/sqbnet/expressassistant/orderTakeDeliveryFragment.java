@@ -102,6 +102,8 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                     double company_latitude = company.getDouble("latitude");
                                     double company_longitude = company.getDouble("longitude");
                                     String company_pic = company.has("pic") ? company.getString("pic") : "";
+                                    String order_sn = result.getString("order_sn");
+                                    mOrderContext.setOrderSn(order_sn);
 
                                     String remuneration = result.getString("remuneration");
 
@@ -147,7 +149,7 @@ public class orderTakeDeliveryFragment extends OrderBaseFragment {
                                         });
                                     }
 
-                                    tv_order_id.setText(mOrderContext.getOrderId());
+                                    tv_order_id.setText(order_sn);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

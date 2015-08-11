@@ -154,6 +154,8 @@ public class orderDeliverFragment extends OrderBaseFragment {
                                     String customer_address = result.getString("address");
                                     String customer_phone = result.getString("mobile");
                                     String customer_pic = result.has("headimgurl") ? result.getString("headimgurl") : "";
+                                    String order_sn = result.getString("order_sn");
+                                    mOrderContext.setOrderSn(order_sn);
 
                                     String remuneration = result.getString("remuneration");
 
@@ -180,7 +182,7 @@ public class orderDeliverFragment extends OrderBaseFragment {
 
                                     tv_good_count.setText(String.valueOf(goods.length()));
 
-                                    tv_order_id.setText(mOrderContext.getOrderId());
+                                    tv_order_id.setText(order_sn);
 
                                     if (customer_pic.startsWith("http")) {
                                         AsyncImageLoader.getInst().loadBitmap(customer_pic, new AsyncImageLoader.ImageLoadResultLister() {
