@@ -92,7 +92,7 @@ public class orderMainActivity extends FragmentActivity {
                 if (currentPage < fragments.size() - 1) {
                     int index = currentPage + 1;
                     viewPager.setCurrentItem(index);
-                    ((IWizardPage)fragments.get(index)).setOrderContext(mOrderContext);
+                    //((IWizardPage)fragments.get(index)).setOrderContext(mOrderContext);
                     ((OrderBaseFragment)fragments.get(index)).loadData();
                 }
 
@@ -114,6 +114,12 @@ public class orderMainActivity extends FragmentActivity {
             }
         };
 
+        mOrderContext = new OrderContext();
+        Intent intent = getIntent();
+        mOrderContext.setUserId(intent.getStringExtra("user_id"));
+        mOrderContext.setOrderId(intent.getStringExtra("order_id"));
+        mOrderContext.setStatus(intent.getStringExtra("status"));
+
         _orderGotFragment = new orderGotFragment();
         _orderGotFragment.setNextDelegate(iWizardPageDelegate);
         _orderConfirmFragment = new orderConfirmFragment();
@@ -124,6 +130,12 @@ public class orderMainActivity extends FragmentActivity {
         _orderDeliverFragment.setNextDelegate(iWizardPageDelegate);
         _orderFinishFragment = new orderFinishFragment();
         _orderFinishFragment.setNextDelegate(iWizardPageDelegate);
+
+        _orderGotFragment.setOrderContext(mOrderContext);
+        _orderConfirmFragment.setOrderContext(mOrderContext);
+        _orderTakeDeliveryFragment.setOrderContext(mOrderContext);
+        _orderDeliverFragment.setOrderContext(mOrderContext);
+        _orderFinishFragment.setOrderContext(mOrderContext);
 
         fragments.add(_orderGotFragment);
         fragments.add(_orderConfirmFragment);
@@ -144,11 +156,6 @@ public class orderMainActivity extends FragmentActivity {
         };
         viewPager.setAdapter(fragmentPagerAdapter);
 
-        mOrderContext = new OrderContext();
-        Intent intent = getIntent();
-        mOrderContext.setUserId(intent.getStringExtra("user_id"));
-        mOrderContext.setOrderId(intent.getStringExtra("order_id"));
-        mOrderContext.setStatus(intent.getStringExtra("status"));
         final String from = intent.getStringExtra("from");
 
 
@@ -202,16 +209,16 @@ public class orderMainActivity extends FragmentActivity {
                                                 @Override
                                                 public void run() {
                                                     if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
-                                                        _orderGotFragment.setOrderContext(mOrderContext);
+                                                        //_orderGotFragment.setOrderContext(mOrderContext);
                                                         _orderConfirmFragment.setOrderContext(mOrderContext);
                                                     } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
-                                                        _orderTakeDeliveryFragment.setOrderContext(mOrderContext);
+                                                        //_orderTakeDeliveryFragment.setOrderContext(mOrderContext);
                                                         viewPager.setCurrentItem(2);
                                                         _orderTakeDeliveryFragment.loadData();
                                                         setProgressBarIndex(0, true);
                                                         setProgressBarIndex(1, true);
                                                     } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
-                                                        _orderDeliverFragment.setOrderContext(mOrderContext);
+                                                        //_orderDeliverFragment.setOrderContext(mOrderContext);
                                                         viewPager.setCurrentItem(3);
                                                         _orderDeliverFragment.loadData();
                                                         setProgressBarIndex(0, true);
@@ -252,16 +259,16 @@ public class orderMainActivity extends FragmentActivity {
             });
         }else{
             if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
-                _orderGotFragment.setOrderContext(mOrderContext);
-                _orderConfirmFragment.setOrderContext(mOrderContext);
+                //_orderGotFragment.setOrderContext(mOrderContext);
+                //_orderConfirmFragment.setOrderContext(mOrderContext);
             } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_ACCEPT)) {
-                _orderTakeDeliveryFragment.setOrderContext(mOrderContext);
+                //_orderTakeDeliveryFragment.setOrderContext(mOrderContext);
                 viewPager.setCurrentItem(2);
                 _orderTakeDeliveryFragment.loadData();
                 setProgressBarIndex(0, true);
                 setProgressBarIndex(1, true);
             } else if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_SHIPPING) || mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_DELIVERING)) {
-                _orderDeliverFragment.setOrderContext(mOrderContext);
+                //_orderDeliverFragment.setOrderContext(mOrderContext);
                 viewPager.setCurrentItem(3);
                 _orderDeliverFragment.loadData();
                 setProgressBarIndex(0, true);
