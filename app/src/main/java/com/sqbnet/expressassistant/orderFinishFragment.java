@@ -48,7 +48,7 @@ public class orderFinishFragment extends OrderBaseFragment {
         et_delivery_code = (EditText) view.findViewById(R.id.et_order_finish_delivery_code);
         tv_sn = (TextView) view.findViewById(R.id.tv_order_finish_sn);
 
-        tv_sn.setText(mOrderContext.getOrderSn());
+        tv_sn.setText(getResources().getString(R.string.order_finish_sn) + mOrderContext.getOrderSn());
 
         et_delivery_code.addTextChangedListener(new TextWatcher() {
             @Override

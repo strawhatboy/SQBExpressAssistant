@@ -20,7 +20,7 @@
                 android:id="@+id/civ_history_list_from_avatar"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_launcher"
+                android:src="@drawable/index_avatar"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 />
@@ -135,7 +135,7 @@
                 android:layout_gravity="bottom"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_launcher"
+                android:src="@drawable/index_avatar"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:textColor="@color/font_black"
