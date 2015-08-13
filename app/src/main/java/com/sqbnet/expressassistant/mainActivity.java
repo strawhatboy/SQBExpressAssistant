@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.sqbnet.expressassistant.Location.BaiDuLocationService;
 import com.sqbnet.expressassistant.Location.GPSLocation;
 import com.sqbnet.expressassistant.Provider.SQBProvider;
 import com.sqbnet.expressassistant.mode.MyLocation;
@@ -214,6 +215,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         //GPSLocation.getInst().stop();
 
         //XGPushManager.registerPush(getApplicationContext(), "*");
+        getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
+        BaiDuLocationService.getInst().unregisterLocationListener("MAIN_ACTIVITY");
         XGPushManager.unregisterPush(this);
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
@@ -376,26 +379,39 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void setUserStatus(final boolean b_status){
-        String user_id = UtilHelper.getSharedUserId();
-        MyLocation location = GPSLocation.getInst().getCurrentLocation();
-        String status = "0";
-        if (b_status) {
-            status = "1";
-        }
-        Log.i("virgil", "status:" + status);
-        if (location != null) {
-            SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), new SQBResponseListener() {
-                @Override
-                public void onResponse(SQBResponse response) {
-                    if (response == null)
-                        return;
-                    Log.i("virgil", "updateUserStatus");
-                    Log.i("virgil", response.getCode());
-                    Log.i("virgil", response.getMsg());
-                    Log.i("virgil", response.getData().toString());
+        final String user_id = UtilHelper.getSharedUserId();
+        BaiDuLocationService.getInst().registerLocationListener("MAIN_ACTIVITY", true, new BaiDuLocationService.ILocateCallback() {
+            @Override
+            public void handleLocationGot(double latitude, double longitude) {
+                String status = "0";
+                if (b_status) {
+                    status = "1";
                 }
-            });
-        }
+                Log.i("setUserStatus", "status:" + status);
+                SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(latitude), String.valueOf(longitude), new SQBResponseListener() {
+                    @Override
+                    public void onResponse(SQBResponse response) {
+                        if (response == null)
+                            return;
+                        Log.i("setUserStatus", "updateUserStatus");
+                        Log.i("setUserStatus", response.getCode());
+                        Log.i("setUserStatus", response.getMsg());
+                        Log.i("setUserStatus", response.getData().toString());
+                        if (b_status && isWaiting) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("setUserStatus", "start to get order when b_status = " + b_status + ", isWaiting = " + isWaiting);
+                                    getAssignOrder();
+                                }
+                            });
+                        } else {
+                            Log.i("setUserStatus", "won't get order when b_status = " + b_status + ", isWaiting = " + isWaiting);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -415,7 +431,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 tv_rob_order.setText(resources.getString(R.string.tab_btn_rest));
                 setBackgroudLight();
                 //TODO: start to wait for order from server
-                getAssignOrder();
+                //getAssignOrder();
 
                 //Got Order !! for debug
                 //Intent intent = new Intent();
@@ -455,32 +471,49 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
             public void onResponse(SQBResponse response) {
                 if (response == null)
                     return;
-                Log.i("virgil", "getAssignOrder");
-                Log.i("virgil", response.getCode());
-                Log.i("virgil", response.getMsg());
-                Log.i("virgil", response.getData().toString());
 
-                if (response.getCode().equals("1000")) {
-                    JSONObject result = (JSONObject) response.getData();
+                if (isWaiting) {
+                    Log.i("virgil", "getAssignOrder");
+                    Log.i("virgil", response.getCode());
+                    Log.i("virgil", response.getMsg());
+                    Log.i("virgil", response.getData().toString());
                     try {
-                        final String order_id = result.getString("order_id");
-                        final String status = result.getString("d_status");
+                        if (response.getCode().equals("1000")) {
+                            JSONObject result = (JSONObject) response.getData();
+                            try {
+                                final String order_id = result.getString("order_id");
+                                final String status = result.getString("d_status");
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent();
-                                intent.setClass(mainActivity.this, orderMainActivity.class);
-                                intent.putExtra("user_id", user_id);
-                                intent.putExtra("order_id", order_id);
-                                intent.putExtra("status", status);
-                                intent.putExtra("from", "main");
-                                startActivityForResult(intent, RequestCode.ORDER);
-                                setStatus(false);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent();
+                                        intent.setClass(mainActivity.this, orderMainActivity.class);
+                                        intent.putExtra("user_id", user_id);
+                                        intent.putExtra("order_id", order_id);
+                                        intent.putExtra("status", status);
+                                        intent.putExtra("from", "main");
+                                        startActivityForResult(intent, RequestCode.ORDER);
+                                        setStatus(false);
+                                    }
+                                });
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        });
-
+                        } else {
+                            Thread.sleep(10000);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isWaiting) {
+                                        getAssignOrder();
+                                    }
+                                }
+                            });
+                        }
                     } catch (Exception e) {
+                        Log.e("getAssignOrder", "got error: " + e.getMessage());
                         e.printStackTrace();
                     }
                 }

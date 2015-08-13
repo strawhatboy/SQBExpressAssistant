@@ -19,6 +19,10 @@ import com.baidu.mapapi.utils.DistanceUtil;
 import com.sqbnet.expressassistant.MyApplication;
 import com.sqbnet.expressassistant.mode.MyLocation;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Created by Andy on 7/6/2015.
  */
@@ -29,6 +33,8 @@ public class BaiDuLocationService {
     private GeofenceClient mGeofenceClient;
     private GeoCoder mSearch;
     private MyLocation locationGotFromBaidu;
+    private Map<String, ILocateCallback> callbacks;
+    private Map<String, Boolean> isOneTimeCallback;
 
     public static BaiDuLocationService getInst(){
         if(sInst == null){
@@ -42,6 +48,8 @@ public class BaiDuLocationService {
     }
 
     private BaiDuLocationService() {
+        callbacks = new HashMap<String, ILocateCallback>();
+        isOneTimeCallback = new HashMap<String, Boolean>();
         Context context = MyApplication.getInst().getApplicationContext();
         mLocationClient = new LocationClient(context);
         mLocationClient.registerLocationListener(new BDLocationListener() {
@@ -51,6 +59,18 @@ public class BaiDuLocationService {
                     Log.i("BDLocation", "Got location: latitude: " + bdLocation.getLatitude() + ", longtitue: " +
                             bdLocation.getLongitude() + ", time: " + bdLocation.getTime() + ", type: " + bdLocation.getLocType());
                     locationGotFromBaidu = new MyLocation(bdLocation.getLatitude(), bdLocation.getLongitude());
+                    Iterator<Map.Entry<String, ILocateCallback>> iterator = callbacks.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<String, ILocateCallback> entry = iterator.next();
+                        String key = entry.getKey();
+                        entry.getValue().handleLocationGot(bdLocation.getLatitude(), bdLocation.getLongitude());
+                        if (isOneTimeCallback.containsKey(key)) {
+                            if (isOneTimeCallback.get(key)) {
+                                callbacks.remove(key);
+                                isOneTimeCallback.remove(key);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -99,11 +119,34 @@ public class BaiDuLocationService {
         }
     }
 
-    public interface IGeoEncoderCallback {
-        void handleLocationGot(double latitude, double longitude);
+    public interface IGeoEncoderCallback extends ILocateCallback  {
         void handleAddressGot(String address);
     }
+
+    public interface ILocateCallback {
+        void handleLocationGot(double latitude, double longitude);
+    }
+
     public MyLocation getLocationGotFromBaidu() {
         return locationGotFromBaidu;
+    }
+
+    public void registerLocationListener(String id, ILocateCallback callback) {
+        registerLocationListener(id, false, callback);
+    }
+
+    public void registerLocationListener(String id, boolean isOneTime, ILocateCallback callback) {
+        unregisterLocationListener(id);
+        callbacks.put(id, callback);
+        isOneTimeCallback.put(id, isOneTime);
+    }
+
+    public void unregisterLocationListener(String id) {
+        if (callbacks.containsKey(id)) {
+            callbacks.remove(id);
+            if (isOneTimeCallback.containsKey(id)) {
+                isOneTimeCallback.remove(id);
+            }
+        }
     }
 }

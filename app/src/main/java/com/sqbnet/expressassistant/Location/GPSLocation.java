@@ -126,7 +126,7 @@ public class GPSLocation {
                 }
             }
         }
-        return null;
+        return BaiDuLocationService.getInst().getLocationGotFromBaidu();
     }
 
     public void stop(){
