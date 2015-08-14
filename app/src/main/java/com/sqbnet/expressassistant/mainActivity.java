@@ -217,6 +217,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         //XGPushManager.registerPush(getApplicationContext(), "*");
         getApplicationContext().stopService(new Intent(getApplicationContext(), LocalService.class));
         BaiDuLocationService.getInst().unregisterLocationListener("MAIN_ACTIVITY");
+        
+        // for unhandle exitting when searching for orders.
+        setUserStatus(false);
         XGPushManager.unregisterPush(this);
         SQBProvider.getInst().logout(UtilHelper.getSharedUserId(), new SQBResponseListener() {
             @Override
@@ -380,36 +383,49 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     private void setUserStatus(final boolean b_status){
         final String user_id = UtilHelper.getSharedUserId();
-        BaiDuLocationService.getInst().registerLocationListener("MAIN_ACTIVITY", true, new BaiDuLocationService.ILocateCallback() {
-            @Override
-            public void handleLocationGot(double latitude, double longitude) {
-                String status = "0";
-                if (b_status) {
-                    status = "1";
+        if (b_status) {
+            BaiDuLocationService.getInst().registerLocationListener("MAIN_ACTIVITY", true, new BaiDuLocationService.ILocateCallback() {
+                @Override
+                public void handleLocationGot(double latitude, double longitude) {
+                    setUserStatus(b_status, latitude, longitude);
                 }
-                Log.i("setUserStatus", "status:" + status);
-                SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(latitude), String.valueOf(longitude), new SQBResponseListener() {
-                    @Override
-                    public void onResponse(SQBResponse response) {
-                        if (response == null)
-                            return;
-                        Log.i("setUserStatus", "updateUserStatus");
-                        Log.i("setUserStatus", response.getCode());
-                        Log.i("setUserStatus", response.getMsg());
-                        Log.i("setUserStatus", response.getData().toString());
-                        if (b_status && isWaiting) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.i("setUserStatus", "start to get order when b_status = " + b_status + ", isWaiting = " + isWaiting);
-                                    getAssignOrder();
-                                }
-                            });
-                        } else {
-                            Log.i("setUserStatus", "won't get order when b_status = " + b_status + ", isWaiting = " + isWaiting);
+            });
+        } else {
+            MyLocation lastLocation = BaiduLocationService.getInst().getLocationGotFromBaidu();
+            if (lastLocation != null) {
+                setUserStatus(b_status, lastLocation.getLatitude(), lastLocation.getLongitude());
+            } else {
+                setUserStatus(b_status, 0d, 0d);
+            }
+        }
+    }
+    
+    private void setUserStatus(final boolean b_status, double latitude, double longitude) {
+        String status = "0";
+        if (b_status) {
+            status = "1";
+        }
+        Log.i("setUserStatus", "status:" + status);
+        SQBProvider.getInst().updateUserStatus(user_id, status, String.valueOf(latitude), String.valueOf(longitude), new SQBResponseListener() {
+            @Override
+            public void onResponse(SQBResponse response) {
+                if (response == null)
+                    return;
+                Log.i("setUserStatus", "updateUserStatus");
+                Log.i("setUserStatus", response.getCode());
+                Log.i("setUserStatus", response.getMsg());
+                Log.i("setUserStatus", response.getData().toString());
+                if (b_status && isWaiting) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("setUserStatus", "start to get order when b_status = " + b_status + ", isWaiting = " + isWaiting);
+                            getAssignOrder();
                         }
-                    }
-                });
+                    });
+                } else {
+                    Log.i("setUserStatus", "won't get order when b_status = " + b_status + ", isWaiting = " + isWaiting);
+                }
             }
         });
     }
