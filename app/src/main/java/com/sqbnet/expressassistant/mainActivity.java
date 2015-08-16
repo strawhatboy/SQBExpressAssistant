@@ -382,7 +382,6 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
 
     private void setUserStatus(final boolean b_status){
-        final String user_id = UtilHelper.getSharedUserId();
         if (b_status) {
             BaiDuLocationService.getInst().registerLocationListener("MAIN_ACTIVITY", true, new BaiDuLocationService.ILocateCallback() {
                 @Override
@@ -391,7 +390,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 }
             });
         } else {
-            MyLocation lastLocation = BaiduLocationService.getInst().getLocationGotFromBaidu();
+            MyLocation lastLocation = BaiDuLocationService.getInst().getLocationGotFromBaidu();
             if (lastLocation != null) {
                 setUserStatus(b_status, lastLocation.getLatitude(), lastLocation.getLongitude());
             } else {
@@ -401,6 +400,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
     }
     
     private void setUserStatus(final boolean b_status, double latitude, double longitude) {
+        final String user_id = UtilHelper.getSharedUserId();
         String status = "0";
         if (b_status) {
             status = "1";
