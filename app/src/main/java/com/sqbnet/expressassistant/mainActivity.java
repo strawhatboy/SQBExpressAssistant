@@ -75,6 +75,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
 
     private Timer timer;
     private Map<Timer, Boolean> cancelTimerMap;
+    private int cancelCounter = 0;
+    private boolean isCancelled = false;
 
     private Resources resources;
 
@@ -390,6 +392,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 }
             });
         } else {
+            isCancelled = true;
             MyLocation lastLocation = BaiDuLocationService.getInst().getLocationGotFromBaidu();
             if (lastLocation != null) {
                 setUserStatus(b_status, lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -493,6 +496,11 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                     Log.i("virgil", response.getCode());
                     Log.i("virgil", response.getMsg());
                     Log.i("virgil", response.getData().toString());
+                    if (isCancelled) {
+                        isCancelled = false;
+                        Log.d("cancelCounter", cancelCounter + ", will +1");
+                        cancelCounter++;
+                    }
                     try {
                         if (response.getCode().equals("1000")) {
                             JSONObject result = (JSONObject) response.getData();
@@ -522,8 +530,11 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (isWaiting) {
+                                    if (isWaiting && cancelCounter <= 0) {
                                         getAssignOrder();
+                                    } else {
+                                        Log.d("cancelCounter", cancelCounter + ", will -1");
+                                        cancelCounter--;
                                     }
                                 }
                             });
