@@ -531,7 +531,8 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 @Override
                                 public void run() {
                                     if (isWaiting && cancelCounter <= 0) {
-                                        getAssignOrder();
+                                        //getAssignOrder();
+                                        Log.d("mainActivity", "won't get order anymore if failed the first time");
                                     } else {
                                         Log.d("cancelCounter", cancelCounter + ", will -1");
                                         cancelCounter--;
