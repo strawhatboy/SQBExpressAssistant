@@ -135,6 +135,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                     public void run() {
                         if(!isVisible || !isWaiting)
                             return;
+                        Log.d("mainActivity", "handle XG Message !!!");
                         Intent intent = new Intent();
                         intent.setClass(mainActivity.this, orderMainActivity.class);
                         intent.putExtra("user_id", user_id);
@@ -191,13 +192,19 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         TimerTask timerTask = new TimerTask() {
                             @Override
                             public void run() {
-                                Intent orderIntent = new Intent();
-                                orderIntent.setClass(mainActivity.this, orderMainActivity.class);
-                                orderIntent.putExtra("user_id", user_id);
-                                orderIntent.putExtra("order_id", order_id);
-                                orderIntent.putExtra("status", status);
-                                startActivityForResult(orderIntent, RequestCode.ORDER);
-                                setStatus(false);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("mainActivity", "FromNotification - THIS IS IN UI THREAD!!!");
+                                        Intent orderIntent = new Intent();
+                                        orderIntent.setClass(mainActivity.this, orderMainActivity.class);
+                                        orderIntent.putExtra("user_id", user_id);
+                                        orderIntent.putExtra("order_id", order_id);
+                                        orderIntent.putExtra("status", status);
+                                        setStatus(false);
+                                        startActivityForResult(orderIntent, RequestCode.ORDER);
+                                    }
+                                });
                             }
                         };
                         Timer timer = new Timer();
@@ -482,7 +489,11 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
         mainLayout.setBackgroundDrawable(resources.getDrawable(isLight ? R.drawable.bg : R.drawable.bg2));
     }
 
-    private void getAssignOrder(){
+    private void getAssignOrder() {
+        getAssignOrder(false, null);
+    }
+
+    private void getAssignOrder(final boolean ignoreStatus, final IGetAssignedOrderFailedCallback failedCallback){
         final String user_id = UtilHelper.getSharedUserId();
 
         SQBProvider.getInst().getAssignOrder(user_id, new SQBResponseListener() {
@@ -491,7 +502,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 if (response == null)
                     return;
 
-                if (isWaiting) {
+                if (ignoreStatus || isWaiting) {
                     Log.i("virgil", "getAssignOrder");
                     Log.i("virgil", response.getCode());
                     Log.i("virgil", response.getMsg());
@@ -511,6 +522,7 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.d("main", "getAssignOrder !!!");
                                         Intent intent = new Intent();
                                         intent.setClass(mainActivity.this, orderMainActivity.class);
                                         intent.putExtra("user_id", user_id);
@@ -526,6 +538,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                                 e.printStackTrace();
                             }
                         } else {
+                            if (failedCallback != null) {
+                                failedCallback.failed();
+                            }
                             Thread.sleep(10000);
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -579,6 +594,9 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                         break;
                     case ResultCode.ORDER_CANCELED:
                         Log.i("virgil", "order_cancel");
+                        break;
+                    default:
+                        Log.e("mainActivity", "UNEXPECTED resultcode got in requestCode.ORDER");
                         break;
                 }
             }
@@ -637,5 +655,81 @@ public class mainActivity extends BaseFragmentActivity implements View.OnClickLi
                 });
             }
         }, 5000);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        final String from = intent.getStringExtra("from");
+        final String user_id = intent.getStringExtra("user_id");
+        final String order_id = intent.getStringExtra("order_id");
+        final String status = intent.getStringExtra("status");
+        Log.d("mainActivity", "onNewIntent called !!!" + from);
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (from.equals("XG")) {
+            Log.d("mainActivity", "handling order from NOTIFICATION !!!" + from);
+            SQBProvider.getInst().getOrderInfo(order_id, new SQBResponseListener() {
+                @Override
+                public void onResponse(SQBResponse response) {
+                    Log.i("virgil", "order confirm");
+                    Log.i("virgil", response.getCode());
+                    Log.i("virgil", response.getMsg());
+                    Log.i("virgil", response.getData().toString());
+
+                    if (response.getCode().equals("1000")) {
+                        JSONObject result = (JSONObject) response.getData();
+                        try {
+
+                            String id = result.getString("d_id");
+                            if (!id.equals(UtilHelper.getSharedUserId())) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new AlertDialog.Builder(mainActivity.this).setTitle(getApplicationContext().getResources().getString(R.string.dialog_title_info))
+                                                .setMessage("接单超时，该单已指派给他人")
+                                                        /*.setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                finish();
+                                                            }
+                                                        })*/
+                                                .show();
+
+                                    }
+                                });
+                                return;
+                            }
+                            getAssignOrder(true, new IGetAssignedOrderFailedCallback() {
+                                @Override
+                                public void failed() {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            new AlertDialog.Builder(mainActivity.this).setTitle(getApplicationContext().getResources().getString(R.string.dialog_title_info))
+                                                    .setMessage("没有指派的订单，或该订单已指派给他人")
+                                                            /*.setPositiveButton("退出接单", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    finish();
+                                                                }
+                                                            })*/
+                                                    .show();
+
+                                        }
+                                    });
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public interface IGetAssignedOrderFailedCallback {
+        void failed();
     }
 }

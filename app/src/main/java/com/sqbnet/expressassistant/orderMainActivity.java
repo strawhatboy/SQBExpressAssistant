@@ -104,13 +104,18 @@ public class orderMainActivity extends FragmentActivity {
             }
 
             @Override
-            public void exit(int exitCode, String data) {
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putString("data", data);
-                intent.putExtras(bundle);
-                setResult(exitCode, intent);
-                finish();
+            public void exit(final int exitCode, final String data) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("data", data);
+                        intent.putExtras(bundle);
+                        setResult(exitCode, intent);
+                        finish();
+                    }
+                });
             }
         };
 
@@ -159,7 +164,7 @@ public class orderMainActivity extends FragmentActivity {
         final String from = intent.getStringExtra("from");
 
 
-        if(from.equals("XG")) {
+        /*if(from.equals("XG")) {
             SQBProvider.getInst().getOrderInfo(mOrderContext.getOrderId(), new SQBResponseListener() {
                 @Override
                 public void onResponse(SQBResponse response) {
@@ -257,7 +262,7 @@ public class orderMainActivity extends FragmentActivity {
                     }
                 }
             });
-        }else{
+        }else{*/
             if (mOrderContext.getStatus().equals(CustomConstants.ASSIGN_ORDER_NOT_ACCEPT)) {
                 //_orderGotFragment.setOrderContext(mOrderContext);
                 //_orderConfirmFragment.setOrderContext(mOrderContext);
@@ -275,7 +280,7 @@ public class orderMainActivity extends FragmentActivity {
                 setProgressBarIndex(1, true);
                 setProgressBarIndex(2, true);
             }
-        }
+        //}
 
     }
 

@@ -96,7 +96,7 @@ public class CustomXGMsgReceiver extends XGPushBaseReceiver {
                                     Log.e("CustomXGMsgReciever", "virgil",e);
                                 }
                                 Intent orderIntent = new Intent();
-                                orderIntent.setClass(MyApplication.getInst().getApplicationContext(), orderMainActivity.class);
+                                orderIntent.setClass(MyApplication.getInst().getApplicationContext(), mainActivity.class);
                                 orderIntent.putExtra("user_id", user_id);
                                 orderIntent.putExtra("order_id", order_id);
                                 orderIntent.putExtra("status", status);
@@ -116,7 +116,7 @@ public class CustomXGMsgReceiver extends XGPushBaseReceiver {
                                         .setContentIntent(pendingIntent)
                                         .getNotification();
                                 notification.defaults |= Notification.DEFAULT_VIBRATE;
-                                notification.flags |= Notification.FLAG_AUTO_CANCEL|Notification.DEFAULT_SOUND;
+                                notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
                                 NotificationManager notificationManager = (NotificationManager) MyApplication.getInst().getSystemService(Context.NOTIFICATION_SERVICE);
                                 notificationManager.notify(1, notification);
                             }
